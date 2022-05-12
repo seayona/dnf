@@ -11,7 +11,7 @@ Usage:
 import torch
 
 
-def _create(name, pretrained=True, channels=3, classes=80, autoshape=True, verbose=True, device=None):
+def _create(name, pretrained=True, channels=3, classes=16, autoshape=True, verbose=True, device=None):
     """Creates or loads a YOLOv5 model
 
     Arguments:
@@ -66,7 +66,7 @@ def _create(name, pretrained=True, channels=3, classes=80, autoshape=True, verbo
         raise Exception(s) from e
 
 
-def custom(path='path/to/model.pt', autoshape=True, _verbose=True, device=None):
+def dnf(path='weights/dnf.pt', autoshape=True, _verbose=True, device=None):
     # YOLOv5 custom or local model
     return _create(path, autoshape=autoshape, verbose=_verbose, device=device)
 
@@ -122,8 +122,8 @@ def yolov5x6(pretrained=True, channels=3, classes=80, autoshape=True, _verbose=T
 
 
 if __name__ == '__main__':
-    model = _create(name='yolov5s', pretrained=True, channels=3, classes=80, autoshape=True, verbose=True)
-    # model = custom(path='path/to/model.pt')  # custom
+    # model = _create(name='yolov5s', pretrained=True, channels=3, classes=80, autoshape=True, verbose=True)
+    model = dnf(path='weights/dnf.pt')  # custom
 
     # Verify inference
     from pathlib import Path
@@ -134,12 +134,8 @@ if __name__ == '__main__':
     from utils.general import cv2
 
     imgs = [
-        'data/images/zidane.jpg',  # filename
-        Path('data/images/zidane.jpg'),  # Path
-        'https://ultralytics.com/images/zidane.jpg',  # URI
-        cv2.imread('data/images/bus.jpg')[:, :, ::-1],  # OpenCV
-        Image.open('data/images/bus.jpg'),  # PIL
-        np.zeros((320, 640, 3))]  # numpy
+        'datasets/dnf/images/001.png',
+    ]  # numpy
 
     results = model(imgs, size=320)  # batched inference
     results.print()

@@ -1,0 +1,16 @@
+lion
+boss
+avatar
+next
+bag
+tutorial
+skip
+lion_entry
+combo
+door
+passing
+skill
+close
+switch
+result
+setting
