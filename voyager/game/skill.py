@@ -11,6 +11,7 @@ class Skill:
         self.remain = 0
         # 技能CD计时器
         self.timer = QTimer()
+        self.timer.timeout.connect(self._remaining)
 
     def __repr__(self):
         return '%s CD：%s' % (self.key, self.remain)
@@ -20,7 +21,6 @@ class Skill:
         press(self.key.lower())
         self.remain = self.cd
         self.timer.start(1000)
-        self.timer.timeout.connect(self._remaining)
 
     def remain(self):
         return self.remain
@@ -29,4 +29,4 @@ class Skill:
         if self.remain > 0:
             self.remain = self.remain - 1
         else:
-            self.timer.stop()
+            self.remain = 0

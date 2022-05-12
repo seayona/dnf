@@ -22,7 +22,7 @@ from utils.torch_utils import select_device
 
 
 @torch.no_grad()
-def detect(weights=ROOT / 'weights/best.pt', data=ROOT / 'data/dnf.yaml', view_img=True):
+def detect(weights=ROOT / 'weights/best.pt', data=ROOT / 'data/dnf.yaml', view_img=False):
     imgsz = (1280, 768)
     # Load model
     device = select_device('0')

@@ -28,12 +28,16 @@ class Voyager(QMainWindow, VoyagerWindow):
         print("【探索者】启动成功")
         print("【探索者】按F8键启动/F12键停止/Esc键退出程序")
 
+        self.startButton.clicked.connect(self.onStart)
+        self.stopButton.clicked.connect(self.onStop)
+
     def onStart(self):
         print("【探索者】开启自动搬砖模式")
         self.timer.start(1000)
         self.player.attack()
 
     def onStop(self):
+        print("【探索者】关闭自动搬砖模式")
         self.timer.stop()
         self.player.stand()
 

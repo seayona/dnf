@@ -15,7 +15,7 @@ class Player(object):
         'E': Skill('E', 38),
         'O': Skill('O', 19),
         'U': Skill('U', 19),
-        'Q': Skill('Q', 9.5),
+        'Q': Skill('Q', 19),
         'Y': Skill('Y', 5),
         'F': Skill('F', 19),
         'B': Skill('B', 5),
