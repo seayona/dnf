@@ -43,3 +43,22 @@ class Recogbot(object):
 
     def clear(self):
         return self._recog('go')
+
+    def map(self):
+        if self._recog('m1'):
+            return 1
+        if self._recog('m2'):
+            return 2
+        if self._recog('m3'):
+            return 3
+        if self._recog('m4'):
+            return 4
+        if self._recog('m5'):
+            return 5
+        if self._recog('m6'):
+            return 6
+        if self._recog('m7'):
+            return 7
+        if self._recog('me') or self._recog('mr'):
+            return 9
+        return 0

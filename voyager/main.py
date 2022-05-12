@@ -34,7 +34,7 @@ class Voyager(QMainWindow, VoyagerWindow):
     def onStart(self):
         print("【探索者】开启自动搬砖模式")
         self.timer.start(1000)
-        self.player.attack()
+        # self.player.attack()
 
     def onStop(self):
         print("【探索者】关闭自动搬砖模式")
@@ -51,30 +51,34 @@ class Voyager(QMainWindow, VoyagerWindow):
 
     def onInterval(self):
 
-        # 释放技能
-        if  self.recogbot.loveyAlive():
-            print("【目标检测】还有小可爱活着")
-            self.player.cast()
+        # 获取当前是第几图
+        m = self.recogbot.map()
+        print(f'图{m}')
 
-        # 战斗奖励
-        if self.recogbot.reward():
-            print("【目标检测】战斗奖励")
-            self.game.reward()
-
-        # 再次挑战
-        if self.recogbot.replay():
-            print("【目标检测】再次挑战")
-            self.game.replay()
-
-        # 跳过深渊
-        if self.recogbot.demon():
-            print("【目标检测】跳过深渊")
-            self.game.tower()
-
-        # 装备修理
-        if self.recogbot.disrepair():
-            print("【目标检测】装备修理")
-            self.game.repair()
+        # # 释放技能
+        # if  self.recogbot.loveyAlive():
+        #     print("【目标检测】还有小可爱活着")
+        #     self.player.cast()
+        #
+        # # 战斗奖励
+        # if self.recogbot.reward():
+        #     print("【目标检测】战斗奖励")
+        #     self.game.reward()
+        #
+        # # 再次挑战
+        # if self.recogbot.replay():
+        #     print("【目标检测】再次挑战")
+        #     self.game.replay()
+        #
+        # # 跳过深渊
+        # if self.recogbot.demon():
+        #     print("【目标检测】跳过深渊")
+        #     self.game.tower()
+        #
+        # # 装备修理
+        # if self.recogbot.disrepair():
+        #     print("【目标检测】装备修理")
+        #     self.game.repair()
 
 
 if __name__ == '__main__':
