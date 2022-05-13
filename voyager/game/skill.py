@@ -22,9 +22,6 @@ class Skill:
         self.remain = self.cd
         self.timer.start(1000)
 
-    def remain(self):
-        return self.remain
-
     def _remaining(self):
         if self.remain > 0:
             self.remain = self.remain - 1

@@ -13,7 +13,8 @@ class Recogbot(object):
         img = capture()
         # 检测目标位置
         max_val, img, top_left, right_bottom = match(img, './game/scene/' + target + '.png')
-        return max_val > 0.999
+        # print(f'【模板匹配】 {target} {max_val}')
+        return 0.99 < max_val <= 1
 
     def loveyAlive(self):
         pred, names = detect()
@@ -21,7 +22,7 @@ class Recogbot(object):
             if len(det) < 1:
                 continue
             for *_, conf, cls in reversed(det):
-                if names[int(cls)] == 'monster' and float(f'{conf:.2f}') > 0.5:
+                if names[int(cls)] == 'monster' and float(f'{conf:.2f}') > 0.85:
                     return True
                 if names[int(cls)] == 'tiger' and float(f'{conf:.2f}') > 0.5:
                     return True
@@ -62,3 +63,12 @@ class Recogbot(object):
         if self._recog('me') or self._recog('mr'):
             return 9
         return 0
+
+    def boss(self):
+        return self._recog('boss')
+
+    def bag(self):
+        return self._recog('bag')
+
+    def result(self):
+        return self._recog('result')

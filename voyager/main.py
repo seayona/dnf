@@ -18,7 +18,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.setupUi(self)
 
         self.timer = QTimer()
-        self.timer.timeout.connect(self.onInterval)
+        self.timer.timeout.connect(self._interval)
 
         self.game = Game()
         self.recogbot = Recogbot()
@@ -34,7 +34,7 @@ class Voyager(QMainWindow, VoyagerWindow):
     def onStart(self):
         print("【探索者】开启自动搬砖模式")
         self.timer.start(1000)
-        # self.player.attack()
+        self.player.attack()
 
     def onStop(self):
         print("【探索者】关闭自动搬砖模式")
@@ -49,36 +49,27 @@ class Voyager(QMainWindow, VoyagerWindow):
         if e.key() == Qt.Key_Escape:
             self.close()
 
-    def onInterval(self):
+    def _interval(self):
+        # 释放觉醒
+        if self.recogbot.boss():
+            print("【目标检测】发现Boss!")
+            self.player.finisher()
 
-        # 获取当前是第几图
-        m = self.recogbot.map()
-        print(f'图{m}')
+        # 释放技能
+        if self.recogbot.loveyAlive():
+            print("【目标检测】还有小可爱活着")
+            self.player.cast()
 
-        # # 释放技能
-        # if  self.recogbot.loveyAlive():
-        #     print("【目标检测】还有小可爱活着")
-        #     self.player.cast()
-        #
-        # # 战斗奖励
-        # if self.recogbot.reward():
-        #     print("【目标检测】战斗奖励")
-        #     self.game.reward()
-        #
-        # # 再次挑战
-        # if self.recogbot.replay():
-        #     print("【目标检测】再次挑战")
-        #     self.game.replay()
-        #
-        # # 跳过深渊
-        # if self.recogbot.demon():
-        #     print("【目标检测】跳过深渊")
-        #     self.game.tower()
-        #
-        # # 装备修理
-        # if self.recogbot.disrepair():
-        #     print("【目标检测】装备修理")
-        #     self.game.repair()
+        # 战斗奖励
+        if self.recogbot.reward():
+            print("【目标检测】战斗奖励，战斗结束!")
+            self.game.reward()
+
+        if self.recogbot.bag():
+             self.game.repair()
+
+        if self.recogbot.replay():
+            self.game.replay()
 
 
 if __name__ == '__main__':

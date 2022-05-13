@@ -33,9 +33,10 @@ class Player(object):
         'F': Skill('F', 22),
         'B': Skill('B', 6),
         'L': Skill('L', 6),
-        '3': Skill('3', 140),
         '6': Skill('6', 60)
     }
+
+    Finisher = Skill('3', 140)
 
     def __init__(self):
         self.recogbot = Recogbot()
@@ -55,12 +56,16 @@ class Player(object):
         skills[0].cast()
         # s = random.choice(list(self.Skills.keys()))
         # self.Skills[s].cast()
-        keyUp('x')
-        keyDown('x')
+        self._attack()
 
     def stand(self):
+        keyUp('x')
         self.timer.stop()
 
     def attack(self):
         self.timer.start(3200)
-        pass
+
+    def finisher(self):
+        print(f'【角色控制】准备释放觉醒 CD {self.Finisher.remain}')
+        self.Finisher.cast()
+        self._attack()
