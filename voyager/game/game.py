@@ -45,7 +45,8 @@ class Game(object):
             self.freezy = False
             self._click('gold')
             self.timer.singleShot(1000, lambda: self._click('gold2'))
-            self.timer.singleShot(2200, self._free('【探索者】奖励领取成功'))
+            self.timer.singleShot(2200, lambda: self._free())
+            self.timer.singleShot(2200, lambda: print('【探索者】开始再次挑战'))
 
     def repair(self):
         if self.repaired:
