@@ -60,13 +60,19 @@ class Voyager(QMainWindow, VoyagerWindow):
             print("【目标检测】还有小可爱活着")
             self.player.cast()
 
+        # 自动打狮子头
+        if self.recogbot.door() and self.recogbot.lion():
+            print("【目标检测】下图狮子头")
+            self.player.stand()
+            self.player.right()
+
         # 战斗奖励
         if self.recogbot.reward():
             print("【目标检测】战斗奖励，战斗结束!")
             self.game.reward()
 
         if self.recogbot.bag():
-             self.game.repair()
+            self.game.repair()
 
         if self.recogbot.replay():
             self.game.replay()

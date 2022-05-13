@@ -26,7 +26,6 @@ def match(image, target):
         bottom_right = top_left[0] + w, top_left[1] + h
         # 在窗口截图中匹配位置画红色方框
         cv2.rectangle(image, top_left, bottom_right, (0, 0, 255), 2)
-    # if __debug__:
-    #     cv2.imshow('Match Template', image)
-    #     cv2.waitKey(1)
+    # cv2.imshow('Match Template', image)
+    # cv2.waitKey(1)
     return max_val, image, top_left, bottom_right

@@ -69,3 +69,7 @@ class Player(object):
         print(f'【角色控制】准备释放觉醒 CD {self.Finisher.remain}')
         self.Finisher.cast()
         self._attack()
+
+    def right(self):
+        keyDown('right')
+        self.timer.singleShot(3200, lambda: self.attack())

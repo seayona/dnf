@@ -72,3 +72,20 @@ class Recogbot(object):
 
     def result(self):
         return self._recog('result')
+
+    def lion(self):
+        return self._recog('lion')
+
+    def door(self):
+        pred, names = detect()
+        for i, det in enumerate(pred):
+            if len(det) < 1:
+                continue
+            for *_, conf, cls in reversed(det):
+                if names[int(cls)] == 'monster' and float(f'{conf:.2f}') > 0.85:
+                    return False
+                if names[int(cls)] == 'tiger' and float(f'{conf:.2f}') > 0.5:
+                    return False
+                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.5:
+                    return True
+        return True
