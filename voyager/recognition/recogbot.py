@@ -1,5 +1,5 @@
 
-from detect import detect
+from detect_dnf import detect
 from voyager.recognition import capture, match
 
 
@@ -22,11 +22,13 @@ class Recogbot(object):
             if len(det) < 1:
                 continue
             for *_, conf, cls in reversed(det):
-                if names[int(cls)] == 'monster' and float(f'{conf:.2f}') > 0.85:
+                if names[int(cls)] == 'monster' and float(f'{conf:.2f}') > 0.8:
                     return True
-                if names[int(cls)] == 'tiger' and float(f'{conf:.2f}') > 0.5:
+                if names[int(cls)] == 'tiger' and float(f'{conf:.2f}') > 0.7:
                     return True
-                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.5:
+                if names[int(cls)] == 'ice' and float(f'{conf:.2f}') > 0.7:
+                    return True
+                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.7:
                     return False
         return False
 
@@ -67,6 +69,9 @@ class Recogbot(object):
     def boss(self):
         return self._recog('boss')
 
+    def boss_valley(self):
+        return self._recog('valley_boss')
+
     def bag(self):
         return self._recog('bag')
 
@@ -89,3 +94,27 @@ class Recogbot(object):
                 if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.5:
                     return True
         return True
+
+    def active(self):
+        return self._recog('active')
+
+    def daily(self):
+        return self._recog('daily')
+
+    def daily_valley(self):
+        return self._recog('valley')
+
+    def daliy_valley_completed(self):
+        return self._recog('valley_completed')
+
+    def daily_valley_town(self):
+        return self._recog('valley_town')
+
+    def entry_snow_mountain(self):
+        return self._recog('adventure_snow_mountain_entry')
+
+    def dead(self):
+        return self._recog('dead')
+
+    def insufficient_balance(self):
+        return self._recog('insufficient_balance')

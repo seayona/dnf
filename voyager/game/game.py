@@ -1,15 +1,33 @@
+import asyncio
+
 from PyQt5.QtCore import QTimer
 
 from voyager.control import moveTo, click, press
 from voyager.recognition import capture, match, Recogbot
 
 
+def idle(fn):
+    def _freeze(*args):
+        self = args[0]
+        if self.freezy:
+            print(f'【探索者】开始执行系统任务 {fn.__name__}')
+            self.freezy = False
+            asyncio.run(fn(self))
+            self._free()
+
+    return _freeze
+
+
 class Game(object):
     def __init__(self):
         self.freezy = True
-        self.repaired = False
         self.recogbot = Recogbot()
         self.timer = QTimer()
+
+        self._init()
+
+    def _init(self):
+        self.repaired = False
 
     def _archor(self, target):
         # 获取屏幕截图
@@ -21,56 +39,101 @@ class Game(object):
             x, y = top_left
             return x + 10, y + 8
 
-    def _click(self, target):
+    def _free(self):
+        print('【探索者】系统空闲')
+        self.freezy = True
+
+    def _onrepaired(self):
+        self.repaired = True
+        print('【探索者】装备修理完成')
+
+    async def _click(self, target, sleep=1.5):
         top_left = self._archor(target)
         if top_left:
             x, y = top_left
             # 移动鼠标到按钮位置,点击按钮
             click(x, y)
+            await asyncio.sleep(sleep)
 
-    def _free(self):
-        self.freezy = True
+    async def _press(self, key, sleep=1.5):
+        press(key)
+        await asyncio.sleep(sleep)
 
-    def replay(self):
-        if self.freezy:
-            self.freezy = False
-            self.repaired = False
-            self._click('replay')
-            self.timer.singleShot(1000, lambda: self._click('confirm'))
-            self.timer.singleShot(1200, lambda: self._free())
-            self.timer.singleShot(1200, lambda: print('【探索者】开始再次挑战'))
+    @idle
+    async def replay(self):
+        self._init()
 
-    def reward(self):
-        if self.freezy:
-            self.freezy = False
-            self._click('gold')
-            self.timer.singleShot(1000, lambda: self._click('gold2'))
-            self.timer.singleShot(2200, lambda: self._free())
-            self.timer.singleShot(2200, lambda: print('【探索者】开始再次挑战'))
+        await self._click('replay')
+        await self._click('confirm')
+        print('【探索者】开始再次挑战')
 
-    def repair(self):
+    @idle
+    async def reward(self):
+        await self._click('gold')
+        await self._click('gold2')
+        print('【探索者】战斗结束，领取奖励完成')
+
+    @idle
+    async def repair(self):
         if self.repaired:
             print("【探索者】已修理，无需修理")
             return
-        if self.freezy and not self.repaired:
-            self.freezy = False
-            # 打开背包
-            self._click('bag')
-            # 点击分解按钮
-            self.timer.singleShot(1000, lambda: self._click('repair'))
-            # 确认分解
-            self.timer.singleShot(2000, lambda: self._click('repair_confirm'))
-            # 返回！
-            self.timer.singleShot(3000, lambda: press('esc'))
-            # 返回！!
-            self.timer.singleShot(4000, lambda: press('esc'))
-            # 返回！!
-            self.timer.singleShot(4500, lambda: press('esc'))
-            # 返回！!
-            self.timer.singleShot(4600, self._onrepaired)
-            # 返回！!
-            self.timer.singleShot(4600, self._free)
 
-    def _onrepaired(self):
-        self.repaired = True
-        print('【探索者】装备修理完成')
+        # 打开背包
+        await self._click('bag')
+        # 点击修理按钮
+        await self._click('repair')
+        # 确认修理
+        await self._click('repair_confirm')
+        # 返回！
+        await self._press('esc')
+        # 返回！
+        await self._press('esc')
+        # 返回！
+        await self._press('esc')
+        # 标记修理状态
+        self._onrepaired()
+
+    @idle
+    async def revival(self):
+        await self._click('revival')
+
+    @idle
+    async def valley_start(self):
+        if not self._archor('charge'):
+            await self._press('esc')
+        await self._click('active')
+        await self._click('daily')
+
+    @idle
+    async def valley_fight(self):
+        await self._click('valley')
+        await self._click('valley_confirm')
+
+    @idle
+    async def valley_town(self):
+        # 等待碎片捡完
+        await asyncio.sleep(3)
+        await self._click('valley_town')
+
+    @idle
+    async def snow_mountain_start(self):
+        if not self._archor('charge'):
+            press('esc')
+        await self._click('active')
+        await self._click('adventure_box')
+        await self._click('adventure_hard_level')
+        await self._click('adventure_snow_mountain')
+        await self._click('adventure_go')
+
+    @idle
+    async def snow_mountain_fight(self):
+        await self._click('adventure_snow_mountain_hard')
+        await self._click('adventure_snow_mountain_entry')
+        await self._click('adventure_snow_mountain_confirm')
+
+    @idle
+    async def snow_mountain_finish(self):
+        print('【探索者】雪山搬砖完成，下班！')
+        await self._press('esc')
+        await self._click('adventure_snow_mountain_town')

@@ -20,22 +20,33 @@ class Player(object):
     #     'F': Skill('F', 19),
     #     'B': Skill('B', 5),
     #     'L': Skill('L', 5),
-    #     '3': Skill('3', 138),
     #     '6': Skill('6', 57)
     # }
     # 红眼
+    # Skills = {
+    #     'E': Skill('E', 40),
+    #     'O': Skill('O', 12),
+    #     'U': Skill('U', 20),
+    #     'Q': Skill('Q', 20),
+    #     'Y': Skill('Y', 20),
+    #     'F': Skill('F', 22),
+    #     'B': Skill('B', 6),
+    #     'L': Skill('L', 6),
+    #     '6': Skill('6', 60)
+    # }
+    # 瞎子
     Skills = {
-        'E': Skill('E', 40),
-        'O': Skill('O', 12),
-        'U': Skill('U', 20),
+        'A': Skill('A', 5),
+        'S': Skill('S', 7),
+        'D': Skill('D', 10),
+        'F': Skill('F', 20),
         'Q': Skill('Q', 20),
-        'Y': Skill('Y', 20),
-        'F': Skill('F', 22),
-        'B': Skill('B', 6),
-        'L': Skill('L', 6),
-        '6': Skill('6', 60)
+        'W': Skill('W', 22),
+        'R': Skill('R', 6),
+        'T': Skill('T', 140),
+        '3': Skill('3', 60),
+        'V': Skill('V', 1)
     }
-
     Finisher = Skill('3', 140)
 
     def __init__(self):

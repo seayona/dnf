@@ -3,3 +3,5 @@ player
 door
 tiger
 bossdoor
+boss_label
+ice
