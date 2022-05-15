@@ -1,7 +1,5 @@
-
 from detect_dnf import detect
 from voyager.recognition import capture, match
-
 
 class Recogbot(object):
 
@@ -12,8 +10,8 @@ class Recogbot(object):
         # 获取屏幕截图
         img = capture()
         # 检测目标位置
-        max_val, img, top_left, right_bottom = match(img, './game/scene/' + target + '.png')
-        # print(f'【模板匹配】 {target} {max_val}')
+        max_val, img, top_left, right_bottom = match(img, f'./game/scene/{target}.png')
+        print(f'【模板匹配】 {target} {max_val}')
         return 0.99 < max_val <= 1
 
     def loveyAlive(self):
@@ -22,14 +20,42 @@ class Recogbot(object):
             if len(det) < 1:
                 continue
             for *_, conf, cls in reversed(det):
-                if names[int(cls)] == 'monster' and float(f'{conf:.2f}') > 0.8:
+                if names[int(cls)] == 'monster' and float(f'{conf:.2f}') > 0.3:
                     return True
-                if names[int(cls)] == 'tiger' and float(f'{conf:.2f}') > 0.7:
+                if names[int(cls)] == 'tiger' and float(f'{conf:.2f}') > 0.5:
                     return True
-                if names[int(cls)] == 'ice' and float(f'{conf:.2f}') > 0.7:
+                if names[int(cls)] == 'ice' and float(f'{conf:.2f}') > 0.5:
                     return True
-                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.7:
+                if names[int(cls)] == 'boss_label' and float(f'{conf:.2f}') > 0.3:
+                    return True
+                # if names[int(cls)] == 'lion' and float(f'{conf:.2f}') > 0.5:
+                #     return True
+                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.6:
                     return False
+        return False
+
+    def lion(self):
+        pred, names = detect()
+        for i, det in enumerate(pred):
+            if len(det) < 1:
+                continue
+            for *_, conf, cls in reversed(det):
+                if names[int(cls)] == 'lion' and float(f'{conf:.2f}') > 0.6:
+                    return True
+        return False
+
+    def door(self):
+        pred, names = detect()
+        for i, det in enumerate(pred):
+            if len(det) < 1:
+                continue
+            for *_, conf, cls in reversed(det):
+                if names[int(cls)] == 'monster' and float(f'{conf:.2f}') > 0.5:
+                    return False
+                if names[int(cls)] == 'tiger' and float(f'{conf:.2f}') > 0.5:
+                    return False
+                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.8:
+                    return True
         return False
 
     def reward(self):
@@ -47,27 +73,34 @@ class Recogbot(object):
     def clear(self):
         return self._recog('go')
 
-    def map(self):
-        if self._recog('m1'):
-            return 1
-        if self._recog('m2'):
-            return 2
-        if self._recog('m3'):
-            return 3
-        if self._recog('m4'):
-            return 4
-        if self._recog('m5'):
-            return 5
-        if self._recog('m6'):
-            return 6
-        if self._recog('m7'):
-            return 7
-        if self._recog('me') or self._recog('mr'):
-            return 9
-        return 0
+    # def map(self):
+    #     if self._recog('m1'):
+    #         return 1
+    #     if self._recog('m2'):
+    #         return 2
+    #     if self._recog('m3'):
+    #         return 3
+    #     if self._recog('m4'):
+    #         return 4
+    #     if self._recog('m5'):
+    #         return 5
+    #     if self._recog('m6'):
+    #         return 6
+    #     if self._recog('m7'):
+    #         return 7
+    #     if self._recog('me') or self._recog('mr'):
+    #         return 9
+    #     return 0
 
     def boss(self):
-        return self._recog('boss')
+        pred, names = detect()
+        for i, det in enumerate(pred):
+            if len(det) < 1:
+                continue
+            for *_, conf, cls in reversed(det):
+                if names[int(cls)] == 'boss_label' and float(f'{conf:.2f}') > 0.8:
+                    return True
+        return False
 
     def boss_valley(self):
         return self._recog('valley_boss')
@@ -77,23 +110,6 @@ class Recogbot(object):
 
     def result(self):
         return self._recog('result')
-
-    def lion(self):
-        return self._recog('lion')
-
-    def door(self):
-        pred, names = detect()
-        for i, det in enumerate(pred):
-            if len(det) < 1:
-                continue
-            for *_, conf, cls in reversed(det):
-                if names[int(cls)] == 'monster' and float(f'{conf:.2f}') > 0.85:
-                    return False
-                if names[int(cls)] == 'tiger' and float(f'{conf:.2f}') > 0.5:
-                    return False
-                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.5:
-                    return True
-        return True
 
     def active(self):
         return self._recog('active')
@@ -118,3 +134,37 @@ class Recogbot(object):
 
     def insufficient_balance(self):
         return self._recog('insufficient_balance')
+
+    def lion_entry(self):
+        return self._recog('lion')
+
+    def lion_clear(self):
+        return self._recog('lion_clear')
+
+    def talk(self):
+        return self._recog('talk_skip')
+
+    def confirm(self):
+        return self._recog('confirm')
+
+    def setting(self):
+        return self._recog('setting')
+
+    def next(self):
+        return self._recog('next')
+
+    def next_agency(self):
+        return self._recog('next_agency')
+
+    def next_agency_confirm(self):
+        return self._recog('next_agency_confirm')
+
+    def equip(self):
+        return self._recog('equip')
+
+    def click_close(self):
+        return self._recog('click_close')
+
+    def back(self):
+        return self._recog('back')
+

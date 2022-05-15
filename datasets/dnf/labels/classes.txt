@@ -5,3 +5,4 @@ tiger
 bossdoor
 boss_label
 ice
+lion

@@ -18,16 +18,18 @@ class Skill:
 
     def cast(self):
         print("释放技能", self.key)
-        if self.key == 'Y':
-            press(self.key.lower())
-            self.timer.singleShot(1000, lambda: press(self.key.lower()))
-            self.timer.singleShot(2000, lambda: press(self.key.lower()))
-            self.timer.singleShot(3000, lambda: press(self.key.lower()))
-        elif self.key == 'L':
-            press(self.key.lower())
-            self.timer.singleShot(1000, lambda: press('b'))
-        else:
-            press(self.key.lower())
+        # if self.key == 'Y':
+        #     press(self.key.lower())
+        #     self.timer.singleShot(1000, lambda: press(self.key.lower()))
+        #     self.timer.singleShot(2000, lambda: press(self.key.lower()))
+        #     self.timer.singleShot(3000, lambda: press(self.key.lower()))
+        # elif self.key == 'L':
+        #     press(self.key.lower())
+        #     self.timer.singleShot(1000, lambda: press('b'))
+        # else:
+        # 连按2次
+        press(self.key.lower())
+        press(self.key.lower())
         self.remain = self.cd
         self.timer.start(1000)
 
@@ -36,3 +38,4 @@ class Skill:
             self.remain = self.remain - 1
         else:
             self.remain = 0
+            self.timer.stop()

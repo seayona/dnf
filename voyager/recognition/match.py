@@ -1,6 +1,5 @@
 import cv2
 
-
 def match(image, target):
     """
     模板匹配

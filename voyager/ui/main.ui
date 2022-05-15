@@ -56,6 +56,19 @@
      <string>祥瑞溪谷</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="btn_agency">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>60</y>
+      <width>141</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>自动升级</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

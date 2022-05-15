@@ -28,6 +28,8 @@ class Game(object):
 
     def _init(self):
         self.repaired = False
+        self.saled = False
+        self.lionAlive = True
 
     def _archor(self, target):
         # 获取屏幕截图
@@ -47,7 +49,11 @@ class Game(object):
         self.repaired = True
         print('【探索者】装备修理完成')
 
-    async def _click(self, target, sleep=1.5):
+    def _onsaled(self):
+        self.saled = True
+        print('【探索者】装备分解完成')
+
+    async def _click(self, target, sleep=1):
         top_left = self._archor(target)
         if top_left:
             x, y = top_left
@@ -55,7 +61,7 @@ class Game(object):
             click(x, y)
             await asyncio.sleep(sleep)
 
-    async def _press(self, key, sleep=1.5):
+    async def _press(self, key, sleep=1):
         press(key)
         await asyncio.sleep(sleep)
 
@@ -137,3 +143,76 @@ class Game(object):
         print('【探索者】雪山搬砖完成，下班！')
         await self._press('esc')
         await self._click('adventure_snow_mountain_town')
+
+    def lion_clear(self):
+        self.lionAlive = False
+
+    @idle
+    async def sale(self):
+        if self.saled:
+            print("【探索者】装备已分解，无需分解")
+            return
+        # 打开背包
+        await self._click('bag')
+        # 点击分解按钮
+        await self._click('sale')
+        # 确认分解
+        await self._click('sale_select')
+        # 确认分解
+        await self._click('sale_confirm')
+        # 返回！
+        await self._press('esc')
+        # 返回！
+        await self._press('esc')
+        # 返回！
+        await self._press('esc')
+        # 标记修理状态
+        self._onsaled()
+    @idle
+    async def talk_skip(self):
+        await self._click('talk_skip')
+    @idle
+    async def confirm(self):
+        await self._click('confirm')
+
+    @idle
+    async def agency_mission(self):
+        pass
+
+    @idle
+    async def agency_mission_finish(self):
+        # 返回！
+        await self._press('esc')
+        # 返回！
+        await self._press('esc')
+        # 返回！
+        await self._click('adventure_snow_mountain_town')
+
+
+    @idle
+    async def next(self):
+        await self._click('next')
+
+    @idle
+    async def next_agency(self):
+        top_left = self._archor('next_agency')
+        if top_left:
+            x, y = top_left
+            # 移动鼠标到按钮位置,点击按钮
+            click(x + 40, y + 6)
+    @idle
+    async def next_agency_confirm(self):
+        await self._click('next_agency_confirm')
+
+    @idle
+    async def equip(self):
+        await self._click('equip')
+
+    @idle
+    async def click_close(self):
+        await self._click('click_close')
+
+    @idle
+    async def back(self):
+        await self._click('back')
+

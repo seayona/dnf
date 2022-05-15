@@ -4,24 +4,24 @@ import time
 
 from PyQt5.QtCore import QTimer
 
-from voyager.control import keyUp, keyDown, press, moveTo, click
+from voyager.control import keyUp, keyDown, press, moveTo, click, hold
 from voyager.game import Skill
 from voyager.recognition import Recogbot
 
 
 class Player(object):
     # 白手
-    # Skills = {
-    #     'E': Skill('E', 38),
-    #     'O': Skill('O', 19),
-    #     'U': Skill('U', 19),
-    #     'Q': Skill('Q', 19),
-    #     'Y': Skill('Y', 5),
-    #     'F': Skill('F', 19),
-    #     'B': Skill('B', 5),
-    #     'L': Skill('L', 5),
-    #     '6': Skill('6', 57)
-    # }
+    Skills = {
+        'E': Skill('E', 38),
+        'O': Skill('O', 19),
+        'U': Skill('U', 19),
+        'Q': Skill('Q', 19),
+        'Y': Skill('Y', 5),
+        'F': Skill('F', 19),
+        'B': Skill('B', 5),
+        'L': Skill('L', 5),
+        '6': Skill('6', 57)
+    }
     # 红眼
     # Skills = {
     #     'E': Skill('E', 40),
@@ -34,19 +34,19 @@ class Player(object):
     #     'L': Skill('L', 6),
     #     '6': Skill('6', 60)
     # }
-    # 瞎子
-    Skills = {
-        'A': Skill('A', 5),
-        'S': Skill('S', 7),
-        'D': Skill('D', 10),
-        'F': Skill('F', 20),
-        'Q': Skill('Q', 20),
-        'W': Skill('W', 22),
-        'R': Skill('R', 6),
-        'T': Skill('T', 140),
-        '3': Skill('3', 60),
-        'V': Skill('V', 1)
-    }
+    # # 瞎子
+    # Skills = {
+    #     'A': Skill('A', 5),
+    #     'S': Skill('S', 7),
+    #     'D': Skill('D', 10),
+    #     'F': Skill('F', 20),
+    #     'Q': Skill('Q', 20),
+    #     'W': Skill('W', 22),
+    #     'R': Skill('R', 6),
+    #     'T': Skill('T', 140),
+    #     '3': Skill('3', 60),
+    #     'V': Skill('V', 1)
+    # }
     Finisher = Skill('3', 140)
 
     def __init__(self):
@@ -58,19 +58,27 @@ class Player(object):
 
     def _attack(self):
         print("自动攻击")
-        keyUp('x')
+        press('x')
         keyDown('x')
 
     def cast(self):
         skills = sorted(self.Skills.values(), key=lambda s: s.remain)
         print(skills)
         skills[0].cast()
-        # s = random.choice(list(self.Skills.keys()))
-        # self.Skills[s].cast()
         self._attack()
 
+    def cast_random(self):
+        s = random.choice(list(self.Skills.keys()))
+        self.Skills[s].cast()
+        self._attack()
+
+    def cast_flush(self):
+        for s in self.Skills.values():
+            s.cast()
+
     def stand(self):
-        keyUp('x')
+        # 后跳庆祝一下识别成功，防止卡门
+        press('x')
         self.timer.stop()
 
     def attack(self):
@@ -79,8 +87,14 @@ class Player(object):
     def finisher(self):
         print(f'【角色控制】准备释放觉醒 CD {self.Finisher.remain}')
         self.Finisher.cast()
+        self.Finisher.cast()
         self._attack()
 
     def right(self):
+        keyUp('right')
+        press('v')
+        press('v')
         keyDown('right')
-        self.timer.singleShot(3200, lambda: self.attack())
+        # 3.2秒后开始自动攻击
+        self.attack()
+
