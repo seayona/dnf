@@ -1,28 +1,24 @@
 import time
 
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtCore import QThread, pyqtSignal, QTimer
 
 from voyager.game import Player
 
 
-class PlayerSkillCooldownWorker(QThread):
-    # 定义一个信号ex
-    trigger = pyqtSignal(str)
+class PlayerSkillCooldownTimer(object):
 
     def __init__(self, player):
-        # 初始化函数，默认
-        super(PlayerSkillCooldownWorker, self).__init__()
+        self.timer = QTimer()
+        self.timer.timeout.connect(self._run)
         self.player = player
 
     def _run(self):
         self.player.cooldown()
 
-    def run(self):
+    def start(self):
         print("【技能计时】技能计时开始执行")
-        while True:
-            self._run()
-            time.sleep(1)
+        self.timer.start(1000)
 
     def stop(self):
         print("【技能计时】技能计时停止执行")
-        self.terminate()
+        self.timer.stop()

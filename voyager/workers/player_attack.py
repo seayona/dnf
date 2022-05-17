@@ -1,30 +1,21 @@
-import time
-
-from PyQt5.QtCore import QThread, pyqtSignal
-
-from voyager.game import Player
+from PyQt5.QtCore import QThread, QTimer
 
 
-class PlayerAttackWorker(QThread):
-    # 定义一个信号ex
-    trigger = pyqtSignal(str)
-
-    def __init__(self,player):
-        # 初始化函数，默认
-        super(PlayerAttackWorker, self).__init__()
+class PlayerAttackTimer(object):
+    def __init__(self, player):
+        self.timer = QTimer()
+        self.timer.timeout.connect(self._run)
         self.player = player
 
     def _run(self):
         print('【自动攻击】Thread', int(QThread.currentThreadId()))
         self.player.attack()
 
-    def run(self):
+    def start(self):
         print("【自动攻击】自动攻击开始执行")
-        while True:
-            self._run()
-            time.sleep(3.2)
+        self.timer.start(3200)
 
     def stop(self):
         print("【自动攻击】自动攻击停止执行")
         self.player.stand()
-        self.terminate()
+        self.timer.stop()

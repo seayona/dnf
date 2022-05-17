@@ -1,9 +1,5 @@
-import time
+from PyQt5.QtCore import QThread, pyqtSignal
 
-from PyQt5.QtCore import QThread, pyqtSignal, QTimer
-
-from voyager.game import Game, Player
-from voyager.recognition import Recogbot
 
 
 class AgencyMissionWorker(QThread):
@@ -32,7 +28,10 @@ class AgencyMissionWorker(QThread):
 
         if self.recogbot.confirm():
             self.game.confirm()
-
+        # 战斗奖励
+        if self.recogbot.reward():
+            print("【目标检测】战斗奖励，战斗结束!")
+            self.game.reward()
         # 返回
         if self.recogbot.back():
             self.game.back()

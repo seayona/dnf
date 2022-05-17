@@ -60,7 +60,7 @@ class Player(object):
                 'Q': Skill('Q', 20),
                 'O': Skill('O', 6),
                 'E': Skill('O', 5),
-                '3': Skill('3', 5),
+                # '3': Skill('3', 5),
                 # 'F': Skill('F', 20),
                 # 'W': Skill('W', 22),xx
                 # 'S': Skill('S', 7),

@@ -1,13 +1,13 @@
 import sys
 
-from PyQt5 import QtCore, QtGui, QtWidgets, uic
-from PyQt5.QtCore import Qt, QBasicTimer, QTimer, QThread, pyqtSignal
-from PyQt5.QtWidgets import QWidget, QApplication, QMainWindow, QDesktopWidget
+from PyQt5 import uic
+from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtWidgets import QApplication, QMainWindow
 
 from voyager.game import Player, Game
 from voyager.recognition import Recogbot
-from voyager.workers import GameWorker, PlayerFightWorker, ValleyWorker, AgencyMissionWorker, PlayerSkillCooldownWorker, \
-    PlayerAttackWorker, PlayerMissionFightWorker
+from voyager.workers import GameWorker, PlayerFightWorker, ValleyWorker, AgencyMissionWorker, \
+    PlayerMissionFightWorker, PlayerAttackTimer, PlayerSkillCooldownTimer
 
 VoyagerWindow, _ = uic.loadUiType("ui/main.ui")
 
@@ -65,13 +65,11 @@ class Voyager(QMainWindow, VoyagerWindow):
         g.start()
         self.workers.append(g)
 
-        s = PlayerSkillCooldownWorker(self.player)
-        s.trigger.connect(self.onstop)
+        s = PlayerSkillCooldownTimer(self.player)
         s.start()
         self.workers.append(s)
 
-        a = PlayerAttackWorker(self.player)
-        a.trigger.connect(self.onstop)
+        a = PlayerAttackTimer(self.player)
         a.start()
         self.workers.append(a)
 
@@ -92,16 +90,14 @@ class Voyager(QMainWindow, VoyagerWindow):
         f.start()
         self.workers.append(f)
 
-        s = PlayerSkillCooldownWorker(self.player)
-        s.trigger.connect(self.onstop)
+        s = PlayerSkillCooldownTimer(self.player)
         s.start()
         self.workers.append(s)
 
-        a = PlayerAttackWorker(self.player)
-        a.trigger.connect(self.onstop)
+        a = PlayerAttackTimer(self.player)
         a.start()
-
         self.workers.append(a)
+
         self._disable()
 
     # 自动升级
@@ -119,14 +115,13 @@ class Voyager(QMainWindow, VoyagerWindow):
         f.start()
         self.workers.append(f)
 
-        s = PlayerSkillCooldownWorker(self.player)
-        s.trigger.connect(self.onstop)
+        s = PlayerSkillCooldownTimer(self.player)
         s.start()
         self.workers.append(s)
 
-        a = PlayerAttackWorker(self.player)
-        a.trigger.connect(self.onstop)
+        a = PlayerAttackTimer(self.player)
         a.start()
+        self.workers.append(a)
 
         self._disable()
 
