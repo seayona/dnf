@@ -17,14 +17,9 @@ class PlayerMissionFightWorker(QThread):
         self.recogbot = recogbot
         self.player = player
 
-    def _cooldown(self):
-        print("【战斗】技能计时器")
-        self.player.cooldown()
-
     def _run(self):
         monster, lion, boss, door = self.recogbot.detect()
-
-        if not self.recogbot.door():
+        if not door:
             print("【目标检测】门没开，无脑输出")
             self.player.cast()
 

@@ -25,7 +25,7 @@ from utils.torch_utils import select_device
 def detect(weights=ROOT / 'weights/best.pt', data=ROOT / 'data/dnf.yaml', view_img=False):
     imgsz = (1280, 768)
     # Load model
-    device = select_device('0')
+    device = select_device('0' if torch.cuda.is_available() else 'cpu')
     model = DetectMultiBackend(weights, device=device, dnn=False, data=data, fp16=False)
     stride, names, pt = model.stride, model.names, model.pt
     imgsz = check_img_size(imgsz, s=stride)  # check image size

@@ -57,16 +57,16 @@ class Player(object):
             self.final_skill = Skill('3', 140)
         elif self.role == 'asura':
             self.skills = {
-                'Q': Skill('Q', 20),
-                'O': Skill('O', 6),
-                'E': Skill('O', 5),
-                # '3': Skill('3', 5),
-                # 'F': Skill('F', 20),
-                # 'W': Skill('W', 22),xx
-                # 'S': Skill('S', 7),
-                # 'R': Skill('R', 6),
-                # 'A': Skill('A', 5),
-                # 'V': Skill('V', 1)
+                # '6': Skill('6', 20),
+                # '5': Skill('5', 20),
+                'E': Skill('E', 22),
+                'U': Skill('U', 6),
+                'Q': Skill('Q', 6),
+                'Y': Skill('Y', 6),
+                # 'F': Skill('F', 22),
+                # 'O': Skill('O', 12),
+                # 'B': Skill('B', 6),
+                # 'L': Skill('L', 6)
             }
             self.final_skill = Skill('T', 140)
 
