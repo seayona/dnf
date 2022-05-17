@@ -11,7 +11,7 @@ class Recogbot(object):
         img = capture()
         # 检测目标位置
         max_val, img, top_left, right_bottom = match(img, f'./game/scene/{target}.png')
-        print(f'【模板匹配】 {target} {max_val}')
+        # print(f'【模板匹配】 {target} {max_val}')
         return 0.99 < max_val <= 1
 
     def loveyAlive(self):
@@ -20,19 +20,44 @@ class Recogbot(object):
             if len(det) < 1:
                 continue
             for *_, conf, cls in reversed(det):
-                if names[int(cls)] == 'monster' and float(f'{conf:.2f}') > 0.3:
+                if names[int(cls)] == 'monster' and float(f'{conf:.2f}') > 0.5:
                     return True
                 if names[int(cls)] == 'tiger' and float(f'{conf:.2f}') > 0.5:
                     return True
                 if names[int(cls)] == 'ice' and float(f'{conf:.2f}') > 0.5:
                     return True
-                if names[int(cls)] == 'boss_label' and float(f'{conf:.2f}') > 0.3:
+                if names[int(cls)] == 'boss_label' and float(f'{conf:.2f}') > 0.5:
                     return True
-                # if names[int(cls)] == 'lion' and float(f'{conf:.2f}') > 0.5:
-                #     return True
-                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.6:
+                if names[int(cls)] == 'lion' and float(f'{conf:.2f}') > 0.5:
+                    return True
+                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.8:
                     return False
         return False
+
+    def detect(self):
+        pred, names = detect()
+        monster = lion = boss = door = False
+        for i, det in enumerate(pred):
+            if len(det) < 1:
+                continue
+            for *_, conf, cls in reversed(det):
+                if names[int(cls)] == 'monster' and float(f'{conf:.2f}') > 0.5:
+                    monster = True
+                if names[int(cls)] == 'tiger' and float(f'{conf:.2f}') > 0.5:
+                    monster = True
+                if names[int(cls)] == 'ice' and float(f'{conf:.2f}') > 0.5:
+                    monster = True
+                if names[int(cls)] == 'boss_label' and float(f'{conf:.2f}') > 0.8:
+                    boss = True
+                if names[int(cls)] == 'lion' and float(f'{conf:.2f}') > 0.5:
+                    monster = True
+                    lion = True
+                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.8:
+                    door = True
+                    monster = False
+                    lion = False
+                    boss = False
+        return monster, lion, boss, door
 
     def lion(self):
         pred, names = detect()
@@ -135,9 +160,6 @@ class Recogbot(object):
     def insufficient_balance(self):
         return self._recog('insufficient_balance')
 
-    def lion_entry(self):
-        return self._recog('lion')
-
     def lion_clear(self):
         return self._recog('lion_clear')
 
@@ -167,4 +189,37 @@ class Recogbot(object):
 
     def back(self):
         return self._recog('back')
+
+    def lion_entry2(self):
+        # 获取屏幕截图
+        img = capture()
+        # 检测目标位置
+        max_val, img, top_left, right_bottom = match(img, f'./game/scene/lion_entry.png')
+        # print(f'【模板匹配】 lion_entry {max_val}')
+        return 0.94 < max_val <= 1
+
+    def lion_entry1(self):
+        # 获取屏幕截图
+        img = capture()
+        # 检测目标位置
+        max_val, img, top_left, right_bottom = match(img, f'./game/scene/lion_entry2.png')
+        # print(f'【模板匹配】 lion_entry {max_val}')
+        return 0.94 < max_val <= 1
+
+    def lion_entry(self):
+        # 获取屏幕截图
+        img = capture()
+        # 检测目标位置
+        max_val, img, top_left, right_bottom = match(img, f'./game/scene/lion.png')
+        # print(f'【模板匹配】 lion {max_val}')
+        return 0.94 < max_val <= 1
+
+    def insufficient_balance_demon(self):
+        # 获取屏幕截图
+        img = capture()
+        # 检测目标位置
+        max_val, img, top_left, right_bottom = match(img, f'./game/scene/insufficient_balance_demon.png')
+        # print(f'【模板匹配】 lion {max_val}')
+        return 0.94 < max_val <= 1
+
 

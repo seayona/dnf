@@ -10,8 +10,8 @@ from voyager.recognition import Recogbot
 
 
 class Player(object):
-    # 白手
-    Skills = {
+    final_skill = Skill('3', 140)
+    skills = {
         'E': Skill('E', 38),
         'O': Skill('O', 19),
         'U': Skill('U', 19),
@@ -22,72 +22,88 @@ class Player(object):
         'L': Skill('L', 5),
         '6': Skill('6', 57)
     }
-    # 红眼
-    # Skills = {
-    #     'E': Skill('E', 40),
-    #     'O': Skill('O', 12),
-    #     'U': Skill('U', 20),
-    #     'Q': Skill('Q', 20),
-    #     'Y': Skill('Y', 20),
-    #     'F': Skill('F', 22),
-    #     'B': Skill('B', 6),
-    #     'L': Skill('L', 6),
-    #     '6': Skill('6', 60)
-    # }
-    # # 瞎子
-    # Skills = {
-    #     'A': Skill('A', 5),
-    #     'S': Skill('S', 7),
-    #     'D': Skill('D', 10),
-    #     'F': Skill('F', 20),
-    #     'Q': Skill('Q', 20),
-    #     'W': Skill('W', 22),
-    #     'R': Skill('R', 6),
-    #     'T': Skill('T', 140),
-    #     '3': Skill('3', 60),
-    #     'V': Skill('V', 1)
-    # }
-    Finisher = Skill('3', 140)
 
-    def __init__(self):
-        self.recogbot = Recogbot()
+    def __init__(self, role):
+        self.role = role
+        self._init_skills()
 
-        self.ready = False
-        self.timer = QTimer()
-        self.timer.timeout.connect(self._attack)
+    def _init_skills(self):
+        if self.role == 'blademaster':
+            self.skills = {
+                '6': Skill('6', 20),
+                'E': Skill('E', 38),
+                'O': Skill('O', 22),
+                'U': Skill('U', 22),
+                'F': Skill('F', 22),
+                'Q': Skill('Q', 12),
+                'Y': Skill('Y', 5),
+                'B': Skill('B', 5),
+                'L': Skill('L', 5),
+            }
+            self.final_skill = Skill('3', 140)
+        elif self.role == 'berserker':
+            self.skills = {
+                '6': Skill('6', 20),
+                '5': Skill('5', 20),
+                'E': Skill('E', 40),
+                'U': Skill('U', 20),
+                'Q': Skill('Q', 20),
+                'Y': Skill('Y', 20),
+                'F': Skill('F', 22),
+                'O': Skill('O', 12),
+                'B': Skill('B', 6),
+                'L': Skill('L', 6)
+            }
+            self.final_skill = Skill('3', 140)
+        elif self.role == 'asura':
+            self.skills = {
+                'Q': Skill('Q', 20),
+                'O': Skill('O', 6),
+                'E': Skill('O', 5),
+                '3': Skill('3', 5),
+                # 'F': Skill('F', 20),
+                # 'W': Skill('W', 22),xx
+                # 'S': Skill('S', 7),
+                # 'R': Skill('R', 6),
+                # 'A': Skill('A', 5),
+                # 'V': Skill('V', 1)
+            }
+            self.final_skill = Skill('T', 140)
 
     def _attack(self):
-        print("自动攻击")
-        press('x')
+        keyUp('x')
         keyDown('x')
 
+    def attack(self):
+        self._attack()
+
+    def cooldown(self):
+        for s in self.skills.values():
+            s.remaining()
+
     def cast(self):
-        skills = sorted(self.Skills.values(), key=lambda s: s.remain)
+        skills = sorted(self.skills.values(), key=lambda s: s.remain)
         print(skills)
         skills[0].cast()
         self._attack()
 
     def cast_random(self):
-        s = random.choice(list(self.Skills.keys()))
-        self.Skills[s].cast()
+        s = random.choice(list(self.skills.keys()))
+        self.skills[s].cast()
         self._attack()
 
     def cast_flush(self):
-        for s in self.Skills.values():
+        for s in self.skills.values():
             s.cast()
 
     def stand(self):
-        # 后跳庆祝一下识别成功，防止卡门
         press('x')
-        self.timer.stop()
-
-    def attack(self):
-        self.timer.start(3200)
+        press('v')
 
     def finisher(self):
-        print(f'【角色控制】准备释放觉醒 CD {self.Finisher.remain}')
-        self.Finisher.cast()
-        self.Finisher.cast()
+        print(f'【角色控制】准备释放觉醒 CD {self.final_skill.remain}')
+        self.final_skill.cast()
+        self.final_skill.cast()
         self._attack()
 
     def right(self):
@@ -95,6 +111,3 @@ class Player(object):
         press('v')
         press('v')
         keyDown('right')
-        # 3.2秒后开始自动攻击
-        self.attack()
-
