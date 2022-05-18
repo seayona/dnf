@@ -14,6 +14,14 @@ class Recogbot(object):
         # print(f'【模板匹配】 {target} {max_val}')
         return 0.99 < max_val <= 1
 
+    def _recog_low_precision(self, target):
+        # 获取屏幕截图
+        img = capture()
+        # 检测目标位置
+        max_val, img, top_left, right_bottom = match(img, f'./game/scene/{target}.png')
+        # print(f'【模板匹配】 {target} {max_val}')
+        return 0.94 < max_val <= 1
+
     def loveyAlive(self):
         pred, names = detect()
         for i, det in enumerate(pred):
@@ -98,34 +106,8 @@ class Recogbot(object):
     def clear(self):
         return self._recog('go')
 
-    # def map(self):
-    #     if self._recog('m1'):
-    #         return 1
-    #     if self._recog('m2'):
-    #         return 2
-    #     if self._recog('m3'):
-    #         return 3
-    #     if self._recog('m4'):
-    #         return 4
-    #     if self._recog('m5'):
-    #         return 5
-    #     if self._recog('m6'):
-    #         return 6
-    #     if self._recog('m7'):
-    #         return 7
-    #     if self._recog('me') or self._recog('mr'):
-    #         return 9
-    #     return 0
-
     def boss(self):
-        pred, names = detect()
-        for i, det in enumerate(pred):
-            if len(det) < 1:
-                continue
-            for *_, conf, cls in reversed(det):
-                if names[int(cls)] == 'boss_label' and float(f'{conf:.2f}') > 0.8:
-                    return True
-        return False
+        return self._recog('boss')
 
     def boss_valley(self):
         return self._recog('valley_boss')
@@ -191,35 +173,18 @@ class Recogbot(object):
         return self._recog('back')
 
     def lion_entry2(self):
-        # 获取屏幕截图
-        img = capture()
-        # 检测目标位置
-        max_val, img, top_left, right_bottom = match(img, f'./game/scene/lion_entry.png')
-        # print(f'【模板匹配】 lion_entry {max_val}')
-        return 0.94 < max_val <= 1
+        return self._recog_low_precision('lion_entry')
 
     def lion_entry1(self):
-        # 获取屏幕截图
-        img = capture()
-        # 检测目标位置
-        max_val, img, top_left, right_bottom = match(img, f'./game/scene/lion_entry2.png')
-        # print(f'【模板匹配】 lion_entry {max_val}')
-        return 0.94 < max_val <= 1
+        return self._recog_low_precision('lion_entry2')
 
     def lion_entry(self):
-        # 获取屏幕截图
-        img = capture()
-        # 检测目标位置
-        max_val, img, top_left, right_bottom = match(img, f'./game/scene/lion.png')
-        # print(f'【模板匹配】 lion {max_val}')
-        return 0.94 < max_val <= 1
+        return self._recog_low_precision('lion')
 
     def insufficient_balance_demon(self):
-        # 获取屏幕截图
-        img = capture()
-        # 检测目标位置
-        max_val, img, top_left, right_bottom = match(img, f'./game/scene/insufficient_balance_demon.png')
-        # print(f'【模板匹配】 lion {max_val}')
-        return 0.94 < max_val <= 1
+        return self._recog_low_precision('insufficient_balance_demon')
+
+    def sylia(self):
+        return self._recog('sylia')
 
 

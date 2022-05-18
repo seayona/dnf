@@ -1,12 +1,14 @@
 from PyQt5.QtCore import QThread, pyqtSignal
 
+from voyager.game import Game, Player
+from voyager.recognition import Recogbot
 
 
 class AgencyMissionWorker(QThread):
     # 定义一个信号
     trigger = pyqtSignal(str)
 
-    def __init__(self, game, recogbot, player):
+    def __init__(self, game: Game, recogbot: Recogbot, player: Player):
         # 初始化函数，默认
         super(AgencyMissionWorker, self).__init__()
         self.game = game
@@ -54,7 +56,7 @@ class AgencyMissionWorker(QThread):
             self.game.agency_mission_finish()
             self.trigger.emit(str('stop'))
 
-        if self.recogbot.next():
+        if self.game.repaired and self.game.saled and self.recogbot.next():
             self.game.next()
 
         if self.recogbot.next_agency():
@@ -62,6 +64,9 @@ class AgencyMissionWorker(QThread):
 
         if self.recogbot.next_agency_confirm():
             self.game.next_agency_confirm()
+
+        if self.recogbot.sylia():
+            self.game.agency_skip()
 
     def run(self):
         print("【工作线程】主线任务开始执行")

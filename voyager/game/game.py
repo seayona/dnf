@@ -275,3 +275,7 @@ class Game(object):
         await self._click('back')
         print('【探索者】返回界面')
         self._free()
+
+    @idle
+    async def agency_skip(self):
+        await self._press('esc')

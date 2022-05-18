@@ -17,21 +17,9 @@ class PlayerFightWorker(QThread):
         self.recogbot = recogbot
         self.player = player
 
-    # def attack(self):
-    #     print("【战斗】自动攻击")
-    #     self.player.attack()
-    #
-    def _cooldown(self):
-        print("【战斗】技能计时器")
-        self.player.cooldown()
-
     def _run(self):
-        monster, lion, boss, door = self.recogbot.detect()
+        monster, lion, _, door = self.recogbot.detect()
         lion_alive = self.game.lionAlive
-
-        if not self.recogbot.door():
-            print("【目标检测】门没开，无脑输出")
-            self.player.cast_flush()
 
         # 发现狮子头入口
         if lion_alive and door and self.recogbot.lion_entry2():
@@ -51,7 +39,7 @@ class PlayerFightWorker(QThread):
             self.player.right()
 
         # 释放觉醒
-        if boss:
+        if self.recogbot.boss():
             print("【战斗】发现Boss!")
             self.player.finisher()
 
@@ -70,7 +58,6 @@ class PlayerFightWorker(QThread):
 
     def run(self):
         print("【战斗】战斗开始执行")
-        print('thread id', int(QThread.currentThreadId()))
         while True:
             self._run()
 

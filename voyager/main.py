@@ -23,7 +23,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.workers = []
         self.game = Game()
         self.recogbot = Recogbot()
-        self.player = Player('asura')
+        self.player = Player('blademaster')
 
         print("【探索者】启动成功")
         print("【探索者】按F8键自动搬砖/F12键停止/Esc键退出程序")
