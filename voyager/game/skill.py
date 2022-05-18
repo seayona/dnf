@@ -15,7 +15,6 @@ class Skill:
     def cast(self):
         print("释放技能", self.key)
         press(self.key.lower())
-        press(self.key.lower())
         self.remain = self.cd
 
     def remaining(self):
