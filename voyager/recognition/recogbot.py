@@ -1,25 +1,32 @@
 from detect_dnf import detect
 from voyager.recognition import capture, match
 
+
 class Recogbot(object):
 
     def __init__(self):
         pass
 
-    def _recog(self, target):
+    def _match_max_val(self, target):
         # 获取屏幕截图
         img = capture()
         # 检测目标位置
         max_val, img, top_left, right_bottom = match(img, f'./game/scene/{target}.png')
         # print(f'【模板匹配】 {target} {max_val}')
+        return max_val
+
+    def _recog(self, target):
+        return 0.99 < self._match_max_val(target) <= 1
+
+    def _recog_if(self, target1, target2):
+        max_val = self._match_max_val(target1)
+        if 0.99 < max_val <= 1:
+            return True
+        max_val = self._match_max_val(target2)
         return 0.99 < max_val <= 1
 
     def _recog_low_precision(self, target):
-        # 获取屏幕截图
-        img = capture()
-        # 检测目标位置
-        max_val, img, top_left, right_bottom = match(img, f'./game/scene/{target}.png')
-        # print(f'【模板匹配】 {target} {max_val}')
+        max_val = self._match_max_val(target)
         return 0.94 < max_val <= 1
 
     def loveyAlive(self):
@@ -95,7 +102,7 @@ class Recogbot(object):
         return self._recog('reward')
 
     def replay(self):
-        return self._recog('replay')
+        return self._recog('replay') or self._recog('replay_kr')
 
     def demon(self):
         pass
@@ -137,7 +144,7 @@ class Recogbot(object):
         return self._recog('adventure_snow_mountain_entry')
 
     def dead(self):
-        return self._recog('dead')
+        return self._recog('dead') or self._recog('dead_kr')
 
     def insufficient_balance(self):
         return self._recog('insufficient_balance')
@@ -186,5 +193,3 @@ class Recogbot(object):
 
     def sylia(self):
         return self._recog('sylia')
-
-

@@ -11,6 +11,8 @@ from voyager.workers import GameWorker, PlayerFightWorker, ValleyWorker, AgencyM
 
 VoyagerWindow, _ = uic.loadUiType("ui/main.ui")
 
+players = ['Seayona', 'Tyrrell', 'Zanzarah', 'Livian', 'Livana']
+
 
 # 【探索者】
 class Voyager(QMainWindow, VoyagerWindow):
@@ -131,6 +133,8 @@ class Voyager(QMainWindow, VoyagerWindow):
             w.stop()
         self.timer.stop()
         self._enable()
+        # print('【选择角色】5秒后选择角色Livana')
+        # self.timer.singleShot(5000, lambda: self.game.switch('Livana'))
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_F8:
