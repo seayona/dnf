@@ -29,6 +29,13 @@ class Recogbot(object):
         max_val = self._match_max_val(target)
         return 0.94 < max_val <= 1
 
+    def _recog_low_precision_if(self, target, target2):
+        max_val = self._match_max_val(target)
+        if 0.94 < max_val <= 1:
+            return True
+        max_val = self._match_max_val(target2)
+        return 0.99 < max_val <= 1
+
     def loveyAlive(self):
         pred, names = detect()
         for i, det in enumerate(pred):
@@ -189,7 +196,7 @@ class Recogbot(object):
         return self._recog_low_precision('lion')
 
     def insufficient_balance_demon(self):
-        return self._recog_low_precision('insufficient_balance_demon')
+        return self._recog_low_precision_if('insufficient_balance_demon', 'insufficient_balance_demon_kr')
 
     def sylia(self):
         return self._recog('sylia')
