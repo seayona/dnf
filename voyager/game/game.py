@@ -144,7 +144,7 @@ class Game(object):
     @idle
     async def replay(self):
         self._init()
-        await self._click('replay')
+        await self._click_if('replay', 'replay_kr')
         await self._click_if('confirm', 'confirm_kr')
         print('【探索者】开始再次挑战')
         self._free()
