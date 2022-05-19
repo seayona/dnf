@@ -207,7 +207,7 @@ class Game(object):
     async def valley_town(self):
         # 等待碎片捡完
         await asyncio.sleep(3)
-        await self._click('valley_town')
+        await self._click_if('valley_town', 'valley_town_kr')
         print('【探索者】祥瑞溪谷结束，回到城镇')
         self._free()
 

@@ -145,16 +145,16 @@ class Recogbot(object):
         return self._recog('valley_completed')
 
     def daily_valley_town(self):
-        return self._recog('valley_town')
+        return self._recog_if('valley_town', 'valley_town_kr')
 
     def entry_snow_mountain(self):
         return self._recog('adventure_snow_mountain_entry')
 
     def dead(self):
-        return self._recog('dead', 'dead_kr')
+        return self._recog_if('dead', 'dead_kr')
 
     def insufficient_balance(self):
-        return self._recog('insufficient_balance', 'insufficient_balance_kr')
+        return self._recog_low_precision_if('insufficient_balance', 'insufficient_balance_kr')
 
     def lion_clear(self):
         return self._recog('lion_clear')
