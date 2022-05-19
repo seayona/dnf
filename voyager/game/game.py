@@ -266,7 +266,7 @@ class Game(object):
 
     @idle
     async def talk_skip(self):
-        await self._click('talk_skip')
+        await self._click_if('talk_skip', 'talk_skip_kr')
         print('【探索者】跳过对话')
         self._free()
 
@@ -293,12 +293,18 @@ class Game(object):
 
     @idle
     async def next(self):
-        await self._click('next')
+        self._init()
+        await self._click_low_precision('next')
         print('【探索者】下个主线任务')
         self._free()
 
     @idle
     async def next_agency(self):
+        top_left = self._archor('running')
+        if top_left:
+            print('【探索者】正在自动寻路')
+            self._free()
+            return
         top_left = self._archor('next_agency')
         if top_left:
             x, y = top_left
@@ -315,7 +321,7 @@ class Game(object):
 
     @idle
     async def equip(self):
-        await self._click('equip')
+        await self._click_if('equip', 'equip_kr')
         print('【探索者】自动装备')
         self._free()
 
@@ -398,4 +404,23 @@ class Game(object):
             await self._player_switch(target)
             self._free()
             return
+        self._free()
+
+    @idle
+    async def agency_mission_confirm(self):
+        await self._click_if('agency_mission_confirm', 'agency_mission_confirm_kr')
+        print('【探索者】没有主线任务了，打怪升级去')
+        self._free()
+
+    @idle
+    async def replay_agency(self):
+        await self._click_if('replay', 'replay_kr')
+        await self._click_if('confirm', 'confirm_kr')
+        print('【探索者】没有主线任务了，打怪升级去')
+        self._free()
+
+    @idle
+    async def agency_mission_get(self):
+        await self._click('agency_mission_get')
+        print('【探索者】接受酒馆任务')
         self._free()

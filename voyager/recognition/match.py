@@ -19,7 +19,7 @@ def match(image, target):
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
     top_left = (0, 0)
     bottom_right = (0, 0)
-    if max_val > 0.99:
+    if max_val > 0.94:
         top_left = max_loc
         h, w = template.shape[:2]
         bottom_right = top_left[0] + w, top_left[1] + h

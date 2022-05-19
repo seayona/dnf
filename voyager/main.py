@@ -4,14 +4,24 @@ from PyQt5 import uic
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
+from configparser import ConfigParser
+
 from voyager.game import Player, Game
 from voyager.recognition import Recogbot
 from voyager.workers import GameWorker, PlayerFightWorker, ValleyWorker, AgencyMissionWorker, \
     PlayerMissionFightWorker, PlayerAttackTimer, PlayerSkillCooldownTimer
 
+print("【探索者】加载UI")
 VoyagerWindow, _ = uic.loadUiType("ui/main.ui")
-
-players = ['Seayona', 'Tyrrell', 'Zanzarah', 'Livian', 'Livana']
+print("【探索者】读取角色配置")
+config = ConfigParser()
+config.read('conf/player.ini', encoding='UTF-8')
+players = config.sections()
+print("【探索者】读取到的角色", players)
+strivers = filter(lambda p: config.get(p, 'Work') == 'Strive', players)
+print("【探索者】读取到的砖工", list(strivers))
+boys = filter(lambda p: config.get(p, 'Work') == 'LevelUp', players)
+print("【探索者】读取到的小号", list(boys))
 
 
 # 【探索者】
@@ -34,9 +44,11 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.move(1560, 0)
 
         self.btn_stop.clicked.connect(self.onstop)
-        self.btn_start.clicked.connect(self.on_snow_mountain_clicked)
+        self.btn_start.clicked.connect(self.on_work_clicked)
         self.btn_valley.clicked.connect(self.on_valley_clicked)
         self.btn_agency.clicked.connect(self.on_agency_mission_clicked)
+
+        self.btn_auto_work.clicked.connect(self.on_auto_work)
 
         # 置顶
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
@@ -52,8 +64,20 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.btn_valley.setEnabled(True)
         self.btn_agency.setEnabled(True)
 
+    def on_auto_work(self):
+        print("【探索者】读取搬砖配置")
+        conf = ConfigParser()
+        conf.read('auto.ini', encoding='UTF-8')
+        player = conf.get('Strive', 'Player')
+        print("【探索者】当前搬砖角色", player)
+        if player != None:
+            self.statusBar().showMessage("【一键搬砖】" + player)
+            self.game.switch('Livana')
+        else:
+            player = strivers[0]
+
     # 雪山
-    def on_snow_mountain_clicked(self):
+    def on_work_clicked(self):
         print("【探索者】5秒后前往雪山")
         self.timer.singleShot(5000, lambda: self.game.snow_mountain_start())
 

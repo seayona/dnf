@@ -52,7 +52,7 @@ class AgencyMissionWorker(QThread):
             self.game.revival()
 
         # 疲劳值不足
-        if self.recogbot.insufficient_balance():
+        if self.recogbot.insufficient_balance_mission():
             self.game.agency_mission_finish()
             self.trigger.emit(str('stop'))
 
@@ -67,6 +67,18 @@ class AgencyMissionWorker(QThread):
 
         if self.recogbot.sylia():
             self.game.agency_skip()
+
+        # 酒馆接受任务
+        if self.recogbot.agency_mission_get():
+            self.game.agency_mission_get()
+
+        # 没有主线任务了，去打怪升级
+        if self.recogbot.agency_mission_confirm():
+            self.game.agency_mission_confirm()
+
+        # 没有主线任务，再次挑战
+        if self.recogbot.next_agency_none():
+            self.game.replay_agency()
 
     def run(self):
         print("【工作线程】主线任务开始执行")

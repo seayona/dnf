@@ -12,7 +12,7 @@ class Recogbot(object):
         img = capture()
         # 检测目标位置
         max_val, img, top_left, right_bottom = match(img, f'./game/scene/{target}.png')
-        # print(f'【模板匹配】 {target} {max_val}')
+       # print(f'【模板匹配】 {target} {max_val}')
         return max_val
 
     def _recog(self, target):
@@ -160,16 +160,16 @@ class Recogbot(object):
         return self._recog('lion_clear')
 
     def talk(self):
-        return self._recog('talk_skip')
+        return self._recog_if('talk_skip', 'talk_skip_kr')
 
     def confirm(self):
-        return self._recog('confirm')
+        return self._recog_if('confirm', 'confirm_kr')
 
     def setting(self):
         return self._recog('setting')
 
     def next(self):
-        return self._recog('next')
+        return self._recog_low_precision('next')
 
     def next_agency(self):
         return self._recog('next_agency')
@@ -178,10 +178,10 @@ class Recogbot(object):
         return self._recog('next_agency_confirm')
 
     def equip(self):
-        return self._recog('equip')
+        return self._recog_if('equip', 'equip_kr')
 
     def click_close(self):
-        return self._recog('click_close')
+        return self._recog_low_precision('click_close')
 
     def back(self):
         return self._recog('back')
@@ -200,3 +200,15 @@ class Recogbot(object):
 
     def sylia(self):
         return self._recog('sylia')
+
+    def insufficient_balance_mission(self):
+        return self._recog_low_precision('insufficient_balance_mission')
+
+    def agency_mission_confirm(self):
+        return self._recog_if('agency_mission_confirm', 'agency_mission_confirm_kr')
+
+    def next_agency_none(self):
+        return self._recog('next_none')
+
+    def agency_mission_get(self):
+        return self._recog('agency_mission_get')
