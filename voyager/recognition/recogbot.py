@@ -151,10 +151,10 @@ class Recogbot(object):
         return self._recog('adventure_snow_mountain_entry')
 
     def dead(self):
-        return self._recog('dead') or self._recog('dead_kr')
+        return self._recog('dead', 'dead_kr')
 
     def insufficient_balance(self):
-        return self._recog('insufficient_balance')
+        return self._recog('insufficient_balance', 'insufficient_balance_kr')
 
     def lion_clear(self):
         return self._recog('lion_clear')
