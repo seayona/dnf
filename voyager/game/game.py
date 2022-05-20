@@ -259,6 +259,17 @@ class Game(object):
         await self._press('esc')
         # 返回！
         await self._press('esc')
+        # 执行售卖
+        await self._click('sell')
+        # 确认售卖
+        await self._click('sell_select')
+        # 确认分解,按钮与分解一毛一样
+        await self._click('sale_confirm')
+        # 确认分解
+        # 返回！
+        await self._press('esc')
+        # 返回！
+        await self._press('esc')
         # 返回！
         await self._press('esc')
         # 标记修理状态
