@@ -36,6 +36,7 @@ def idle(fn):
 
 
 class Game(object):
+
     def __init__(self):
         self.recogbot = Recogbot()
         self._init()
@@ -212,7 +213,7 @@ class Game(object):
         self._free()
 
     @idle
-    async def snow_mountain_start(self):
+    async def snow_mountain_start(self, callback):
         print("【探索者】前往雪山")
         if not self._archor('mail'):
             press('esc')
@@ -222,6 +223,7 @@ class Game(object):
         await self._click('adventure_snow_mountain')
         await self._click('adventure_go')
         print('【探索者】抵达雪山')
+        callback()
         self._free()
 
     @idle
@@ -360,7 +362,7 @@ class Game(object):
             click(x - 10, y - 48)
 
     @idle
-    async def switch(self, player):
+    async def switch(self, player, callback):
         # 如果在地下城中
         top_left = self._archor('message')
         if top_left:
@@ -374,6 +376,7 @@ class Game(object):
         top_left = self._archor('mail')
         if top_left:
             await self._press('esc')
+
         # 选择角色
         await self._click('switch')
         # 等待7秒加载选择角色界面
@@ -384,6 +387,7 @@ class Game(object):
         if top_left:
             await self._player_switch(target)
             self._free()
+            callback(player)
             return
         print('【选择角色】第一页没找到，翻到第二页')
         # 翻到第二页
@@ -393,6 +397,7 @@ class Game(object):
         if top_left:
             await self._player_switch(target)
             self._free()
+            callback(player)
             return
 
         print('【选择角色】第二页没找到，翻到第三页')
@@ -403,8 +408,10 @@ class Game(object):
         if top_left:
             await self._player_switch(target)
             self._free()
+            callback(player)
             return
         self._free()
+        return
 
     @idle
     async def agency_mission_confirm(self):

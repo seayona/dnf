@@ -1,6 +1,7 @@
 import cv2
 
-def match(image, target):
+
+def match(image, target, imshow=False):
     """
     模板匹配
     :param image: 原图，例如屏幕截图
@@ -17,14 +18,15 @@ def match(image, target):
     result = cv2.matchTemplate(gray, template, cv2.TM_CCORR_NORMED, mask=alpha)
     # 获取结果中最大值和最小值以及他们的坐标
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
-    top_left = (0, 0)
-    bottom_right = (0, 0)
-    if max_val > 0.94:
-        top_left = max_loc
-        h, w = template.shape[:2]
-        bottom_right = top_left[0] + w, top_left[1] + h
+
+    top_left = max_loc
+    h, w = template.shape[:2]
+    bottom_right = top_left[0] + w, top_left[1] + h
+
+    if imshow:
         # 在窗口截图中匹配位置画红色方框
         cv2.rectangle(image, top_left, bottom_right, (0, 0, 255), 2)
-    # cv2.imshow('Match Template', image)
-    # cv2.waitKey(1)
+        cv2.imshow('Match Template', image)
+        cv2.waitKey(1)
+
     return max_val, image, top_left, bottom_right

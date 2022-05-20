@@ -1,6 +1,7 @@
 import functools
 import random
 import time
+from configparser import ConfigParser
 
 from PyQt5.QtCore import QTimer
 
@@ -10,65 +11,21 @@ from voyager.recognition import Recogbot
 
 
 class Player(object):
-    final_skill = Skill('3', 140)
-    skills = {
-        'E': Skill('E', 38),
-        'O': Skill('O', 19),
-        'U': Skill('U', 19),
-        'Q': Skill('Q', 19),
-        'Y': Skill('Y', 5),
-        'F': Skill('F', 19),
-        'B': Skill('B', 5),
-        'L': Skill('L', 5),
-        '6': Skill('6', 57)
-    }
 
-    def __init__(self, role):
-        self.role = role
-        self._init_skills()
+    def __init__(self, name):
+        self.name = name
 
-    def _init_skills(self):
-        if self.role == 'blademaster':
-            self.skills = {
-                '6': Skill('6', 20),
-                'E': Skill('E', 38),
-                'O': Skill('O', 22),
-                'U': Skill('U', 22),
-                'F': Skill('F', 22),
-                'Q': Skill('Q', 12),
-                'Y': Skill('Y', 5),
-                'B': Skill('B', 5),
-                'L': Skill('L', 5),
-            }
-            self.final_skill = Skill('3', 140)
-        elif self.role == 'berserker':
-            self.skills = {
-                '6': Skill('6', 20),
-                '5': Skill('5', 20),
-                'E': Skill('E', 40),
-                'U': Skill('U', 20),
-                'Q': Skill('Q', 20),
-                'Y': Skill('Y', 20),
-                'F': Skill('F', 22),
-                'O': Skill('O', 12),
-                'B': Skill('B', 6),
-                'L': Skill('L', 6)
-            }
-            self.final_skill = Skill('3', 140)
-        elif self.role == 'asura':
-            self.skills = {
-                # '6': Skill('6', 20),
-                # '5': Skill('5', 20),
-                'E': Skill('E', 22),
-                'U': Skill('U', 6),
-                'Q': Skill('Q', 6),
-                'Y': Skill('Y', 6),
-                # 'F': Skill('F', 22),
-                # 'O': Skill('O', 12),
-                # 'B': Skill('B', 6),
-                # 'L': Skill('L', 6)
-            }
-            self.final_skill = Skill('T', 140)
+        self.skills = {}
+        self._init_skills(name)
+
+    def _init_skills(self, name):
+        conf = ConfigParser()
+        conf.read('./conf/player.ini', encoding='UTF-8')
+        skills = eval(conf.get(name, 'Skills'))
+        for s in skills:
+            self.skills[s[0]] = Skill(s[0], s[1])
+        s = eval(conf.get(name, 'Awake'))
+        self.awake = Skill(s[0], s[1])
 
     def _attack(self):
         keyUp('x')
@@ -101,9 +58,9 @@ class Player(object):
         press('v')
 
     def finisher(self):
-        print(f'【角色控制】准备释放觉醒 CD {self.final_skill.remain}')
-        self.final_skill.cast()
-        self.final_skill.cast()
+        print(f'【角色控制】准备释放觉醒 CD {self.awake.remain}')
+        self.awake.cast()
+        self.awake.cast()
         self._attack()
 
     def right(self):

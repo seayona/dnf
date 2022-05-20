@@ -50,12 +50,12 @@ class GameWorker(QThread):
         # 疲劳值不足，打完深渊的时候
         if self.recogbot.insufficient_balance_demon():
             self.game.snow_mountain_finish()
-            self.trigger.emit(str('stop'))
+            self.trigger.emit(str('completed'))
 
         # 疲劳值不足
         if self.recogbot.insufficient_balance():
             self.game.snow_mountain_finish()
-            self.trigger.emit(str('stop'))
+            self.trigger.emit(str('completed'))
 
     def run(self):
         print("【工作线程】雪山开始执行")
