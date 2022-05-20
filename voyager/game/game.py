@@ -262,7 +262,7 @@ class Game(object):
         # 执行售卖
         await self._click('sell')
         # 确认售卖
-        await self._click('sell_select')
+        await self._click_if('sell_select','sell_select_kr')
         # 确认分解,按钮与分解一毛一样
         await self._click('sale_confirm')
         # 确认分解
