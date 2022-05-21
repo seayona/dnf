@@ -72,8 +72,8 @@
    <widget class="QPushButton" name="btn_auto_work">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>150</y>
+      <x>20</x>
+      <y>140</y>
       <width>141</width>
       <height>41</height>
      </rect>
@@ -86,26 +86,13 @@
     <property name="geometry">
      <rect>
       <x>190</x>
-      <y>200</y>
+      <y>140</y>
       <width>141</width>
       <height>41</height>
      </rect>
     </property>
     <property name="text">
      <string>一键溪谷</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="ckbox_valley">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>150</y>
-      <width>90</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>自动溪谷</string>
     </property>
    </widget>
    <widget class="Line" name="line">

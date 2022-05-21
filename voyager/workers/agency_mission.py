@@ -21,7 +21,7 @@ class AgencyMissionWorker(QThread):
             self.game.repair()
 
         # 装备分解
-        if not self.game.saled and self.recogbot.bag():
+        if not self.game.sold_out and self.recogbot.bag():
             self.game.sale()
 
         if self.recogbot.talk():
@@ -56,7 +56,7 @@ class AgencyMissionWorker(QThread):
             self.game.agency_mission_finish()
             self.trigger.emit(str('stop'))
 
-        if self.game.repaired and self.game.saled and self.recogbot.next():
+        if self.game.repaired and self.game.sold_out and self.recogbot.next():
             self.game.next()
 
         if self.recogbot.next_agency():

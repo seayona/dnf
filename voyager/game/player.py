@@ -3,18 +3,15 @@ import random
 import time
 from configparser import ConfigParser
 
-from PyQt5.QtCore import QTimer
-
 from voyager.control import keyUp, keyDown, press, moveTo, click, hold
 from voyager.game import Skill
-from voyager.recognition import Recogbot
 
 
 class Player(object):
 
     def __init__(self, name):
         self.name = name
-
+        self.pl = 100
         self.skills = {}
         self._init_skills(name)
 
@@ -23,9 +20,9 @@ class Player(object):
         conf.read('./conf/player.ini', encoding='UTF-8')
         skills = eval(conf.get(name, 'Skills'))
         for s in skills:
-            self.skills[s[0]] = Skill(s[0], s[1])
+            self.skills[s[0]] = Skill(str(s[0]), s[1])
         s = eval(conf.get(name, 'Awake'))
-        self.awake = Skill(s[0], s[1])
+        self.awake = Skill(str(s[0]), s[1])
 
     def _attack(self):
         keyUp('x')
@@ -68,3 +65,9 @@ class Player(object):
         press('v')
         press('v')
         keyDown('right')
+
+    def tired(self):
+        return self.pl == 0
+
+    def over_fatigued(self):
+        self.pl = 0

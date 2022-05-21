@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import threading
 
 from PyQt5.QtCore import QTimer
@@ -29,6 +30,7 @@ def idle(fn):
             # params = list(args)
             # del(params[0])
             asyncio.run_coroutine_threadsafe(fn(*args, **kwargs), new_loop)
+            # f.result()
         else:
             print(f'【探索者】系统任务{self.running}正在执行中')
 
@@ -39,14 +41,12 @@ class Game(object):
 
     def __init__(self):
         self.recogbot = Recogbot()
-        self._init()
 
-    def _init(self):
         self.freezy = True
         self.running = None
 
         self.repaired = False
-        self.saled = False
+        self.sold_out = False
         self.lionAlive = True
 
     def _archor(self, target):
@@ -55,6 +55,8 @@ class Game(object):
         # 检测再次挑战的按钮位置
         max_val, img, top_left, right_bottom = match(img, './game/scene/' + target + '.png')
         print(f'【模板匹配】{target} {max_val} {top_left}')
+        if top_left[0] == 0 and top_left[1] == 0:
+            return False
         if 1 >= max_val > 0.99:
             x, y = top_left
             # 返回按钮位置
@@ -132,6 +134,11 @@ class Game(object):
         print(message)
         await asyncio.sleep(sleep)
 
+    def reset(self):
+        self.repaired = False
+        self.sold_out = False
+        self.lionAlive = True
+
     def lion_clear(self):
         self.lionAlive = False
 
@@ -144,7 +151,7 @@ class Game(object):
 
     @idle
     async def replay(self):
-        self._init()
+        self.reset()
         await self._click_if('replay', 'replay_kr')
         await self._click_if('confirm', 'confirm_kr')
         print('【探索者】开始再次挑战')
@@ -214,9 +221,8 @@ class Game(object):
 
     @idle
     async def snow_mountain_start(self, callback):
+        await asyncio.sleep(5)
         print("【探索者】前往雪山")
-        if not self._archor('mail'):
-            press('esc')
         await self._click('active')
         await self._click('adventure_box')
         await self._click('adventure_hard_level')
@@ -243,7 +249,7 @@ class Game(object):
 
     @idle
     async def sale(self):
-        if self.saled:
+        if self.sold_out:
             print("【探索者】装备已分解，无需分解")
             self._free()
             return
@@ -273,7 +279,7 @@ class Game(object):
         # 返回！
         await self._press('esc')
         # 标记修理状态
-        self.saled = True
+        self.sold_out = True
         print('【探索者】装备分解完成')
         self._free()
 
@@ -306,9 +312,9 @@ class Game(object):
 
     @idle
     async def next(self):
-        self._init()
+        self.reset()
         await self._click_low_precision('next')
-        print('【探索者】下个主线任务')
+        print('【探索者】剧情下个主线任务')
         self._free()
 
     @idle
@@ -374,20 +380,7 @@ class Game(object):
 
     @idle
     async def switch(self, player, callback):
-        # 如果在地下城中
-        top_left = self._archor('message')
-        if top_left:
-            await self._click('setting')
-            await self._click('home')
-            await self._click_if('confirm', 'confirm_kr')
-            # 等待返回城镇
-            await asyncio.sleep(5)
-
-        # 如果在城镇中
-        top_left = self._archor('mail')
-        if top_left:
-            await self._press('esc')
-
+        await self._press('esc')
         # 选择角色
         await self._click('switch')
         # 等待7秒加载选择角色界面
@@ -422,7 +415,6 @@ class Game(object):
             callback(player)
             return
         self._free()
-        return
 
     @idle
     async def agency_mission_confirm(self):
@@ -442,3 +434,40 @@ class Game(object):
         await self._click('agency_mission_get')
         print('【探索者】接受酒馆任务')
         self._free()
+
+    @idle
+    async def town(self):
+        # 如果在地下城中
+        top_left = self._archor_low_precision('setting')
+        if top_left:
+            await self._click_low_precision('setting')
+            await self._click('home')
+            await self._click_if('confirm', 'confirm_kr')
+            # 等待返回城镇
+            await asyncio.sleep(5)
+            self._free()
+            return
+
+        # 如果在地下城中，已通关
+        top_left = self._archor('result')
+        if top_left:
+            await self._click_if('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
+            # 等待返回城镇
+            await asyncio.sleep(5)
+            self._free()
+            return
+
+        # 如果在城镇中，但是看不到邮箱按钮，尝试按一次esc
+        top_left = self._archor('mail')
+        if not top_left:
+            await self._press('esc')
+
+        # 选关卡页面或者背包等二级页面
+        top_left = self._archor('asset')
+        if not top_left:
+            await self._press('esc')
+
+        # 选关卡待确认页面
+        top_left = self._archor('close')
+        if not top_left:
+            await self._press('esc')

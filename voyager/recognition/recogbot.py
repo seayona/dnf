@@ -212,3 +212,15 @@ class Recogbot(object):
 
     def agency_mission_get(self):
         return self._recog('agency_mission_get')
+
+    def town(self):
+        return self._recog('mail')
+
+    def message(self):
+        return self._recog('message')
+
+    def attack(self):
+        return self._recog('attack')
+
+    def jump(self):
+        return self._recog('jump')
