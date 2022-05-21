@@ -268,7 +268,7 @@ class Game(object):
         # 执行售卖
         await self._click('sell')
         # 确认售卖
-        await self._click_if('sell_select', 'sell_select_kr')
+        await self._click_if('sell_select','sell_select_kr')
         # 确认分解,按钮与分解一毛一样
         await self._click('sale_confirm')
         # 确认分解
@@ -285,29 +285,7 @@ class Game(object):
 
     @idle
     async def talk_skip(self):
-        # 获取屏幕截图，右上角
-        img = capture(1100, 0, 130, 110)
-        # 检测目标位置
-        max_val, img, top_left, right_bottom = match(img, f'./game/scene/talk_skip.png')
-        print(f'【模板匹配】talk_skip {max_val} {top_left}')
-        # 返回按钮位置
-        if 1 >= max_val > 0.94:
-            x, y = top_left
-            # 移动鼠标到按钮位置,点击按钮
-            click(x + 1100 + 10, y + 0 + 8)
-            await asyncio.sleep(1)
-            print('【探索者】跳过对话')
-            self._free()
-            return
-        # 检测目标位置
-        max_val, img, top_left, right_bottom = match(img, f'./game/scene/talk_skip_kr.png')
-        print(f'【模板匹配】talk_skip_kr {max_val} {top_left}')
-        # 返回按钮位置
-        if 1 >= max_val > 0.94:
-            x, y = top_left
-            # 移动鼠标到按钮位置,点击按钮
-            click(x + 1100 + 10, y + 0 + 8)
-            await asyncio.sleep(1)
+        await self._click_if('talk_skip', 'talk_skip_kr')
         print('【探索者】跳过对话')
         self._free()
 
@@ -391,7 +369,6 @@ class Game(object):
     @idle
     async def agency_skip(self):
         await self._press('esc')
-        self._free()
 
     async def _player_switch(self, target):
         top_left = self._archor_low_precision(target)
