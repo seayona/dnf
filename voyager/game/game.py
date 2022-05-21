@@ -268,7 +268,7 @@ class Game(object):
         # 执行售卖
         await self._click('sell')
         # 确认售卖
-        await self._click_if('sell_select','sell_select_kr')
+        await self._click_if('sell_select', 'sell_select_kr')
         # 确认分解,按钮与分解一毛一样
         await self._click('sale_confirm')
         # 确认分解
@@ -313,7 +313,17 @@ class Game(object):
     @idle
     async def next(self):
         self.reset()
-        await self._click_low_precision('next')
+        # 获取屏幕截图
+        img = capture(990, 0, 300, 380)
+        # 检测目标位置
+        max_val, img, top_left, right_bottom = match(img, f'./game/scene/next.png')
+        print(f'【模板匹配】next {max_val} {top_left}')
+        # 返回按钮位置
+        if 1 >= max_val > 0.94:
+            x, y = top_left
+            # 移动鼠标到按钮位置,点击按钮
+            click(x, y)
+            await asyncio.sleep(1)
         print('【探索者】剧情下个主线任务')
         self._free()
 

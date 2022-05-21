@@ -12,7 +12,7 @@ class Recogbot(object):
         img = capture()
         # 检测目标位置
         max_val, img, top_left, right_bottom = match(img, f'./game/scene/{target}.png')
-       # print(f'【模板匹配】 {target} {max_val}')
+        # print(f'【模板匹配】 {target} {max_val}')
         return max_val
 
     def _recog(self, target):
@@ -169,9 +169,14 @@ class Recogbot(object):
         return self._recog('setting')
 
     def next(self):
-        return self._recog_low_precision('next')
+        img = capture(990, 0, 300, 380)
+        # 检测目标位置
+        max_val, img, top_left, right_bottom = match(img, f'./game/scene/next.png')
+        # print(f'【模板匹配】 {target} {max_val}')
+        return 0.94 < max_val <= 1
 
     def next_agency(self):
+
         return self._recog('next_agency')
 
     def next_agency_confirm(self):
@@ -199,7 +204,7 @@ class Recogbot(object):
         return self._recog_low_precision_if('insufficient_balance_demon', 'insufficient_balance_demon_kr')
 
     def sylia(self):
-        return self._recog('sylia')
+        return self._recog_if('sylia', 'sylia_kr')
 
     def insufficient_balance_mission(self):
         return self._recog_low_precision('insufficient_balance_mission')

@@ -65,6 +65,9 @@ class AgencyMissionWorker(QThread):
         if self.recogbot.next_agency_confirm():
             self.game.next_agency_confirm()
 
+        if self.recogbot.confirm():
+            self.game.confirm()
+
         if self.recogbot.sylia():
             self.game.agency_skip()
 
