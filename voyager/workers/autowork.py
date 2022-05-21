@@ -155,6 +155,9 @@ class AutoStriveWorker(QThread):
             self._working_stop()
             self.game.town()
 
+        if self.recogbot.confirm():
+            self.game.confirm()
+
         # 疲劳值不足，打完深渊图的时候，返回城镇
         if self.recogbot.insufficient_balance_demon():
             print(f"【自动搬砖】疲劳值不足，返回城镇")

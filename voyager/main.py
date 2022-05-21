@@ -70,12 +70,12 @@ class Voyager(QMainWindow, VoyagerWindow):
 
         def callback():
             f = PlayerFightWorker(self.game, self.recogbot, self.player)
-            f.trigger.connect(self.onstop)
+            f.trigger.connect(self.on_stop_click)
             f.start()
             self.workers.append(f)
 
             g = GameWorker(self.game, self.recogbot)
-            g.trigger.connect(self.onstop)
+            g.trigger.connect(self.on_stop_click)
             g.start()
             self.workers.append(g)
 
@@ -97,12 +97,12 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.timer.singleShot(5000, lambda: self.game.valley_start())
 
         v = ValleyWorker(self.game, self.recogbot)
-        v.trigger.connect(self.onstop)
+        v.trigger.connect(self.on_stop_click)
         v.start()
         self.workers.append(v)
 
         f = PlayerFightWorker(self.game, self.recogbot, self.player)
-        f.trigger.connect(self.onstop)
+        f.trigger.connect(self.on_stop_click)
         f.start()
         self.workers.append(f)
 
@@ -122,12 +122,12 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.timer.singleShot(5000, lambda: self.game.agency_mission())
 
         m = AgencyMissionWorker(self.game, self.recogbot, self.player)
-        m.trigger.connect(self.onstop)
+        m.trigger.connect(self.on_stop_click)
         m.start()
         self.workers.append(m)
 
         f = PlayerMissionFightWorker(self.game, self.recogbot, self.player)
-        f.trigger.connect(self.onstop)
+        f.trigger.connect(self.on_stop_click)
         f.start()
         self.workers.append(f)
 
@@ -150,9 +150,9 @@ class Voyager(QMainWindow, VoyagerWindow):
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_F8:
-            self.onstart()
+            self.on_work_clicked()
         if e.key() == Qt.Key_F12:
-            self.onstop()
+            self.on_stop_click()
         if e.key() == Qt.Key_F9:
             self.close()
 

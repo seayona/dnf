@@ -437,21 +437,21 @@ class Game(object):
 
     @idle
     async def town(self):
+        # 如果在地下城中，已通关
+        top_left = self._archor('result')
+        if top_left:
+            await self._click_if('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
+            # 等待返回城镇
+            await asyncio.sleep(5)
+            self._free()
+            return
+
         # 如果在地下城中
         top_left = self._archor_low_precision('setting')
         if top_left:
             await self._click_low_precision('setting')
             await self._click('home')
             await self._click_if('confirm', 'confirm_kr')
-            # 等待返回城镇
-            await asyncio.sleep(5)
-            self._free()
-            return
-
-        # 如果在地下城中，已通关
-        top_left = self._archor('result')
-        if top_left:
-            await self._click_if('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
             # 等待返回城镇
             await asyncio.sleep(5)
             self._free()
