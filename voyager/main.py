@@ -123,11 +123,15 @@ class Voyager(QMainWindow, VoyagerWindow):
         print("【探索者】5秒后开始自动搬砖")
         # 切换到此角色
         self.statusBar().showMessage(f"【{striver}】开始切换角色...")
-
+        # 回调
         def callback(striver):
+            # 选择状态，优先溪谷
+            if self.ckbox_valley.checkState():
+                self.statusBar().showMessage(f"【{striver}】角色切换完成，5s后出发前往溪谷")
             self.statusBar().showMessage(f"【{striver}】角色切换完成，5s后出发前往雪山")
             print("【探索者】角色切换完成，5s后出发前往雪山")
             self.on_work_clicked()
+
 
         self.timer.singleShot(5000, lambda: self.game.switch(striver, callback))
         self._disable()
@@ -182,6 +186,10 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.workers.append(a)
 
         self._disable()
+
+    #溪谷完毕
+    def on_valley_completed(self):
+        pass
 
     # 自动升级
     def on_agency_mission_clicked(self):

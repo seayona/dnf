@@ -95,7 +95,7 @@
      <string>一键溪谷</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="ckbox_valley_state">
+   <widget class="QCheckBox" name="ckbox_valley">
     <property name="geometry">
      <rect>
       <x>90</x>
