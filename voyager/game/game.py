@@ -375,6 +375,7 @@ class Game(Concurrency):
     @asyncthrows
     async def agency_skip(self):
         await self._press('esc')
+        self._free()
 
     @idle
     @asyncthrows
