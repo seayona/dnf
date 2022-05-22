@@ -2,6 +2,8 @@ import time
 
 from PyQt5.QtCore import QThread, QTimer, pyqtSignal
 
+from voyager.recognition import Recogbot
+
 
 class PlayerAttackWorker(QThread):
     # 定义一个信号
@@ -10,10 +12,14 @@ class PlayerAttackWorker(QThread):
     def __init__(self, player):
         super(PlayerAttackWorker, self).__init__()
         self.player = player
+        self.recogbot = Recogbot()
 
     def _run(self):
         print('【自动攻击】Thread', int(QThread.currentThreadId()))
-        self.player.release_buff()
+        for key in self.player.buff.keys():
+            if self.recogbot.buff(key):
+                self.player.release_buff(key)
+
         self.player.attack()
 
     def run(self):

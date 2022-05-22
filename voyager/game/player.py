@@ -81,8 +81,5 @@ class Player(object):
         self.pl = 0
 
     # 自动释放buff
-    def release_buff(self):
-        for key in self.buff.keys():
-            print(key)
-            if self.recogbot.buff(key):
-                self.buff[key].cast()
+    def release_buff(self, key):
+        self.buff[key].cast()
