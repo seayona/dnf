@@ -49,9 +49,9 @@ class Game(object):
         self.sold_out = False
         self.lionAlive = True
 
-    def _archor(self, target):
-        # 获取屏幕截图
-        img = capture()
+    def _archor(self, target, img=None):
+        if img is None:
+            img = capture()
         # 检测再次挑战的按钮位置
         max_val, img, top_left, right_bottom = match(img, './game/scene/' + target + '.png')
         print(f'【模板匹配】{target} {max_val} {top_left}')
@@ -62,9 +62,10 @@ class Game(object):
             # 返回按钮位置
             return x + 10, y + 8
 
-    def _archor_low_precision(self, target):
+    def _archor_low_precision(self, target, img=None):
         # 获取屏幕截图
-        img = capture()
+        if img is None:
+            img = capture()
         # 检测目标位置
         max_val, img, top_left, right_bottom = match(img, f'./game/scene/{target}.png')
         print(f'【模板匹配】{target} {max_val} {top_left}')
@@ -77,39 +78,39 @@ class Game(object):
         print('【探索者】系统空闲')
         self.freezy = True
 
-    async def _click(self, target, sleep=1):
-        top_left = self._archor(target)
+    async def _click(self, target, sleep=1, img=None):
+        top_left = self._archor(target, img)
         if top_left:
             x, y = top_left
             # 移动鼠标到按钮位置,点击按钮
             click(x, y)
             await asyncio.sleep(sleep)
 
-    async def _click_if(self, target1, target2, sleep=1):
-        top_left = self._archor(target1)
+    async def _click_if(self, target1, target2, sleep=1, img=None):
+        top_left = self._archor(target1, img)
         if top_left:
             x, y = top_left
             # 移动鼠标到按钮位置,点击按钮
             click(x, y)
             await asyncio.sleep(sleep)
             return
-        top_left = self._archor(target2)
+        top_left = self._archor(target2, img)
         if top_left:
             x, y = top_left
             # 移动鼠标到按钮位置,点击按钮
             click(x, y)
             await asyncio.sleep(sleep)
 
-    async def _click_low_precision(self, target, sleep=1):
-        top_left = self._archor_low_precision(target)
+    async def _click_low_precision(self, target, sleep=1, img=None):
+        top_left = self._archor_low_precision(target, img)
         if top_left:
             x, y = top_left
             # 移动鼠标到按钮位置,点击按钮
             click(x, y)
             await asyncio.sleep(sleep)
 
-    async def _double_click_low_precision(self, target, sleep=1):
-        top_left = self._archor_low_precision(target)
+    async def _double_click_low_precision(self, target, sleep=1, img=None):
+        top_left = self._archor_low_precision(target, img)
         if top_left:
             x, y = top_left
             # 移动鼠标到按钮位置,点击按钮
@@ -117,8 +118,8 @@ class Game(object):
             click(x, y)
             await asyncio.sleep(sleep)
 
-    async def _double_click(self, target, sleep=1):
-        top_left = self._archor(target)
+    async def _double_click(self, target, sleep=1, img=None):
+        top_left = self._archor(target, img)
         if top_left:
             x, y = top_left
             # 移动鼠标到按钮位置,点击按钮
@@ -285,7 +286,8 @@ class Game(object):
 
     @idle
     async def talk_skip(self):
-        await self._click_if('talk_skip', 'talk_skip_kr')
+        img = capture(1100, 0, 150, 120)
+        await self._click_if('talk_skip', 'talk_skip_kr', 1, img)
         print('【探索者】跳过对话')
         self._free()
 
