@@ -269,7 +269,7 @@ class Game(object):
         # 执行售卖
         await self._click('sell')
         # 确认售卖
-        await self._click_if('sell_select','sell_select_kr')
+        await self._click_if('sell_select', 'sell_select_kr')
         # 确认分解,按钮与分解一毛一样
         await self._click('sale_confirm')
         # 确认分解
@@ -286,8 +286,7 @@ class Game(object):
 
     @idle
     async def talk_skip(self):
-        img = capture(1100, 0, 150, 120)
-        await self._click_if('talk_skip', 'talk_skip_kr', 1, img)
+        await self._press('esc')
         print('【探索者】跳过对话')
         self._free()
 
@@ -324,7 +323,6 @@ class Game(object):
             x, y = top_left
             # 移动鼠标到按钮位置,点击按钮
             click(x + 990 + 10, y + 0 + 8)
-            await asyncio.sleep(1)
         print('【探索者】剧情下个主线任务')
         self._free()
 
