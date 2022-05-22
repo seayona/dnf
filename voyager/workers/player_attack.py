@@ -13,6 +13,7 @@ class PlayerAttackWorker(QThread):
 
     def _run(self):
         print('【自动攻击】Thread', int(QThread.currentThreadId()))
+        self.player.release_buff()
         self.player.attack()
 
     def run(self):

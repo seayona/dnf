@@ -5,6 +5,7 @@ from configparser import ConfigParser
 
 from voyager.control import keyUp, keyDown, press, moveTo, click, hold
 from voyager.game import Skill
+from voyager.recognition import Recogbot
 
 
 class Player(object):
@@ -13,6 +14,8 @@ class Player(object):
         self.name = name
         self.pl = 100
         self.skills = {}
+        self.buff = {}
+        self.recogbot = Recogbot()
         self._init_skills(name)
 
     def _init_skills(self, name):
@@ -24,6 +27,10 @@ class Player(object):
         if conf.has_option(name, 'Awake'):
             s = eval(conf.get(name, 'Awake'))
             self.awake = Skill(str(s[0]), s[1])
+        if conf.has_option(name, 'Buffs'):
+            buffs = eval(conf.get(name, 'Buffs'))
+            for b in buffs:
+                self.buff[b[1]] = Skill(str(b[0]), 0)
 
     def _attack(self):
         keyUp('x')
@@ -72,3 +79,10 @@ class Player(object):
 
     def over_fatigued(self):
         self.pl = 0
+
+    # 自动释放buff
+    def release_buff(self):
+        for key in self.buff.keys():
+            print(key)
+            if self.recogbot.buff(key):
+                self.buff[key].cast()

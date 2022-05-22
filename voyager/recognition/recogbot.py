@@ -240,3 +240,6 @@ class Recogbot(object):
 
     def combo(self):
         return self._recog_low_precision('combo')
+
+    def buff(self, target):
+        return self._recog('skills/' + target)
