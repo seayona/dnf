@@ -314,7 +314,6 @@ class Game(object):
 
     @idle
     async def next(self):
-        self.reset()
         # 获取屏幕截图
         img = capture(990, 0, 300, 380)
         # 检测目标位置
@@ -346,6 +345,7 @@ class Game(object):
 
     @idle
     async def next_agency_confirm(self):
+        self.reset()
         await self._click('next_agency_confirm')
         print('【探索者】下个主线任务')
         self._free()
@@ -443,7 +443,7 @@ class Game(object):
 
     @idle
     async def agency_mission_get(self):
-        await self._click('agency_mission_get')
+        await self._click_if('agency_mission_get', 'agency_mission_get_kr')
         print('【探索者】接受酒馆任务')
         self._free()
 
