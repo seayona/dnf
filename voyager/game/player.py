@@ -21,8 +21,9 @@ class Player(object):
         skills = eval(conf.get(name, 'Skills'))
         for s in skills:
             self.skills[s[0]] = Skill(str(s[0]), s[1])
-        s = eval(conf.get(name, 'Awake'))
-        self.awake = Skill(str(s[0]), s[1])
+        if conf.has_option(name, 'Awake'):
+            s = eval(conf.get(name, 'Awake'))
+            self.awake = Skill(str(s[0]), s[1])
 
     def _attack(self):
         keyUp('x')
