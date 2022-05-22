@@ -24,6 +24,10 @@ class AgencyMissionWorker(QThread):
         if not self.game.sold_out and self.recogbot.bag():
             self.game.sale()
 
+        # 自动装备
+        if self.recogbot.equip():
+            self.game.equip()
+
         if self.recogbot.talk():
             self.game.talk_skip()
 
@@ -38,10 +42,6 @@ class AgencyMissionWorker(QThread):
         # 返回
         if self.recogbot.back():
             self.game.back()
-
-        # 自动装备
-        if self.recogbot.equip():
-            self.game.equip()
 
         # 点击关闭
         if self.recogbot.click_close():
