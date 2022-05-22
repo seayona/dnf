@@ -160,7 +160,15 @@ class Recogbot(object):
         return self._recog('lion_clear')
 
     def talk(self):
-        return self._recog_if('talk_skip', 'talk_skip_kr')
+        img = capture(1100, 0, 150, 150)
+        # 检测目标位置
+        max_val, img, top_left, right_bottom = match(img, f'./game/scene/talk_skip.png')
+        # print(f'【模板匹配】 {target} {max_val}')
+        if 0.94 < max_val <= 1:
+            return True
+        # 检测目标位置
+        max_val, img, top_left, right_bottom = match(img, f'./game/scene/talk_skip_kr.png')
+        return 0.94 < max_val <= 1
 
     def confirm(self):
         return self._recog_if('confirm', 'confirm_kr')
