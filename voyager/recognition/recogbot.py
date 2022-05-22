@@ -224,7 +224,7 @@ class Recogbot(object):
         return self._recog('next_none')
 
     def agency_mission_get(self):
-        return self._recog('agency_mission_get')
+        return self._recog_if('agency_mission_get', 'agency_mission_get_kr')
 
     def town(self):
         return self._recog('mail')
@@ -237,3 +237,6 @@ class Recogbot(object):
 
     def jump(self):
         return self._recog('jump')
+
+    def combo(self):
+        return self._recog_low_precision('combo')
