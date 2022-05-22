@@ -1,49 +1,18 @@
 import asyncio
-import logging
-import threading
-
-from PyQt5.QtCore import QTimer
-
-from voyager.control import moveTo, click, press
-from voyager.recognition import capture, match, Recogbot
 
 
-# 定义一个专门创建事件循环loop的函数，在另一个线程中启动它
-def start_loop(loop):
-    asyncio.set_event_loop(loop)
-    loop.run_forever()
+from voyager.control import click, press
+from voyager.infrastructure import Concurrency, idle, asyncthrows
+from voyager.recognition import capture, match
 
 
-def idle(fn):
-    def _freeze(*args, **kwargs):
-        self = args[0]
-        if self.freezy:
-            print(f'【探索者】开始执行系统任务 {fn.__name__}')
-            self.freezy = False
-            self.running = fn.__name__
-            # 在当前线程下创建时间循环，（未启用），在start_loop里面启动它
-            new_loop = asyncio.new_event_loop()
-            # 通过当前线程开启新的线程去启动事件循环
-            t = threading.Thread(target=start_loop, args=(new_loop,))
-            t.start()
-            # 运行协程
-            # params = list(args)
-            # del(params[0])
-            asyncio.run_coroutine_threadsafe(fn(*args, **kwargs), new_loop)
-            # f.result()
-        else:
-            print(f'【探索者】系统任务{self.running}正在执行中')
 
-    return _freeze
-
-
-class Game(object):
+class Game(Concurrency):
 
     def __init__(self):
-        self.recogbot = Recogbot()
+        super().__init__()
 
         self.freezy = True
-        self.running = None
 
         self.repaired = False
         self.sold_out = False
@@ -73,10 +42,6 @@ class Game(object):
         if 1 >= max_val > 0.94:
             x, y = top_left
             return x + 10, y + 8
-
-    def _free(self):
-        print('【探索者】系统空闲')
-        self.freezy = True
 
     async def _click(self, target, sleep=1, img=None):
         top_left = self._archor(target, img)
@@ -135,6 +100,24 @@ class Game(object):
         print(message)
         await asyncio.sleep(sleep)
 
+    async def _player_switch(self, target):
+        top_left = self._archor_low_precision(target)
+        if top_left:
+            x, y = top_left
+            # 选中
+            click(x, y)
+            # 双击！
+            click(x, y)
+            click(x, y)
+
+    async def _player_switch_next(self):
+        # 创建角色向上便宜40个像素，翻到第二页
+        top_left = self._archor('player_create')
+        if top_left:
+            # 选中
+            x, y = top_left
+            click(x - 10, y - 48)
+
     def reset(self):
         self.repaired = False
         self.sold_out = False
@@ -144,6 +127,7 @@ class Game(object):
         self.lionAlive = False
 
     @idle
+    @asyncthrows
     async def printf(self):
         await self._print('开始打印')
         for i in range(5):
@@ -151,6 +135,7 @@ class Game(object):
         self._free()
 
     @idle
+    @asyncthrows
     async def replay(self):
         self.reset()
         await self._click_if('replay', 'replay_kr')
@@ -159,6 +144,7 @@ class Game(object):
         self._free()
 
     @idle
+    @asyncthrows
     async def reward(self):
         await self._click('gold')
         await self._click('gold2')
@@ -166,6 +152,7 @@ class Game(object):
         self._free()
 
     @idle
+    @asyncthrows
     async def repair(self):
         if self.repaired:
             print("【探索者】已修理，无需修理")
@@ -191,12 +178,14 @@ class Game(object):
         self._free()
 
     @idle
+    @asyncthrows
     async def revival(self):
         await self._click_if('revival', 'revival_kr')
         print('【探索者】原地复活！消耗复活币1枚')
         self._free()
 
     @idle
+    @asyncthrows
     async def valley_start(self):
         if not self._archor('mail'):
             await self._press('esc')
@@ -206,6 +195,7 @@ class Game(object):
         self._free()
 
     @idle
+    @asyncthrows
     async def valley_fight(self):
         await self._click('valley')
         await self._click_if('valley_confirm', 'valley_confirm_kr')
@@ -213,6 +203,7 @@ class Game(object):
         self._free()
 
     @idle
+    @asyncthrows
     async def valley_town(self):
         # 等待碎片捡完
         await asyncio.sleep(3)
@@ -221,6 +212,7 @@ class Game(object):
         self._free()
 
     @idle
+    @asyncthrows
     async def snow_mountain_start(self, callback):
         await asyncio.sleep(5)
         print("【探索者】前往雪山")
@@ -234,6 +226,7 @@ class Game(object):
         self._free()
 
     @idle
+    @asyncthrows
     async def snow_mountain_fight(self):
         await self._click('adventure_snow_mountain_hard')
         await self._click('adventure_snow_mountain_entry')
@@ -242,6 +235,7 @@ class Game(object):
         self._free()
 
     @idle
+    @asyncthrows
     async def snow_mountain_finish(self):
         await self._press('esc')
         await self._click('adventure_snow_mountain_town')
@@ -249,6 +243,7 @@ class Game(object):
         self._free()
 
     @idle
+    @asyncthrows
     async def sale(self):
         if self.sold_out:
             print("【探索者】装备已分解，无需分解")
@@ -285,22 +280,26 @@ class Game(object):
         self._free()
 
     @idle
+    @asyncthrows
     async def talk_skip(self):
         await self._press('esc')
         print('【探索者】跳过对话')
         self._free()
 
     @idle
+    @asyncthrows
     async def confirm(self):
         await self._click_if('confirm', 'confirm_kr')
         print('【探索者】确认！')
         self._free()
 
     @idle
+    @asyncthrows
     async def agency_mission(self):
         self._free()
 
     @idle
+    @asyncthrows
     async def agency_mission_finish(self):
         # 返回！
         await self._press('esc')
@@ -312,6 +311,7 @@ class Game(object):
         self._free()
 
     @idle
+    @asyncthrows
     async def next(self):
         # 获取屏幕截图
         img = capture(990, 0, 300, 380)
@@ -327,6 +327,7 @@ class Game(object):
         self._free()
 
     @idle
+    @asyncthrows
     async def next_agency(self):
         top_left = self._archor('running')
         if top_left:
@@ -342,6 +343,7 @@ class Game(object):
         self._free()
 
     @idle
+    @asyncthrows
     async def next_agency_confirm(self):
         self.reset()
         await self._click('next_agency_confirm')
@@ -349,46 +351,33 @@ class Game(object):
         self._free()
 
     @idle
+    @asyncthrows
     async def equip(self):
         await self._click_if('equip', 'equip_kr')
         print('【探索者】自动装备')
         self._free()
 
     @idle
+    @asyncthrows
     async def click_close(self):
         await self._click('click_close')
         print('【探索者】点击关闭')
         self._free()
 
     @idle
+    @asyncthrows
     async def back(self):
         await self._click('back')
         print('【探索者】返回界面')
         self._free()
 
     @idle
+    @asyncthrows
     async def agency_skip(self):
         await self._press('esc')
 
-    async def _player_switch(self, target):
-        top_left = self._archor_low_precision(target)
-        if top_left:
-            x, y = top_left
-            # 选中
-            click(x, y)
-            # 双击！
-            click(x, y)
-            click(x, y)
-
-    async def _player_switch_next(self):
-        # 创建角色向上便宜40个像素，翻到第二页
-        top_left = self._archor('player_create')
-        if top_left:
-            # 选中
-            x, y = top_left
-            click(x - 10, y - 48)
-
     @idle
+    @asyncthrows
     async def switch(self, player, callback):
         await self._press('esc')
         # 选择角色
@@ -427,12 +416,14 @@ class Game(object):
         self._free()
 
     @idle
+    @asyncthrows
     async def agency_mission_confirm(self):
         await self._click_if('agency_mission_confirm', 'agency_mission_confirm_kr')
         print('【探索者】没有主线任务了，打怪升级去')
         self._free()
 
     @idle
+    @asyncthrows
     async def replay_agency(self):
         await self._click_if('replay', 'replay_kr')
         await self._click_if('confirm', 'confirm_kr')
@@ -440,12 +431,14 @@ class Game(object):
         self._free()
 
     @idle
+    @asyncthrows
     async def agency_mission_get(self):
         await self._click_if('agency_mission_get', 'agency_mission_get_kr')
         print('【探索者】接受酒馆任务')
         self._free()
 
     @idle
+    @asyncthrows
     async def town(self):
         # 如果在地下城中，已通关
         top_left = self._archor('result')

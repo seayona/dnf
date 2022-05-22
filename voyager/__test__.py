@@ -1,8 +1,36 @@
+import asyncio
+import time
+
 import cv2
 import numpy as np
 
-from voyager.infrastructure import Notification
+from voyager.game import Player, Skill, Game
+from voyager.infrastructure import Notification, Concurrency, idle, asyncthrows
 from voyager.recognition import Recogbot, capture, match
+
+
+class A(Concurrency):
+
+    def __init__(self):
+        super().__init__()
+
+    @idle
+    async def foo(self):
+        b = B()
+        print("foo -> bar")
+        await b.bar()
+
+
+class B(Concurrency):
+    def __init__(self):
+        super().__init__()
+
+    @asyncthrows
+    async def bar(self):
+        print("bar -> sleep(1)")
+        await asyncio.sleep(1)
+        raise Exception('aaa')
+
 
 if __name__ == '__main__':
     # while True:
@@ -17,5 +45,17 @@ if __name__ == '__main__':
     #     max_val, img, top_left, right_bottom = match(img, f'./game/scene/result.png', True)
     #     print(f'【模板匹配】 next {max_val}')
 
-    notification = Notification()
-    notification.send('【Tyrrell】疲劳已耗尽')
+    # notification = Notification()
+    # notification.send('【Tyrrell】疲劳已耗尽')
+
+    # player = Player('Seayona')
+    # player.cast('E-2-Y-1-B')
+    # player.cast('Q')
+    # player.cast('O')
+    # player.cast('U')
+
+    player = Player('Seayona')
+
+    while True:
+        player.cast()
+        time.sleep(1)

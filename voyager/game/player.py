@@ -5,12 +5,14 @@ from configparser import ConfigParser
 
 from voyager.control import keyUp, keyDown, press, moveTo, click, hold
 from voyager.game import Skill
+from voyager.infrastructure import idle, asyncthrows, Concurrency
 from voyager.recognition import Recogbot
 
 
-class Player(object):
+class Player(Concurrency):
 
     def __init__(self, name):
+        super().__init__()
         self.name = name
         self.pl = 100
         self.skills = {}
@@ -43,11 +45,18 @@ class Player(object):
         for s in self.skills.values():
             s.remaining()
 
-    def cast(self):
-        skills = sorted(self.skills.values(), key=lambda s: s.remain)
-        print(skills)
-        skills[0].cast()
+    @idle
+    @asyncthrows
+    async def cast(self, s=None):
+        if s is None:
+            skills = sorted(self.skills.values(), key=lambda s: s.remain)
+            print(skills)
+            await skills[0].cast_async()
+        else:
+            skill = self.skills[s]
+            await skill.cast_async()
         self._attack()
+        self._free()
 
     def cast_random(self):
         s = random.choice(list(self.skills.keys()))
