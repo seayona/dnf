@@ -42,17 +42,15 @@ class Recogbot(object):
             if len(det) < 1:
                 continue
             for *_, conf, cls in reversed(det):
-                if names[int(cls)] == 'monster' and float(f'{conf:.2f}') > 0.5:
-                    return True
-                if names[int(cls)] == 'tiger' and float(f'{conf:.2f}') > 0.5:
-                    return True
-                if names[int(cls)] == 'ice' and float(f'{conf:.2f}') > 0.5:
-                    return True
-                if names[int(cls)] == 'boss_label' and float(f'{conf:.2f}') > 0.5:
+                if names[int(cls)] == 'avatar' and float(f'{conf:.2f}') > 0.5:
                     return True
                 if names[int(cls)] == 'lion' and float(f'{conf:.2f}') > 0.5:
                     return True
-                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.8:
+                if names[int(cls)] == 'boss' and float(f'{conf:.2f}') > 0.5:
+                    return True
+                if names[int(cls)] == 'next' and float(f'{conf:.2f}') > 0.5:
+                    return False
+                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.5:
                     return False
         return False
 
@@ -63,18 +61,12 @@ class Recogbot(object):
             if len(det) < 1:
                 continue
             for *_, conf, cls in reversed(det):
-                if names[int(cls)] == 'monster' and float(f'{conf:.2f}') > 0.5:
+                if names[int(cls)] == 'avatar' and float(f'{conf:.2f}') > 0.5:
                     monster = True
-                if names[int(cls)] == 'tiger' and float(f'{conf:.2f}') > 0.5:
+                if names[int(cls)] == 'boss' and float(f'{conf:.2f}') > 0.5:
                     monster = True
-                if names[int(cls)] == 'ice' and float(f'{conf:.2f}') > 0.5:
-                    monster = True
-                if names[int(cls)] == 'boss_label' and float(f'{conf:.2f}') > 0.8:
                     boss = True
-                if names[int(cls)] == 'lion' and float(f'{conf:.2f}') > 0.5:
-                    monster = True
-                    lion = True
-                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.8:
+                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.5:
                     door = True
                     monster = False
                     lion = False
@@ -97,11 +89,15 @@ class Recogbot(object):
             if len(det) < 1:
                 continue
             for *_, conf, cls in reversed(det):
-                if names[int(cls)] == 'monster' and float(f'{conf:.2f}') > 0.5:
+                if names[int(cls)] == 'avatar' and float(f'{conf:.2f}') > 0.5:
                     return False
-                if names[int(cls)] == 'tiger' and float(f'{conf:.2f}') > 0.5:
+                if names[int(cls)] == 'next' and float(f'{conf:.2f}') > 0.5:
                     return False
-                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.8:
+                if names[int(cls)] == 'lion' and float(f'{conf:.2f}') > 0.5:
+                    return False
+                if names[int(cls)] == 'boss' and float(f'{conf:.2f}') > 0.5:
+                    return False
+                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.5:
                     return True
         return False
 

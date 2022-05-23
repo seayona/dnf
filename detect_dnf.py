@@ -85,17 +85,11 @@ if __name__ == "__main__":
             if len(det) < 1:
                 continue
             for *xyxy, conf, cls in reversed(det):
-                if names[int(cls)] == 'monster' and float(f'{conf:.2f}') > 0.8:
+                if names[int(cls)] == 'avatar' and float(f'{conf:.2f}') > 0.5:
                     print("【目标检测】检测到小可爱")
-                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.8:
+                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.5:
                     print("【目标检测】检测到门已开")
-                if names[int(cls)] == 'ice' and float(f'{conf:.2f}') > 0.8:
-                    print("【目标检测】检测到小冰怪")
-                if names[int(cls)] == 'boss_label' and float(f'{conf:.2f}') > 0.8:
+                if names[int(cls)] == 'boss' and float(f'{conf:.2f}') > 0.5:
                     print("【目标检测】检测到大Boss")
-                if names[int(cls)] == 'icon' and float(f'{conf:.2f}') > 0.8:
+                if names[int(cls)] == 'lion' and float(f'{conf:.2f}') > 0.5:
                     print("【目标检测】检测到狮子头")
-                if names[int(cls)] == 'bossdoor' and float(f'{conf:.2f}') > 0.8:
-                    print("【目标检测】检测到下个房间是Boss")
-                if names[int(cls)] == 'player' and float(f'{conf:.2f}') > 0.8:
-                    print("【目标检测】检测到玩家")

@@ -18,7 +18,7 @@ class PlayerFightWorker(QThread):
         self.player = player
 
     def _run(self):
-        monster, lion, _, door = self.recogbot.detect()
+        monster, lion, boss, door = self.recogbot.detect()
         lion_alive = self.game.lionAlive
 
         # 发现狮子头入口
@@ -39,7 +39,7 @@ class PlayerFightWorker(QThread):
             self.player.right()
 
         # 释放觉醒
-        if self.recogbot.boss():
+        if boss:
             print("【战斗】发现Boss!")
             self.player.finisher()
 

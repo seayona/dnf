@@ -19,8 +19,8 @@ class PlayerMissionFightWorker(QThread):
 
     def _run(self):
         monster, lion, boss, door = self.recogbot.detect()
-        if not door:
-            print("【目标检测】门没开，无脑输出")
+        if monster:
+            print("【目标检测】还有小可爱活着，无脑输出")
             self.player.cast()
 
     def run(self):

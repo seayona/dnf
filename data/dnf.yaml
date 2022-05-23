@@ -14,8 +14,8 @@ val: images  # val images (relative to 'path') 128 images
 test:  # test images (optional)
 
 # Classes
-nc: 8  # number of classes
-names: ['monster','player','door','tiger','bossdoor','boss_label','ice','lion']  # class names
+nc: 5  # number of classes
+names: ['door','lion','boss','avatar','next']  # class names
 
 
 # Download script/URL (optional)
