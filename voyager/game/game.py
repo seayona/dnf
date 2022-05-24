@@ -1,10 +1,8 @@
 import asyncio
 
-
 from voyager.control import click, press
 from voyager.infrastructure import Concurrency, idle, asyncthrows
 from voyager.recognition import capture, match
-
 
 
 class Game(Concurrency):
@@ -106,13 +104,21 @@ class Game(Concurrency):
             x, y = top_left
             # 选中
             click(x, y)
-            # 双击！
+            #开始按钮可靠性更高
+            await self._click('start_game')
+            # 双击！补刀
             click(x, y)
             click(x, y)
+
 
     async def _player_switch_next(self):
         # 创建角色向上便宜40个像素，翻到第二页
         top_left = self._archor('player_create')
+        if top_left:
+            # 选中
+            x, y = top_left
+            click(x - 10, y - 48)
+        top_left = self._archor('player_create_grey')
         if top_left:
             # 选中
             x, y = top_left
