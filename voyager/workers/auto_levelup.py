@@ -29,3 +29,4 @@ class AutoLevelUp(Auto):
 
         if not self.working and not self.player.tired():
             self._fight()
+

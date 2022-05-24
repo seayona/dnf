@@ -112,10 +112,9 @@ class Auto(QThread):
         self.player.over_fatigued()
 
     def _switch_player(self):
-        print('我进来了')
         next_player = self._next_piglet()
         self.game.switch(next_player, lambda player: (
-            self._set_player(player), self._current_striver_update(player), self._send(f"【{player}】开始搬砖")))
+            self._set_player(player), self._current_piglet_update(player), self._send(f"【{player}】开始工作")))
 
     def _fight(self):
         print(f"【Auto Work】开启战斗线程，当前角色{self.player}")
