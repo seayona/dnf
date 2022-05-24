@@ -10,6 +10,7 @@ from voyager.recognition import Recogbot
 from voyager.workers import GameWorker, PlayerFightWorker, ValleyWorker, AgencyMissionWorker, \
     PlayerMissionFightWorker, PlayerAttackWorker, PlayerSkillCooldownWorker
 from voyager.workers.autowork import AutoStriveWorker
+from voyager.workers.auto_levelup import AutoLevelUp
 
 print("【探索者】加载UI")
 VoyagerWindow, _ = uic.loadUiType("ui/main.ui")
@@ -25,7 +26,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.notification = Notification()
         self.game = Game()
         self.recogbot = Recogbot()
-        self.player = Player('Seayona')
+        self.player = Player('Aorist')
 
         self.workers = []
 
@@ -39,6 +40,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.btn_valley.clicked.connect(self.on_valley_clicked)
         self.btn_agency.clicked.connect(self.on_agency_mission_clicked)
         self.btn_auto_work.clicked.connect(self.on_auto_work_clicked)
+        self.btn_auto_levelup.clicked.connect(self.on_auto_levelup_clicked)
 
         # UI界面，显示在右上角
         self.move(1560, 0)
@@ -62,6 +64,13 @@ class Voyager(QMainWindow, VoyagerWindow):
         a.trigger.connect(self.on_stop_click)
         a.start()
         self.workers.append(a)
+        self._disable()
+
+    def on_auto_levelup_clicked(self):
+        l = AutoLevelUp()
+        l.trigger.connect(self.on_stop_click)
+        l.start()
+        self.workers.append(l)
         self._disable()
 
     # 雪山
@@ -122,7 +131,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.timer.singleShot(5000, lambda: self.game.agency_mission())
 
         m = AgencyMissionWorker(self.game, self.recogbot, self.player)
-        m.trigger.connect(self.on_stop_click)
+        m.trigger.connect(self.on_agency_mission_stop)
         m.start()
         self.workers.append(m)
 
@@ -147,6 +156,10 @@ class Voyager(QMainWindow, VoyagerWindow):
             w.stop()
         self.timer.stop()
         self._enable()
+
+    def on_agency_mission_stop(self):
+        # Notification().send('升级停止')
+        pass
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_F8:
