@@ -82,7 +82,7 @@
      <string>一键搬砖</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="btn_auto_valley">
+   <widget class="QPushButton" name="btn_auto_levelup">
     <property name="geometry">
      <rect>
       <x>190</x>
@@ -92,7 +92,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>一键溪谷</string>
+     <string>一键升级</string>
     </property>
    </widget>
    <widget class="Line" name="line">
