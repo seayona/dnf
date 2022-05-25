@@ -88,6 +88,11 @@ class Auto(QThread):
         conf.set(self.profession, 'Player', value)
         conf.write(open(self.conf_path, "w"))
 
+    def _reset_work(self):
+        self.current_work = 'main'
+        for key in self.workers.keys():
+            self.workers[key]['working'] = 0
+
     def _next_piglet(self):
         current = self._current()
         if current in self.piglets:
@@ -116,7 +121,8 @@ class Auto(QThread):
     def _switch_player(self):
         next_player = self._next_piglet()
         self.game.switch(next_player, lambda player: (
-            self._set_player(player), self._current_piglet_update(player), self._send(f"【{player}】开始工作")))
+            self._set_player(player), self._reset_work(), self._current_piglet_update(player),
+            self._send(f"【{player}】开始工作")))
 
     def _fight(self):
         print(f"【Auto Work】开启{self.current_work}线程，当前角色{self.player}")
@@ -133,13 +139,13 @@ class Auto(QThread):
         print(self.current_work)
 
     def _run(self):
-        if self.current_work is None:
+        if self.current_work is None and self.recogbot.town():
             self._switch_player()
 
-        if self.workers[self.current_work]['working'] == 0:
+        if self.current_work is not None and self.workers[self.current_work]['working'] == 0:
             self._fight()
         # 开启下个任务
-        if self.workers[self.current_work]['working'] == 2 and self.recogbot.town():
+        if self.current_work is not None and self.workers[self.current_work]['working'] == 2 and self.recogbot.town():
             print('开始执行下个任务')
             self._next_work()
 
