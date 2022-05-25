@@ -16,19 +16,20 @@ class AgencyMissionWorker(QThread):
         self.player = player
 
     def _run(self):
-        bag, next_mission, skip, tutorial = self.recogbot.detect_agency_mission()
+        print("ggggggggg", int(QThread.currentThreadId()) )
+        cls = self.recogbot.detect()
 
         # 装备修理
-        if not self.game.repaired and bag[0] and bag[2] < 200:
-            self.game.repair_and_sale(bag)
+        if not self.game.repaired and cls['bag'][0] and cls['bag'][2] < 200:
+            self.game.repair_and_sale(cls['bag'])
 
         # 出现游戏教程，对话时按Esc跳过
-        if skip[0] or tutorial[0]:
+        if cls['skip'][0] or cls['tutorial'][0]:
             self.game.esc()
 
         # 地下城里面点击下个任务
-        if self.game.repaired and next_mission[0]:
-            self.game.next(next_mission)
+        if self.game.repaired and cls['next'][0]:
+            self.game.next(cls['next'])
 
         # 自动装备
         if self.recogbot.equip():

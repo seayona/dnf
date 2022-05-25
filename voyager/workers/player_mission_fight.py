@@ -18,14 +18,13 @@ class PlayerMissionFightWorker(QThread):
         self.player = player
 
     def _run(self):
-        monster, lion, boss, door = self.recogbot.detect()
-        if monster:
+        cls = self.recogbot.detect()
+        if cls['combo'][0]:
             print("【目标检测】还有小可爱活着，无脑输出")
             self.player.cast()
 
     def run(self):
         print("【战斗】战斗开始执行")
-        print('thread id', int(QThread.currentThreadId()))
         while True:
             self._run()
 

@@ -56,42 +56,45 @@ class Recogbot(object):
 
     def detect(self):
         pred, names = detect()
-        monster = lion = boss = door = False
-        for i, det in enumerate(pred):
-            if len(det) < 1:
-                continue
-            for *_, conf, cls in reversed(det):
-                if names[int(cls)] == 'avatar' and float(f'{conf:.2f}') > 0.5:
-                    monster = True
-                if names[int(cls)] == 'boss' and float(f'{conf:.2f}') > 0.5:
-                    monster = True
-                    boss = True
-                if names[int(cls)] == 'lion' and float(f'{conf:.2f}') > 0.5:
-                    lion = True
-                    monster = True
-        return monster, lion, boss, door
-
-    def detect_agency_mission(self):
-        pred, names = detect()
-        result_bag = next_mission_tag = skip = tutorial = (False, 0, 0)
+        result = {}
+        for s in ['lion', 'boss', 'avatar', 'next', 'bag', 'tutorial', 'skip', 'lion_entry', 'combo', 'door']:
+            result[s] = (False, 0, 0)
         for i, det in enumerate(pred):
             if len(det) < 1:
                 continue
             for *xyxy, conf, cls in reversed(det):
                 x, y = (int(xyxy[0]) * 2, int(xyxy[1]) * 2)
-                if names[int(cls)] == 'bag' and float(f'{conf:.2f}') > 0.8:
-                    result_bag = (True, x, y)
-                    print("【目标检测】检测到背包", (x, y))
-                if names[int(cls)] == 'next' and float(f'{conf:.2f}') > 0.8:
-                    next_mission_tag = (True, x, y)
-                    print("【目标检测】检测到下个任务按钮", (x, y))
-                if names[int(cls)] == 'skip' and float(f'{conf:.2f}') > 0.8:
-                    skip = (True, x, y)
-                    print("【目标检测】检测到对话跳过按钮", (x, y))
-                if names[int(cls)] == 'tutorial' and float(f'{conf:.2f}') > 0.6:
-                    tutorial = (True, x, y)
-                    print("【目标检测】检测到教程", (x, y))
-        return result_bag, next_mission_tag, skip, tutorial
+                if names[int(cls)] == 'avatar' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到小可爱")
+                    result['avatar'] = (True, x, y)
+                if names[int(cls)] == 'skip' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到动画")
+                    result['skip'] = (True, x, y)
+                if names[int(cls)] == 'boss' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到大Boss")
+                    result['boss'] = (True, x, y)
+                if names[int(cls)] == 'lion' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到狮子头")
+                    result['lion'] = (True, x, y)
+                if names[int(cls)] == 'lion_entry' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到狮子头入口", (x, y))
+                    result['lion_entry'] = (True, x, y)
+                if names[int(cls)] == 'bag' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到背包", (x, y))
+                    result['bag'] = (True, x, y)
+                if names[int(cls)] == 'next' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到下个任务", (x, y))
+                    result['next'] = (True, x, y)
+                if names[int(cls)] == 'tutorial' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到游戏教程", (x, y))
+                    result['tutorial'] = (True, x, y)
+                if names[int(cls)] == 'combo' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】连击数", (x, y))
+                    result['combo'] = (True, x, y)
+                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】连击数", (x, y))
+                    result['door'] = (True, x, y)
+        return result
 
     def lion(self):
         pred, names = detect()
@@ -103,35 +106,11 @@ class Recogbot(object):
                     return True
         return False
 
-    def door(self):
-        pred, names = detect()
-        for i, det in enumerate(pred):
-            if len(det) < 1:
-                continue
-            for *_, conf, cls in reversed(det):
-                if names[int(cls)] == 'avatar' and float(f'{conf:.2f}') > 0.5:
-                    return False
-                if names[int(cls)] == 'next' and float(f'{conf:.2f}') > 0.5:
-                    return False
-                if names[int(cls)] == 'lion' and float(f'{conf:.2f}') > 0.5:
-                    return False
-                if names[int(cls)] == 'boss' and float(f'{conf:.2f}') > 0.5:
-                    return False
-                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.5:
-                    return True
-        return False
-
     def reward(self):
         return self._recog('reward')
 
     def replay(self):
         return self._recog('replay') or self._recog('replay_kr')
-
-    def demon(self):
-        pass
-
-    def disrepair(self):
-        pass
 
     def clear(self):
         return self._recog('go')

@@ -23,7 +23,7 @@ class Auto(QThread):
         super(Auto, self).__init__()
         self.game = Game()
         self.recogbot = Recogbot()
-        self.player = Player('Aorist')
+        self.player = Player('Tyrrell')
         self.notification = Notification()
 
         self.profession = profession
@@ -157,7 +157,7 @@ class Auto(QThread):
             self._next_work()
 
     def run(self):
-        print("【Auto Work】Auto Work开始执行")
+        print("【Auto Work】Auto Work开始执行", int(QThread.currentThreadId()) )
         while True:
             self._run()
 

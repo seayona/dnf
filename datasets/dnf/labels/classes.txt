@@ -5,3 +5,6 @@ next
 bag
 tutorial
 skip
+lion_entry
+combo
+door

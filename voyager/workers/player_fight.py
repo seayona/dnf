@@ -1,13 +1,8 @@
-import time
 
-from PyQt5.QtCore import QThread, pyqtSignal, QTimer, QEventLoop
-
-from voyager.game import Game, Player
-from voyager.recognition import Recogbot
-
+from PyQt5.QtCore import QThread, pyqtSignal
 
 class PlayerFightWorker(QThread):
-    # 定义一个信号ex
+    # 定义一个信号
     trigger = pyqtSignal(str)
 
     def __init__(self, game, recogbot, player):
@@ -18,39 +13,26 @@ class PlayerFightWorker(QThread):
         self.player = player
 
     def _run(self):
-        monster, lion, boss, door = self.recogbot.detect()
-        lion_alive = self.game.lionAlive
+        cls = self.recogbot.detect()
 
         # 发现狮子头入口
-        if lion_alive and door and self.recogbot.lion_entry2():
-            print("【战斗】发现狮子头入口2!")
-            self.player.stand()
-            self.player.right()
-
-        # 释放技能
-        if monster:
-            print("【战斗】还有小可爱活着")
-            self.player.cast()
-
-        # 发现狮子头入口
-        if lion_alive and door and self.recogbot.lion_entry1():
-            print("【战斗】发现狮子头入口1!")
-            self.player.stand()
-            self.player.right()
-
-        # 释放觉醒
-        if boss:
-            print("【战斗】发现Boss!")
-            self.player.finisher()
-
-        # 发现狮子头入口
-        if lion_alive and door and self.recogbot.lion_entry():
+        if self.game.lionAlive and cls['door'][0] and cls['lion_entry'][0]:
             print("【战斗】发现狮子头入口!")
             self.player.stand()
             self.player.right()
 
+        # 释放技能
+        if cls['combo'][0]:
+            print("【战斗】还有小可爱活着")
+            self.player.cast()
+
+        # 释放觉醒
+        if cls['boss'][0]:
+            print("【战斗】发现Boss!")
+            self.player.finisher()
+
         # 狮子头
-        if lion:
+        if cls['lion'][0]:
             print("【战斗】发现狮子头!")
             self.game.lion_clear()
             self.player.attack()

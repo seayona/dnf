@@ -95,9 +95,13 @@ if __name__ == "__main__":
                     print("【目标检测】检测到大Boss")
                 if names[int(cls)] == 'lion' and float(f'{conf:.2f}') > 0.5:
                     print("【目标检测】检测到狮子头")
+                if names[int(cls)] == 'lion_entry' and float(f'{conf:.2f}') > 0.5:
+                    print("【目标检测】检测到游戏教程", (x, y))
                 if names[int(cls)] == 'bag' and float(f'{conf:.2f}') > 0.5:
                     print("【目标检测】检测到背包", (x, y))
                 if names[int(cls)] == 'next' and float(f'{conf:.2f}') > 0.5:
                     print("【目标检测】检测到下个任务", (x, y))
                 if names[int(cls)] == 'tutorial' and float(f'{conf:.2f}') > 0.5:
+                    print("【目标检测】检测到游戏教程", (x, y))
+                if names[int(cls)] == 'combo' and float(f'{conf:.2f}') > 0.5:
                     print("【目标检测】检测到游戏教程", (x, y))

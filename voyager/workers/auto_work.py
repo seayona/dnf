@@ -1,3 +1,4 @@
+from PyQt5.QtCore import QThread
 
 from .auto import Auto
 from .game import GameWorker
