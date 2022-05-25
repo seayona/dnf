@@ -16,20 +16,24 @@ class AgencyMissionWorker(QThread):
         self.player = player
 
     def _run(self):
-        # 装备修理
-        if not self.game.repaired and self.recogbot.bag():
-            self.game.repair()
 
-        # 装备分解
-        if not self.game.sold_out and self.recogbot.bag():
-            self.game.sale()
+        bag, next_mission = self.recogbot.detect_next()
+
+        # 装备修理
+        if not self.game.repaired and bag[0] and bag[2] < 200:
+            self.game.repair_and_sale(bag)
+
+        # 出现游戏教程，对话时按Esc跳过
+        if self.recogbot.detect_skip():
+            self.game.esc()
+
+        # 地下城里面点击下个任务
+        if self.game.repaired and next_mission[0]:
+            self.game.next(next_mission)
 
         # 自动装备
         if self.recogbot.equip():
             self.game.equip()
-
-        if self.recogbot.talk():
-            self.game.talk_skip()
 
         if self.recogbot.confirm():
             self.game.confirm()
@@ -43,10 +47,6 @@ class AgencyMissionWorker(QThread):
         if self.recogbot.back():
             self.game.back()
 
-        # 点击关闭
-        if self.recogbot.click_close():
-            self.game.click_close()
-
         # 死亡
         if self.recogbot.dead():
             self.game.revival()
@@ -56,9 +56,6 @@ class AgencyMissionWorker(QThread):
             self.game.agency_mission_finish()
             self.trigger.emit(str('stop'))
 
-        if self.game.repaired and self.game.sold_out and self.recogbot.next():
-            self.game.next()
-
         if self.recogbot.next_agency():
             self.game.next_agency()
 
@@ -67,9 +64,6 @@ class AgencyMissionWorker(QThread):
 
         if self.recogbot.confirm():
             self.game.confirm()
-
-        if self.recogbot.sylia():
-            self.game.agency_skip()
 
         # 酒馆接受任务
         if self.recogbot.agency_mission_get():

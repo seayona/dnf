@@ -66,12 +66,27 @@ class Recogbot(object):
                 if names[int(cls)] == 'boss' and float(f'{conf:.2f}') > 0.5:
                     monster = True
                     boss = True
-                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.5:
-                    door = True
-                    monster = False
-                    lion = False
-                    boss = False
+                if names[int(cls)] == 'lion' and float(f'{conf:.2f}') > 0.5:
+                    lion = True
+                    monster = True
         return monster, lion, boss, door
+
+    def detect_next(self):
+        pred, names = detect()
+        _bag = (False, 0, 0)
+        _next_mission = (False, 0, 0)
+        for i, det in enumerate(pred):
+            if len(det) < 1:
+                continue
+            for *xyxy, conf, cls in reversed(det):
+                x, y = (int(xyxy[0]) * 2, int(xyxy[1]) * 2)
+                if names[int(cls)] == 'bag' and float(f'{conf:.2f}') > 0.8:
+                    _bag = (True, x, y)
+                    print("【目标检测】检测到背包", (x, y))
+                if names[int(cls)] == 'next' and float(f'{conf:.2f}') > 0.8:
+                    _next_mission = (True, x, y)
+                    print("【目标检测】检测到下个任务按钮", (x, y))
+        return _bag, _next_mission
 
     def lion(self):
         pred, names = detect()
@@ -155,16 +170,21 @@ class Recogbot(object):
     def lion_clear(self):
         return self._recog('lion_clear')
 
-    def talk(self):
-        img = capture(1100, 0, 150, 150)
-        # 检测目标位置
-        max_val, img, top_left, right_bottom = match(img, f'./game/scene/talk_skip.png')
-        # print(f'【模板匹配】 {target} {max_val}')
-        if 0.94 < max_val <= 1:
-            return True
-        # 检测目标位置
-        max_val, img, top_left, right_bottom = match(img, f'./game/scene/talk_skip_kr.png')
-        return 0.94 < max_val <= 1
+    def detect_skip(self):
+        pred, names = detect()
+        skip = False
+        for i, det in enumerate(pred):
+            if len(det) < 1:
+                continue
+            for *xyxy, conf, cls in reversed(det):
+                x, y = (int(xyxy[0]), int(xyxy[1]))
+                if names[int(cls)] == 'skip' and float(f'{conf:.2f}') > 0.8:
+                    skip = True
+                    print("检测到对话", (x, y))
+                if names[int(cls)] == 'tutorial' and float(f'{conf:.2f}') > 0.6:
+                    skip = True
+                    print("【目标检测】检测到教程", (x, y))
+        return skip
 
     def confirm(self):
         return self._recog_if('confirm', 'confirm_kr')
@@ -180,7 +200,6 @@ class Recogbot(object):
         return 0.94 < max_val <= 1
 
     def next_agency(self):
-
         return self._recog('next_agency')
 
     def next_agency_confirm(self):

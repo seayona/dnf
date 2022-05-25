@@ -6,6 +6,7 @@ from pathlib import Path
 import numpy as np
 import pyautogui
 import torch
+from torch import Tensor
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
@@ -85,11 +86,18 @@ if __name__ == "__main__":
             if len(det) < 1:
                 continue
             for *xyxy, conf, cls in reversed(det):
+                x, y = (int(xyxy[0]), int(xyxy[1]))
                 if names[int(cls)] == 'avatar' and float(f'{conf:.2f}') > 0.5:
                     print("【目标检测】检测到小可爱")
-                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到门已开")
+                if names[int(cls)] == 'skip' and float(f'{conf:.2f}') > 0.5:
+                    print("【目标检测】检测到动画")
                 if names[int(cls)] == 'boss' and float(f'{conf:.2f}') > 0.5:
                     print("【目标检测】检测到大Boss")
                 if names[int(cls)] == 'lion' and float(f'{conf:.2f}') > 0.5:
                     print("【目标检测】检测到狮子头")
+                if names[int(cls)] == 'bag' and float(f'{conf:.2f}') > 0.5:
+                    print("【目标检测】检测到背包", (x, y))
+                if names[int(cls)] == 'next' and float(f'{conf:.2f}') > 0.5:
+                    print("【目标检测】检测到下个任务", (x, y))
+                if names[int(cls)] == 'tutorial' and float(f'{conf:.2f}') > 0.5:
+                    print("【目标检测】检测到游戏教程", (x, y))

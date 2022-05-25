@@ -1,5 +1,7 @@
-door
 lion
 boss
 avatar
 next
+bag
+tutorial
+skip

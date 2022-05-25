@@ -13,7 +13,6 @@ class Game(Concurrency):
         self.freezy = True
 
         self.repaired = False
-        self.sold_out = False
         self.lionAlive = True
 
     def _archor(self, target, img=None):
@@ -48,6 +47,11 @@ class Game(Concurrency):
             # 移动鼠标到按钮位置,点击按钮
             click(x, y)
             await asyncio.sleep(sleep)
+
+    async def _click_xy(self, x, y, sleep=1):
+        # 移动鼠标到按钮位置,点击按钮
+        click(x, y)
+        await asyncio.sleep(sleep)
 
     async def _click_if(self, target1, target2, sleep=1, img=None):
         top_left = self._archor(target1, img)
@@ -126,7 +130,6 @@ class Game(Concurrency):
 
     def reset(self):
         self.repaired = False
-        self.sold_out = False
         self.lionAlive = True
 
     def lion_clear(self):
@@ -159,29 +162,57 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def repair(self):
+    async def repair_and_sale(self, bag=(False, 0, 0)):
         if self.repaired:
             print("【探索者】已修理，无需修理")
             self._free()
             return
 
-        # 打开背包
-        await self._click('bag')
+        # 打开背包，防止识别到城镇中下面的那个背包
+        if bag[0]:
+            await self._click_xy(bag[1] + 10, bag[2] + 8)
+        else:
+            await self._click('bag')
+
         # 点击修理按钮
         await self._click('repair')
         # 确认修理
         await self._click_if('repair_confirm', 'repair_confirm_kr')
         # 返回！
         await self._press('esc')
-        # 返回！
-        await self._press('esc')
-        # 返回！
-        await self._press('esc')
+
+        await self._sale()
         # 标记修理状态
         self.repaired = True
-
         print('【探索者】装备修理完成')
         self._free()
+
+    @asyncthrows
+    async def _sale(self):
+        # 点击分解按钮
+        await self._click('sale')
+        # 确认分解
+        await self._click_if('sale_select', 'sale_select_kr')
+        # 确认分解
+        await self._click('sale_confirm')
+        # 返回！
+        await self._press('esc')
+        # 返回！
+        await self._press('esc')
+        # 执行售卖
+        await self._click('sell')
+        # 确认售卖
+        await self._click_if('sell_select', 'sell_select_kr')
+        # 确认分解,按钮与分解一毛一样
+        await self._click('sale_confirm')
+        # 确认分解
+        # 返回！
+        await self._press('esc')
+        # 返回！
+        await self._press('esc')
+        # 返回！
+        await self._press('esc')
+        print('【探索者】装备分解完成')
 
     @idle
     @asyncthrows
@@ -250,50 +281,6 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def sale(self):
-        if self.sold_out:
-            print("【探索者】装备已分解，无需分解")
-            self._free()
-            return
-        # 打开背包
-        await self._click('bag')
-        # 点击分解按钮
-        await self._click('sale')
-        # 确认分解
-        await self._click_if('sale_select', 'sale_select_kr')
-        # 确认分解
-        await self._click('sale_confirm')
-        # 返回！
-        await self._press('esc')
-        # 返回！
-        await self._press('esc')
-        # 执行售卖
-        await self._click('sell')
-        # 确认售卖
-        await self._click_if('sell_select', 'sell_select_kr')
-        # 确认分解,按钮与分解一毛一样
-        await self._click('sale_confirm')
-        # 确认分解
-        # 返回！
-        await self._press('esc')
-        # 返回！
-        await self._press('esc')
-        # 返回！
-        await self._press('esc')
-        # 标记修理状态
-        self.sold_out = True
-        print('【探索者】装备分解完成')
-        self._free()
-
-    @idle
-    @asyncthrows
-    async def talk_skip(self):
-        await self._press('esc')
-        print('【探索者】跳过对话')
-        self._free()
-
-    @idle
-    @asyncthrows
     async def confirm(self):
         await self._click_if('confirm', 'confirm_kr')
         print('【探索者】确认！')
@@ -318,18 +305,10 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def next(self):
-        # 获取屏幕截图
-        img = capture(990, 0, 300, 380)
-        # 检测目标位置
-        max_val, img, top_left, right_bottom = match(img, f'./game/scene/next.png')
-        print(f'【模板匹配】next {max_val} {top_left}')
-        # 返回按钮位置
-        if 1 >= max_val > 0.94:
-            x, y = top_left
-            # 移动鼠标到按钮位置,点击按钮
-            click(x + 990 + 10, y + 0 + 8)
-        print('【探索者】剧情下个主线任务')
+    async def next(self, next):
+        if next[0]:
+            click(next[1] + 10, next[2] + 8)
+            print('【探索者】剧情下个主线任务')
         self._free()
 
     @idle
@@ -379,7 +358,8 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def agency_skip(self):
+    async def esc(self):
+        print("【取消操作】ESC")
         await self._press('esc')
         self._free()
 

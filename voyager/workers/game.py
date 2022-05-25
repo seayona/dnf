@@ -39,13 +39,8 @@ class GameWorker(QThread):
 
         # 装备修理
         if not self.game.repaired and self.recogbot.bag():
-            print("【雪山】装备修理")
-            self.game.repair()
-
-        # 装备分解
-        if not self.game.sold_out and self.recogbot.bag():
-            print("【雪山】装备分解")
-            self.game.sale()
+            print("【雪山】装备与分解修理")
+            self.game.repair_and_sale()
 
         # 再次挑战
         if self.recogbot.replay():

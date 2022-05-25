@@ -31,10 +31,6 @@ class ValleyWorker(QThread):
         if self.recogbot.dead():
             self.game.revival()
 
-        # 战斗结束
-        if self.recogbot.bag():
-            self.game.repair()
-
         # 返回日常界面
         if self.recogbot.daily_valley_town():
             self.game.valley_town()
