@@ -17,6 +17,7 @@ class Player(Concurrency):
         self.pl = 100
         self.skills = {}
         self.buff = {}
+        self.awake = None
         self.recogbot = Recogbot()
         self._init_skills(name)
 
@@ -72,10 +73,11 @@ class Player(Concurrency):
         press('v')
 
     def finisher(self):
-        print(f'【角色控制】准备释放觉醒 CD {self.awake.remain}')
-        self.awake.cast()
-        self.awake.cast()
-        self._attack()
+        if self.awake is not None:
+            print(f'【角色控制】准备释放觉醒 CD {self.awake.remain}')
+            self.awake.cast()
+            self.awake.cast()
+            self._attack()
 
     def right(self):
         keyUp('right')
