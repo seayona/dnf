@@ -144,6 +144,8 @@ class Auto(QThread):
         print(self.current_work)
 
     def _run(self):
+        # 卡一行
+        self.recogbot.town()
         if self.current_work is None and self.recogbot.town():
             self._switch_player()
 
