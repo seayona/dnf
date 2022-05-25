@@ -71,22 +71,27 @@ class Recogbot(object):
                     monster = True
         return monster, lion, boss, door
 
-    def detect_next(self):
+    def detect_agency_mission(self):
         pred, names = detect()
-        _bag = (False, 0, 0)
-        _next_mission = (False, 0, 0)
+        result_bag = next_mission_tag = skip = tutorial = (False, 0, 0)
         for i, det in enumerate(pred):
             if len(det) < 1:
                 continue
             for *xyxy, conf, cls in reversed(det):
                 x, y = (int(xyxy[0]) * 2, int(xyxy[1]) * 2)
                 if names[int(cls)] == 'bag' and float(f'{conf:.2f}') > 0.8:
-                    _bag = (True, x, y)
+                    result_bag = (True, x, y)
                     print("【目标检测】检测到背包", (x, y))
                 if names[int(cls)] == 'next' and float(f'{conf:.2f}') > 0.8:
-                    _next_mission = (True, x, y)
+                    next_mission_tag = (True, x, y)
                     print("【目标检测】检测到下个任务按钮", (x, y))
-        return _bag, _next_mission
+                if names[int(cls)] == 'skip' and float(f'{conf:.2f}') > 0.8:
+                    skip = (True, x, y)
+                    print("【目标检测】检测到对话跳过按钮", (x, y))
+                if names[int(cls)] == 'tutorial' and float(f'{conf:.2f}') > 0.6:
+                    tutorial = (True, x, y)
+                    print("【目标检测】检测到教程", (x, y))
+        return result_bag, next_mission_tag, skip, tutorial
 
     def lion(self):
         pred, names = detect()
