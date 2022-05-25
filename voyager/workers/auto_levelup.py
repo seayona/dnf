@@ -1,13 +1,11 @@
-from .auto import Auto
-from .agency_mission import AgencyMissionWorker
-from .player_mission_fight import PlayerMissionFightWorker
-from .player_attack import PlayerAttackWorker
-from .player_cooldown import PlayerSkillCooldownWorker
+from voyager.workers.auto import Auto
+from voyager.game import Player
+from voyager.workers import AgencyMissionWorker, PlayerMissionFightWorker, PlayerSkillCooldownWorker, PlayerAttackWorker
 
 
-class AutoLevelUpWorker(Auto):
+class AutoLevelUp(Auto):
     def __init__(self):
-        super(AutoLevelUpWorker, self).__init__('LevelUp')
+        super(AutoLevelUp, self).__init__('LevelUp')
 
     def _init_worker(self):
         # 升级任务检测

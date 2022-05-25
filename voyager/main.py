@@ -24,7 +24,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.notification = Notification()
         self.game = Game()
         self.recogbot = Recogbot()
-        self.player = Player('Tyrrell')
+        self.player = Player('Aorist')
 
         self.workers = []
 
@@ -58,14 +58,14 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.statusBar().showMessage(message)
 
     def on_auto_work_clicked(self):
-        a = AutoStriveWorker()
+        a = AutoStriveWorker(self.ckbox_auto_valley.isChecked())
         a.trigger.connect(self.on_stop_click)
         a.start()
         self.workers.append(a)
         self._disable()
 
     def on_auto_levelup_clicked(self):
-        l = AutoLevelUpWorker()
+        l = AutoLevelUp(self.ckbox_auto_valley.isChecked())
         l.trigger.connect(self.on_stop_click)
         l.start()
         self.workers.append(l)

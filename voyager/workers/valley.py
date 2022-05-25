@@ -6,10 +6,10 @@ from voyager.game import Game, Player
 from voyager.recognition import Recogbot
 
 
-
 class ValleyWorker(QThread):
     # 定义一个信号
     trigger = pyqtSignal(str)
+
     def __init__(self, game, recogbot):
         # 初始化函数，默认
         super(ValleyWorker, self).__init__()
@@ -34,6 +34,9 @@ class ValleyWorker(QThread):
         # 返回日常界面
         if self.recogbot.daily_valley_town():
             self.game.valley_town()
+
+        if self.recogbot.town():
+            self.game.valley_start()
 
     def run(self):
         print("【工作线程】祥瑞溪谷开始执行")

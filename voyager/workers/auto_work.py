@@ -1,16 +1,19 @@
+from configparser import ConfigParser
 
-from .auto import Auto
-from .game import GameWorker
+from PyQt5.QtCore import QThread, pyqtSignal, QTimer, QEventLoop
 
-from .player_fight import PlayerFightWorker
-from .player_attack import PlayerAttackWorker
-from .player_cooldown import PlayerSkillCooldownWorker
+from voyager.game import Game, Player
+from voyager.infrastructure import Notification
+from voyager.recognition import Recogbot
+from voyager.workers import PlayerFightWorker, GameWorker, PlayerSkillCooldownWorker, PlayerAttackWorker
+from voyager.workers.auto import Auto
+
 
 class AutoStriveWorker(Auto):
 
-    def __init__(self):
+    def __init__(self, new_valley):
         # 初始化函数，默认
-        super(AutoStriveWorker, self).__init__('Strive')
+        super(AutoLevelUp, self).__init__('Strive', new_valley)
 
     def _init_worker(self):
         # 战斗线程
@@ -32,11 +35,7 @@ class AutoStriveWorker(Auto):
         self.workers.append(c)
 
     def _run(self):
-        # 如果角色疲劳值耗尽，并且在城镇中，切换角色
-        if self.player.tired() and self.recogbot.town():
-            # self.trigger.emit('stop')
-            # 切换成功，设置当前角色
-            self._switch_player()
+        super(AutoStriveWorker, self)._run()
 
         # 疲劳值未耗尽，人在城镇中，去搬砖
         if self.recogbot.town() and not self.player.tired():
@@ -46,7 +45,8 @@ class AutoStriveWorker(Auto):
             self.game.snow_mountain_start(self._fight)
 
         # 疲劳值未耗尽，人在地下城中，继续战斗
-        if not self.working and (self.recogbot.result() or self.recogbot.jump()) and not self.player.tired():
+        if not self.workers['main']['working'] and (
+                self.recogbot.result() or self.recogbot.jump()) and not self.player.tired():
             print(f"【自动搬砖】疲劳值还有，人在地下城中，继续战斗")
             # 防止重复开启线程
             self._fight()

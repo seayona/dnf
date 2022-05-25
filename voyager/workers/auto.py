@@ -5,18 +5,15 @@ from PyQt5.QtCore import QThread, pyqtSignal, QTimer, QEventLoop
 from voyager.game import Game, Player
 from voyager.infrastructure import Notification
 from voyager.recognition import Recogbot
+from voyager.workers import PlayerFightWorker, GameWorker, PlayerSkillCooldownWorker, PlayerAttackWorker, ValleyWorker
 
-from .game import GameWorker
-from .player_fight import PlayerFightWorker
-from .player_attack import PlayerAttackWorker
-from .player_cooldown import PlayerSkillCooldownWorker
 
 class Auto(QThread):
     # 定义一个信号
     trigger = pyqtSignal(str)
     conf_path = './conf/auto.ini'
 
-    def __init__(self, profession):
+    def __init__(self, profession, valley):
         # 初始化函数，默认
         super(Auto, self).__init__()
         self.game = Game()
@@ -24,9 +21,10 @@ class Auto(QThread):
         self.player = Player('Aorist')
         self.notification = Notification()
 
-        self.working = False
         self.profession = profession
-        self.workers = []
+        self.current_work = 'main'
+        self.valley = valley
+        self.workers = {}
         self.piglets = []
         self._init_conf()
         self._init_piglet()
@@ -42,23 +40,24 @@ class Auto(QThread):
         self.player = Player(player)
 
     def _init_worker(self):
-        # 战斗线程
-        f = PlayerFightWorker(self.game, self.recogbot, self.player)
-        f.trigger.connect(self._working_stop)
-        self.workers.append(f)
+        # 溪谷
+        if self.valley:
+            self.workers['valley'] = {}
+            self.workers['valley']['thread'] = []
+            v = ValleyWorker(self.game, self.recogbot)
+            v.trigger.connect(self._working_stop)
+            self.workers['valley']['thread'].append(v)
 
-        # 雪山场景检测
-        g = GameWorker(self.game, self.recogbot)
-        g.trigger.connect(self._working_stop)
-        self.workers.append(g)
+            f = PlayerFightWorker(self.game, self.recogbot, self.player)
+            f.trigger.connect(self._working_stop)
+            self.workers['valley']['thread'].append(f)
 
-        a = PlayerAttackWorker(self.player)
-        a.trigger.connect(self._working_stop)
-        self.workers.append(a)
+            s = PlayerSkillCooldownWorker(self.player)
+            self.workers['valley']['thread'].append(s)
 
-        c = PlayerSkillCooldownWorker(self.player)
-        c.trigger.connect(self._working_stop)
-        self.workers.append(c)
+            a = PlayerAttackWorker(self.player)
+            self.workers['valley']['thread'].append(a)
+            self.workers['valley']['working'] = 0
 
     def _init_conf(self):
         print("【探索者】读取角色配置")
@@ -108,10 +107,10 @@ class Auto(QThread):
         self.notification.send(message)
 
     def _working_stop(self):
-        print("【Auto Work】停止自动模式")
-        for w in self.workers:
+        print(f"【Auto Work】停止{self.current_work}")
+        for w in self.workers[self.current_work]['thread']:
             w.stop()
-        self.working = False
+        self.workers[self.current_work]['working'] = 2
         self.player.over_fatigued()
 
     def _switch_player(self):
@@ -120,14 +119,29 @@ class Auto(QThread):
             self._set_player(player), self._current_piglet_update(player), self._send(f"【{player}】开始工作")))
 
     def _fight(self):
-        print(f"【Auto Work】开启战斗线程，当前角色{self.player}")
-        for w in self.workers:
+        print(f"【Auto Work】开启{self.current_work}线程，当前角色{self.player}")
+        for w in self.workers[self.current_work]['thread']:
             w.start()
         # 标识开始战斗
-        self.working = True
+        self.workers[self.current_work]['working'] = 1
+
+    def _next_work(self):
+        keys = list(self.workers.keys())
+        print(keys)
+        index = keys.index(self.current_work)
+        self.current_work = index and keys[index - 1] or None
+        print(self.current_work)
 
     def _run(self):
-        pass
+        if self.current_work is None:
+            self._switch_player()
+
+        if self.workers[self.current_work]['working'] == 0:
+            self._fight()
+        # 开启下个任务
+        if self.workers[self.current_work]['working'] == 2 and self.recogbot.town():
+            print('开始执行下个任务')
+            self._next_work()
 
     def run(self):
         print("【Auto Work】Auto Work开始执行")
