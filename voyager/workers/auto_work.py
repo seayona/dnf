@@ -1,38 +1,40 @@
-from configparser import ConfigParser
 
-from PyQt5.QtCore import QThread, pyqtSignal, QTimer, QEventLoop
+from .auto import Auto
+from .game import GameWorker
 
-from voyager.game import Game, Player
-from voyager.infrastructure import Notification
-from voyager.recognition import Recogbot
-from voyager.workers import PlayerFightWorker, GameWorker, PlayerSkillCooldownWorker, PlayerAttackWorker
-from voyager.workers.auto import Auto
-
+from .player_fight import PlayerFightWorker
+from .player_attack import PlayerAttackWorker
+from .player_cooldown import PlayerSkillCooldownWorker
 
 class AutoStriveWorker(Auto):
 
     def __init__(self, new_valley):
         # 初始化函数，默认
-        super(AutoLevelUp, self).__init__('Strive', new_valley)
+        super(AutoStriveWorker, self).__init__('Strive', new_valley)
 
     def _init_worker(self):
+        super(AutoStriveWorker, self)._init_worker()
+        # 升级任务检测
+        self.workers['main'] = {}
+        self.workers['main']['thread'] = []
         # 战斗线程
         f = PlayerFightWorker(self.game, self.recogbot, self.player)
         f.trigger.connect(self._working_stop)
-        self.workers.append(f)
+        self.workers['main']['thread'].append(f)
 
         # 雪山场景检测
         g = GameWorker(self.game, self.recogbot)
         g.trigger.connect(self._working_stop)
-        self.workers.append(g)
+        self.workers['main']['thread'].append(g)
 
         a = PlayerAttackWorker(self.player)
         a.trigger.connect(self._working_stop)
-        self.workers.append(a)
+        self.workers['main']['thread'].append(a)
 
         c = PlayerSkillCooldownWorker(self.player)
         c.trigger.connect(self._working_stop)
-        self.workers.append(c)
+        self.workers['main']['thread'].append(c)
+        self.workers['main']['working'] = 0
 
     def _run(self):
         super(AutoStriveWorker, self)._run()
@@ -71,4 +73,3 @@ class AutoStriveWorker(Auto):
             print(f"【自动搬砖】疲劳值不足，返回城镇")
             self._working_stop()
             self.player.over_fatigued()
-

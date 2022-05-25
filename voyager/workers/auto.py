@@ -5,7 +5,12 @@ from PyQt5.QtCore import QThread, pyqtSignal, QTimer, QEventLoop
 from voyager.game import Game, Player
 from voyager.infrastructure import Notification
 from voyager.recognition import Recogbot
-from voyager.workers import PlayerFightWorker, GameWorker, PlayerSkillCooldownWorker, PlayerAttackWorker, ValleyWorker
+
+from .game import GameWorker
+from .player_fight import PlayerFightWorker
+from .player_attack import PlayerAttackWorker
+from .player_cooldown import PlayerSkillCooldownWorker
+from .valley import ValleyWorker
 
 
 class Auto(QThread):

@@ -45,6 +45,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         # 置顶
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.show()
+        self.ckbox_auto_valley.setChecked(2)
 
     def _disable(self):
         for btn in [self.btn_start, self.btn_valley, self.btn_agency, self.btn_auto_work]:
@@ -65,7 +66,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         self._disable()
 
     def on_auto_levelup_clicked(self):
-        l = AutoLevelUp(self.ckbox_auto_valley.isChecked())
+        l = AutoLevelUpWorker(self.ckbox_auto_valley.isChecked())
         l.trigger.connect(self.on_stop_click)
         l.start()
         self.workers.append(l)
