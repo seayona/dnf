@@ -1,6 +1,8 @@
-from voyager.workers.auto import Auto
-from voyager.game import Player
-from voyager.workers import AgencyMissionWorker, PlayerMissionFightWorker, PlayerSkillCooldownWorker, PlayerAttackWorker
+from .auto import Auto
+from .agency_mission import AgencyMissionWorker
+from .player_mission_fight import PlayerMissionFightWorker
+from .player_attack import PlayerAttackWorker
+from .player_cooldown import PlayerSkillCooldownWorker
 
 
 class AutoLevelUpWorker(Auto):

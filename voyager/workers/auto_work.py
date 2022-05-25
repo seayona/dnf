@@ -1,5 +1,10 @@
-from voyager.workers import PlayerFightWorker, GameWorker, PlayerSkillCooldownWorker, PlayerAttackWorker
-from voyager.workers.auto import Auto
+
+from .auto import Auto
+from .game import GameWorker
+
+from .player_fight import PlayerFightWorker
+from .player_attack import PlayerAttackWorker
+from .player_cooldown import PlayerSkillCooldownWorker
 
 class AutoStriveWorker(Auto):
 

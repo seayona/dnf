@@ -1,9 +1,6 @@
-import time
 
 from PyQt5.QtCore import QThread, pyqtSignal, QTimer
 
-from voyager.game import Game, Player
-from voyager.recognition import Recogbot
 
 
 class GameWorker(QThread):
