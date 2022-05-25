@@ -1,10 +1,3 @@
-from configparser import ConfigParser
-
-from PyQt5.QtCore import QThread, pyqtSignal, QTimer, QEventLoop
-
-from voyager.game import Game, Player
-from voyager.infrastructure import Notification
-from voyager.recognition import Recogbot
 from voyager.workers import PlayerFightWorker, GameWorker, PlayerSkillCooldownWorker, PlayerAttackWorker
 from voyager.workers.auto import Auto
 
@@ -12,7 +5,7 @@ class AutoStriveWorker(Auto):
 
     def __init__(self):
         # 初始化函数，默认
-        super(AutoLevelUp, self).__init__('Strive')
+        super(AutoStriveWorker, self).__init__('Strive')
 
     def _init_worker(self):
         # 战斗线程
@@ -32,8 +25,6 @@ class AutoStriveWorker(Auto):
         c = PlayerSkillCooldownWorker(self.player)
         c.trigger.connect(self._working_stop)
         self.workers.append(c)
-
-
 
     def _run(self):
         # 如果角色疲劳值耗尽，并且在城镇中，切换角色

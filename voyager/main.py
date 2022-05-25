@@ -8,9 +8,7 @@ from voyager.game import Player, Game
 from voyager.infrastructure import Notification
 from voyager.recognition import Recogbot
 from voyager.workers import GameWorker, PlayerFightWorker, ValleyWorker, AgencyMissionWorker, \
-    PlayerMissionFightWorker, PlayerAttackWorker, PlayerSkillCooldownWorker
-from voyager.workers.autowork import AutoStriveWorker
-from voyager.workers.auto_levelup import AutoLevelUp
+    PlayerMissionFightWorker, PlayerAttackWorker, PlayerSkillCooldownWorker, AutoStriveWorker, AutoLevelUpWorker
 
 print("【探索者】加载UI")
 VoyagerWindow, _ = uic.loadUiType("ui/main.ui")
@@ -26,7 +24,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.notification = Notification()
         self.game = Game()
         self.recogbot = Recogbot()
-        self.player = Player('Aorist')
+        self.player = Player('Tyrrell')
 
         self.workers = []
 
@@ -67,7 +65,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         self._disable()
 
     def on_auto_levelup_clicked(self):
-        l = AutoLevelUp()
+        l = AutoLevelUpWorker()
         l.trigger.connect(self.on_stop_click)
         l.start()
         self.workers.append(l)

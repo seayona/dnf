@@ -3,9 +3,9 @@ from voyager.game import Player
 from voyager.workers import AgencyMissionWorker, PlayerMissionFightWorker, PlayerSkillCooldownWorker, PlayerAttackWorker
 
 
-class AutoLevelUp(Auto):
+class AutoLevelUpWorker(Auto):
     def __init__(self):
-        super(AutoLevelUp, self).__init__('LevelUp')
+        super(AutoLevelUpWorker, self).__init__('LevelUp')
 
     def _init_worker(self):
         # 升级任务检测
