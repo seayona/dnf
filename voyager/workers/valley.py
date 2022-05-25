@@ -19,6 +19,7 @@ class ValleyWorker(QThread):
     def _run(self):
         if self.recogbot.daliy_valley_completed():
             print("【目标检测】祥瑞溪谷已刷完！")
+            self.game.back()
             self.trigger.emit(str('stop'))
             return
 
