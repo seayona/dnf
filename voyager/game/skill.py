@@ -1,6 +1,6 @@
 import asyncio
 
-from voyager.control import click, press
+from voyager.control import click, press, keyUp, keyDown
 from voyager.infrastructure import idle, Concurrency, asyncthrows
 
 
@@ -30,8 +30,14 @@ class Skill():
                     print(f"【技能】释放组合技能[{self.key}]  {s}")
                     press(s)
                 if ((idx + 1) % 2) == 0:
-                    await asyncio.sleep(int(s))
-            self.remain = self.cd
+                    await asyncio.sleep(float(s))
+        if self.key.__contains__('*'):
+            s = self.key.split('*')
+            keyDown(s[0])
+            await  asyncio.sleep(float(s[1]))
+            keyUp(s[0])
+
+        self.remain = self.cd
 
     def remaining(self):
         if self.remain > 0:
