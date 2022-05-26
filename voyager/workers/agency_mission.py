@@ -16,7 +16,6 @@ class AgencyMissionWorker(QThread):
         self.player = player
 
     def _run(self):
-        print("ggggggggg", int(QThread.currentThreadId()) )
         cls = self.recogbot.detect()
 
         # 装备修理
