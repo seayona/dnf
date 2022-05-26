@@ -1,6 +1,6 @@
 import asyncio
 
-from voyager.control import click, press
+from voyager.control import click, press, keyUp, keyDown
 from voyager.infrastructure import Concurrency, idle, asyncthrows
 from voyager.recognition import capture, match
 
@@ -466,4 +466,16 @@ class Game(Concurrency):
     async def sky_mission_receive(self):
         await self._click('sky_mission_receive')
         print('【探索者】天界任务领取')
+        self._free()
+
+    async def _key_hold(self, key, holding=1):
+        keyDown(key)
+        await asyncio.sleep(holding)
+        keyUp(key)
+
+    @idle
+    @asyncthrows
+    async def out_stuck(self, direction):
+        await self._key_hold(direction)
+        print('【探索者】正在脱困')
         self._free()

@@ -19,10 +19,14 @@ class AgencyMissionWorker(QThread):
     def _run(self):
         cls = self.recogbot.detect()
 
-        # 装备修理
+        # if self.count % 5 == 0:
+        #     # 装备修理
+        #     if not self.game.repaired and cls['bag'][0] and cls['bag'][2] < 200:
+        #         self.game.repair_and_sale(cls['bag'])
+        # else:
+        #     self.game.repaired = True
         if not self.game.repaired and cls['bag'][0] and cls['bag'][2] < 200:
             self.game.repair_and_sale(cls['bag'])
-
 
         # 出现游戏教程，对话时按Esc跳过
         if cls['skip'][0] or cls['tutorial'][0]:
@@ -30,6 +34,7 @@ class AgencyMissionWorker(QThread):
 
         # 地下城里面点击下个任务
         if self.game.repaired and cls['next'][0]:
+            self.count += 1
             self.game.next(cls['next'])
 
         # 自动装备
@@ -62,7 +67,6 @@ class AgencyMissionWorker(QThread):
 
         if self.recogbot.next_agency_confirm():
             self.game.next_agency_confirm()
-            self.count += 1
 
         # 酒馆接受任务
         if self.recogbot.agency_mission_get():
@@ -71,6 +75,11 @@ class AgencyMissionWorker(QThread):
         # 天界任务领取
         if self.recogbot.sky_mission_receive():
             self.game.sky_mission_receive()
+
+        # 暗黑城卡住
+        if self.recogbot.black_town_stuck():
+            print('暗黑城脱困')
+            self.game.out_stuck('down')
 
         # 没有主线任务了，去打怪升级
         if self.recogbot.agency_mission_confirm():
