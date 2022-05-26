@@ -242,3 +242,6 @@ class Recogbot(object):
 
     def buff(self, target):
         return self._recog('skills/' + target)
+
+    def back_to_town(self):
+        return self._recog_if('adventure_snow_mountain_town','adventure_snow_mountain_town_kr')

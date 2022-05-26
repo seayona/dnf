@@ -23,7 +23,7 @@ class Auto(QThread):
         super(Auto, self).__init__()
         self.game = Game()
         self.recogbot = Recogbot()
-        self.player = Player('Tyrrell')
+        self.player = Player('Deeping')
         self.notification = Notification()
 
         self.profession = profession
@@ -122,6 +122,15 @@ class Auto(QThread):
             w.stop()
         self.workers[self.current_work]['working'] = 2
         self.player.over_fatigued()
+        self._back_to_town()
+
+    def _back_to_town(self):
+        if self.recogbot.back():
+            self.game.back()
+        if self.recogbot.daily_valley_town():
+            self.game.valley_town()
+        if self.recogbot.back_to_town():
+            self.game.agency_mission_finish()
 
     def _switch_player(self):
         next_player = self._next_piglet()
@@ -146,18 +155,23 @@ class Auto(QThread):
     def _run(self):
         # 卡一行
         self.recogbot.town()
+        # 无任务，在城镇，切换角色
         if self.current_work is None and self.recogbot.town():
             self._switch_player()
+        # 无任务，不在城镇，回城
+        if self.current_work is None and not self.recogbot.town():
+            self._back_to_town()
 
         if self.current_work is not None and self.workers[self.current_work]['working'] == 0:
             self._fight()
+
         # 开启下个任务
         if self.current_work is not None and self.workers[self.current_work]['working'] == 2 and self.recogbot.town():
             print('开始执行下个任务')
             self._next_work()
 
     def run(self):
-        print("【Auto Work】Auto Work开始执行", int(QThread.currentThreadId()) )
+        print("【Auto Work】Auto Work开始执行", int(QThread.currentThreadId()))
         while True:
             self._run()
 
