@@ -14,6 +14,7 @@ class AgencyMissionWorker(QThread):
         self.game = game
         self.recogbot = recogbot
         self.player = player
+        self.count = 0
 
     def _run(self):
         cls = self.recogbot.detect()
@@ -21,6 +22,7 @@ class AgencyMissionWorker(QThread):
         # 装备修理
         if not self.game.repaired and cls['bag'][0] and cls['bag'][2] < 200:
             self.game.repair_and_sale(cls['bag'])
+
 
         # 出现游戏教程，对话时按Esc跳过
         if cls['skip'][0] or cls['tutorial'][0]:
@@ -60,13 +62,15 @@ class AgencyMissionWorker(QThread):
 
         if self.recogbot.next_agency_confirm():
             self.game.next_agency_confirm()
-
-        if self.recogbot.confirm():
-            self.game.confirm()
+            self.count += 1
 
         # 酒馆接受任务
         if self.recogbot.agency_mission_get():
             self.game.agency_mission_get()
+
+        # 天界任务领取
+        if self.recogbot.sky_mission_receive():
+            self.game.sky_mission_receive()
 
         # 没有主线任务了，去打怪升级
         if self.recogbot.agency_mission_confirm():

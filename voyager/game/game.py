@@ -460,3 +460,10 @@ class Game(Concurrency):
         top_left = self._archor('close')
         if not top_left:
             await self._press('esc')
+
+    @idle
+    @asyncthrows
+    async def sky_mission_receive(self):
+        await self._click('sky_mission_receive')
+        print('【探索者】天界任务领取')
+        self._free()
