@@ -127,10 +127,12 @@ class Auto(QThread):
     def _back_to_town(self):
         if self.recogbot.back():
             self.game.back()
-        if self.recogbot.daily_valley_town():
+        elif self.recogbot.daily_valley_town():
             self.game.valley_town()
-        if self.recogbot.back_to_town():
+        elif self.recogbot.back_to_town():
             self.game.agency_mission_finish()
+        else:
+            self.game.esc()
 
     def _switch_player(self):
         next_player = self._next_piglet()
