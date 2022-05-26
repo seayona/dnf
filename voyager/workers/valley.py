@@ -29,6 +29,10 @@ class ValleyWorker(QThread):
             print("【目标检测】发现祥瑞溪谷入口！")
             self.game.valley_fight()
 
+        # 溪谷再次挑战
+        if self.recogbot.replay():
+            self.game.replay()
+
         # 死亡
         if self.recogbot.dead():
             self.game.revival()
