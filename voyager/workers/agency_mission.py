@@ -73,13 +73,18 @@ class AgencyMissionWorker(QThread):
             self.game.agency_mission_get()
 
         # 天界任务领取
-        if self.recogbot.sky_mission_receive():
-            self.game.sky_mission_receive()
+        if self.recogbot.heaven_mission_receive():
+            self.game.heaven_mission_receive()
 
         # 暗黑城卡住
         if self.recogbot.black_town_stuck():
             print('暗黑城脱困')
             self.game.out_stuck('down')
+
+        # 天界卡住
+        if self.recogbot.heaven_stuck():
+            print('天界脱困')
+            self.game.out_stuck('right')
 
         # 没有主线任务了，去打怪升级
         if self.recogbot.agency_mission_confirm():

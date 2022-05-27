@@ -477,8 +477,8 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def sky_mission_receive(self):
-        await self._click('sky_mission_receive')
+    async def heaven_mission_receive(self):
+        await self._click('heaven_mission_receive')
         print('【探索者】天界任务领取')
         self._free()
 

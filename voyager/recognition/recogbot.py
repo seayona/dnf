@@ -249,8 +249,8 @@ class Recogbot(object):
     def back_to_town(self):
         return self._recog_if('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
 
-    def sky_mission_receive(self):
-        return self._recog('sky_mission_receive')
+    def heaven_mission_receive(self):
+        return self._recog('heaven_mission_receive')
 
     def _recog_cheap(self, target):
         max_val = self._match_max_val(target)
@@ -258,6 +258,9 @@ class Recogbot(object):
 
     def black_town_stuck(self):
         return self._recog_cheap('black_town_stuck')
+
+    def heaven_stuck(self):
+        return self._recog_if('heaven_stuck1','heaven_stuck2')
 
     def guild_signed(self):
         box = self._recog_low_precision('guild_box1') or self._recog_low_precision(
