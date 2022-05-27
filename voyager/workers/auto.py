@@ -11,6 +11,7 @@ from .player_fight import PlayerFightWorker
 from .player_attack import PlayerAttackWorker
 from .player_cooldown import PlayerSkillCooldownWorker
 from .valley import ValleyWorker
+from ..welfare.welfare import WelfareGuild
 
 
 class Auto(QThread):
@@ -18,7 +19,7 @@ class Auto(QThread):
     trigger = pyqtSignal(str)
     conf_path = './conf/auto.ini'
 
-    def __init__(self, profession, valley):
+    def __init__(self, profession, valley, welfare):
         # 初始化函数，默认
         super(Auto, self).__init__()
         self.game = Game()
@@ -29,6 +30,7 @@ class Auto(QThread):
         self.profession = profession
         self.current_work = 'main'
         self.valley = valley
+        self.welfare = welfare
         self.workers = {}
         self.piglets = []
         self._init_conf()
@@ -47,22 +49,29 @@ class Auto(QThread):
     def _init_worker(self):
         # 溪谷
         if self.valley:
-            self.workers['valley'] = {}
-            self.workers['valley']['thread'] = []
             v = ValleyWorker(self.game, self.recogbot)
             v.trigger.connect(self._working_stop)
-            self.workers['valley']['thread'].append(v)
 
             f = PlayerFightWorker(self.game, self.recogbot, self.player)
-            f.trigger.connect(self._working_stop)
-            self.workers['valley']['thread'].append(f)
 
             s = PlayerSkillCooldownWorker(self.player)
-            self.workers['valley']['thread'].append(s)
 
             a = PlayerAttackWorker(self.player)
-            self.workers['valley']['thread'].append(a)
-            self.workers['valley']['working'] = 0
+            # 装配到works
+            self._worker_assembly('valley', [v, f, s, a], 0)
+            self._worker_assembly(work_name='valley', thread=[v, f, s, a], init_working=0)
+
+        # 福利
+        if self.welfare:
+            self.workers['welfare'] = {}
+            w = WelfareGuild(self.game, self.recogbot)
+            w.trigger.connect(self._working_stop)
+            self._worker_assembly('welfare', [w], 0)
+
+    def _worker_assembly(self, work_name, thread=[], init_working=0):
+        if work_name not in self.workers:
+            self.workers[work_name] = {}
+        self.workers[work_name] = {'thread': thread, 'working': init_working}
 
     def _init_conf(self):
         print("【探索者】读取角色配置")
@@ -104,7 +113,6 @@ class Auto(QThread):
             i = self.piglets.index(current)
             if i + 1 == len(self.piglets):
                 print("【Auto Work】所有角色工作完成")
-                self._working_stop()
                 self.trigger.emit('stop')
                 return
             next_piglet = self.piglets[i + 1]
@@ -118,7 +126,10 @@ class Auto(QThread):
 
     def _working_stop(self):
         print(f"【Auto Work】停止{self.current_work}")
+        if self.current_work is None:
+            return
         for w in self.workers[self.current_work]['thread']:
+            print(w)
             w.stop()
         self.workers[self.current_work]['working'] = 2
         self.player.over_fatigued()
@@ -131,6 +142,8 @@ class Auto(QThread):
             self.game.valley_town()
         elif self.recogbot.back_to_town():
             self.game.agency_mission_finish()
+        elif self.recogbot.close():
+            self.game.esc()
         else:
             self.game.esc()
 
@@ -149,7 +162,6 @@ class Auto(QThread):
 
     def _next_work(self):
         keys = list(self.workers.keys())
-        print(keys)
         index = keys.index(self.current_work)
         self.current_work = index and keys[index - 1] or None
         print(self.current_work)
@@ -161,7 +173,8 @@ class Auto(QThread):
         if self.current_work is None and self.recogbot.town():
             self._switch_player()
         # 无任务，不在城镇，回城
-        if self.current_work is None and not self.recogbot.town():
+        if (self.current_work is None and not self.recogbot.town()) or (
+                self.workers[self.current_work]['working'] == 2 and not self.recogbot.town()):
             self._back_to_town()
 
         if self.current_work is not None and self.workers[self.current_work]['working'] == 0:

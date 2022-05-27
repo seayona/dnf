@@ -82,6 +82,19 @@
      <string>自动溪谷</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="ckbox_auto_welfare">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>140</y>
+      <width>90</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>自动福利</string>
+    </property>
+   </widget>
    <widget class="QPushButton" name="btn_auto_work">
     <property name="geometry">
      <rect>

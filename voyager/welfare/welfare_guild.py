@@ -17,12 +17,12 @@ class WelfareGuild(QThread):
 
         box, gold = self.recogbot.guild_signed()
         if not box and gold:
+            self.game.esc()
             self.trigger.emit(str('stop'))
             return
 
         if box:
             self.game.guild_box()
-
 
     def run(self):
         print("【探索者】公会福利开始执行", int(QThread.currentThreadId()))
