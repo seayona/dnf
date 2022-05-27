@@ -243,5 +243,24 @@ class Recogbot(object):
     def buff(self, target):
         return self._recog('skills/' + target)
 
+    def close(self):
+        return self._recog('close')
+
     def back_to_town(self):
-        return self._recog_if('adventure_snow_mountain_town','adventure_snow_mountain_town_kr')
+        return self._recog_if('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
+
+    def sky_mission_receive(self):
+        return self._recog('sky_mission_receive')
+
+    def _recog_cheap(self, target):
+        max_val = self._match_max_val(target)
+        return 0.9 < max_val <= 1
+
+    def black_town_stuck(self):
+        return self._recog_cheap('black_town_stuck')
+
+    def guild_signed(self):
+        box = self._recog_low_precision('guild_box1') or self._recog_low_precision(
+            'guild_box2') or self._recog_low_precision('guild_box3') or self._recog_low_precision('guild_box4')
+        gold = self._recog('guild_gold_signed')
+        return box, gold

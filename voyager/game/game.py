@@ -479,3 +479,38 @@ class Game(Concurrency):
         await self._key_hold(direction)
         print('【探索者】正在脱困')
         self._free()
+
+    async def _click_low_precision_callback(self, target, callback, sleep=1, img=None):
+        top_left = self._archor_low_precision(target, img)
+        if top_left:
+            x, y = top_left
+            # 移动鼠标到按钮位置,点击按钮
+            click(x, y)
+            await asyncio.sleep(sleep)
+            await callback()
+
+    @idle
+    @asyncthrows
+    async def guild_sign(self):
+        if not self._archor('mail'):
+            await self._press('esc')
+        await self._press("F2")
+        print('【探索者】打开公会界面')
+        await self._click('guild_sign')
+        await self._click('guild_gold_sign')
+        await self._click_if('confirm', 'confirm_kr', 2)
+        await self._click_if('confirm', 'confirm_kr', 2)
+        await self.guild_box()
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def guild_box(self):
+        async def cb_esc():
+            await self._press('esc')
+
+        await self._click_low_precision_callback('guild_box1', callback=cb_esc)
+        await self._click_low_precision_callback('guild_box2', callback=cb_esc)
+        await self._click_low_precision_callback('guild_box3', callback=cb_esc)
+        await self._click_low_precision_callback('guild_box4', callback=cb_esc)
+        self._free()
