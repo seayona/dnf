@@ -514,7 +514,7 @@ class Game(Concurrency):
         await self._click('guild_gold_sign')
         await self._click_if('confirm', 'confirm_kr', 2)
         await self._click_if('confirm', 'confirm_kr', 2)
-        await self.guild_box()
+        self.guild_box()
         self._free()
 
     @idle

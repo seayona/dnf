@@ -10,22 +10,28 @@ class WelfareGuild(QThread):
 
         self.game = game
         self.recogbot = recogbot
+        self.signed = 0
 
     def _run(self):
-        if self.recogbot.town():
-            self.game.guild_welfare()
+
+        if self.signed == 2:
+            self.trigger.emit(str('stop'))
+
+        if self.recogbot.town() and not self.signed == 2:
+            self.game.guild_sign()
+            self.signed = 1
 
         box, gold = self.recogbot.guild_signed()
-        if not box and gold:
-            self.game.esc()
-            self.trigger.emit(str('stop'))
-            return
+        if not box and gold and self.signed == 1:
+            self.signed = 2
 
-        if box:
+        if box and not self.recogbot.town():
             self.game.guild_box()
+            self.signed = 1
 
     def run(self):
         print("【探索者】公会福利开始执行", int(QThread.currentThreadId()))
+        self.signed = 0
         while True:
             self._run()
 

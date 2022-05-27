@@ -63,7 +63,6 @@ class Auto(QThread):
 
         # 福利
         if self.welfare:
-            self.workers['welfare'] = {}
             w = WelfareGuild(self.game, self.recogbot)
             w.trigger.connect(self._working_stop)
             self._worker_assembly('welfare', [w], 0)
@@ -113,6 +112,7 @@ class Auto(QThread):
             i = self.piglets.index(current)
             if i + 1 == len(self.piglets):
                 print("【Auto Work】所有角色工作完成")
+                self._send("【Auto Work】所有角色工作完成")
                 self.trigger.emit('stop')
                 return
             next_piglet = self.piglets[i + 1]
@@ -173,8 +173,11 @@ class Auto(QThread):
         if self.current_work is None and self.recogbot.town():
             self._switch_player()
         # 无任务，不在城镇，回城
-        if (self.current_work is None and not self.recogbot.town()) or (
-                self.workers[self.current_work]['working'] == 2 and not self.recogbot.town()):
+        if self.current_work is None and not self.recogbot.town():
+            self._back_to_town()
+
+        if self.current_work is not None and self.workers[self.current_work][
+            'working'] == 2 and not self.recogbot.town():
             self._back_to_town()
 
         if self.current_work is not None and self.workers[self.current_work]['working'] == 0:
