@@ -110,7 +110,7 @@ class Recogbot(object):
         return self._recog('reward')
 
     def replay(self):
-        return self._recog('replay') or self._recog('replay_kr')
+        return self._recog_low_precision_if('replay', 'replay_kr')
 
     def clear(self):
         return self._recog('go')
