@@ -76,6 +76,10 @@ class Game(Concurrency):
             click(x, y)
             await asyncio.sleep(sleep)
 
+    async def _click_if_low_precision(self, target1, target2, sleep=1, img=None):
+        await self._click_low_precision(target1, sleep, img)
+        await self._click_low_precision(target2, sleep, img)
+
     async def _double_click_low_precision(self, target, sleep=1, img=None):
         top_left = self._archor_low_precision(target, img)
         if top_left:
@@ -146,7 +150,17 @@ class Game(Concurrency):
     @asyncthrows
     async def replay(self):
         self.reset()
-        await self._click_if('replay', 'replay_kr')
+        await self._click_if_low_precision('replay', 'replay_kr')
+        await self._click_if('confirm', 'confirm_kr')
+        print('【探索者】开始再次挑战')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def valley_replay(self):
+        self.reset()
+        await asyncio.sleep(3)
+        await self._click_if_low_precision('replay', 'replay_kr')
         await self._click_if('confirm', 'confirm_kr')
         print('【探索者】开始再次挑战')
         self._free()
