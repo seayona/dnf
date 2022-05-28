@@ -75,8 +75,7 @@ class Player(Concurrency):
             s.cast()
 
     def stand(self):
-        press('x')
-        press('v')
+        keyUp('x')
 
     def finisher(self):
         if self.awake is not None:
@@ -85,10 +84,8 @@ class Player(Concurrency):
             self.awake.cast()
             self._attack()
 
+
     def right(self):
-        keyUp('right')
-        press('v')
-        press('v')
         keyDown('right')
 
     def tired(self):
