@@ -31,11 +31,15 @@ class WelfareWorker(QThread):
 
         # 添加到队列
         self.workers_queue = [w, r]
+        self.workers = [w, r]
 
     def _finish(self):
         print(f"{self.worker.__class__.__name__}执行结束")
         self.worker.stop()
         self.working = False
+
+    def _reset_workers(self):
+        self.workers_queue = self.workers.copy()
 
     def _run(self):
         if not self.working and len(self.workers_queue) > 0:
@@ -45,6 +49,7 @@ class WelfareWorker(QThread):
             self.working = True
 
         if not self.working and len(self.workers_queue) == 0:
+            self._reset_workers()
             self.trigger.emit(str('stop'))
 
     def run(self):
