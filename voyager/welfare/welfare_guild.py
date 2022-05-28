@@ -18,15 +18,15 @@ class WelfareGuild(QThread):
             self.trigger.emit(str('stop'))
 
         if self.recogbot.town() and not self.signed == 2:
-            self.game.guild_sign()
+            self.game.union_sign()
             self.signed = 1
 
-        box, gold = self.recogbot.guild_signed()
+        box, gold = self.recogbot.union_signed()
         if not box and gold and self.signed == 1:
             self.signed = 2
 
         if box and not self.recogbot.town():
-            self.game.guild_box()
+            self.game.union_box()
             self.signed = 1
 
     def run(self):

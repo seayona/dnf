@@ -1,20 +1,29 @@
 from PyQt5.QtCore import QThread, pyqtSignal
 
-from voyager.game import Game, Player
-from voyager.recognition import Recogbot
+from .player_fight_agency_mission import PlayerMissionFightWorker
+from .player_fight_attack import PlayerAttackWorker
+from .player_fight_cooldown import PlayerSkillCooldownWorker
 
 
 class AgencyMissionWorker(QThread):
     # 定义一个信号
     trigger = pyqtSignal(str)
 
-    def __init__(self, game: Game, recogbot: Recogbot, player: Player):
+    def __init__(self, voyager):
         # 初始化函数，默认
         super(AgencyMissionWorker, self).__init__()
-        self.game = game
-        self.recogbot = recogbot
-        self.player = player
+        self.voyager = voyager
+        self.game = voyager.game
+        self.recogbot = voyager.recogbot
+        self.player = voyager.player
         self.count = 0
+
+        f = PlayerMissionFightWorker(self.voyager)
+        s = PlayerSkillCooldownWorker(self.voyager)
+        a = PlayerAttackWorker(self.voyager)
+
+        # 装配到works
+        self.workers = [f, s, a]
 
     def _run(self):
         cls = self.recogbot.detect()
@@ -60,6 +69,7 @@ class AgencyMissionWorker(QThread):
         # 疲劳值不足
         if self.recogbot.insufficient_balance_mission():
             self.game.agency_mission_finish()
+            self.player.over_fatigued()
             self.trigger.emit(str('stop'))
 
         if self.recogbot.next_agency():
@@ -95,10 +105,14 @@ class AgencyMissionWorker(QThread):
             self.game.replay_agency()
 
     def run(self):
-        print("【工作线程】主线任务开始执行")
+        print("【自动升级】主线任务开始执行")
+        for s in self.workers:
+            s.start()
         while True:
             self._run()
 
     def stop(self):
-        print("【工作线程】主线任务停止执行")
+        print("【自动升级】主线任务停止执行")
+        for s in self.workers:
+            s.stop()
         self.terminate()

@@ -1,21 +1,17 @@
-import time
+from PyQt5.QtCore import QThread, pyqtSignal
 
-from PyQt5.QtCore import QThread, pyqtSignal, QTimer, QEventLoop
-
-from voyager.game import Game, Player
-from voyager.recognition import Recogbot
 
 
 class PlayerMissionFightWorker(QThread):
     # 定义一个信号ex
     trigger = pyqtSignal(str)
 
-    def __init__(self, game, recogbot, player):
+    def __init__(self, voyager):
         # 初始化函数，默认
         super(PlayerMissionFightWorker, self).__init__()
-        self.game = game
-        self.recogbot = recogbot
-        self.player = player
+        self.game = voyager.game
+        self.recogbot = voyager.recogbot
+        self.player = voyager.player
 
     def _run(self):
         cls = self.recogbot.detect()

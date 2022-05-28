@@ -9,7 +9,6 @@ class Game(Concurrency):
 
     def __init__(self):
         super().__init__()
-
         self.freezy = True
 
         self.repaired = False
@@ -237,6 +236,7 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def valley_start(self):
+        await asyncio.sleep(5)
         if not self._archor('mail'):
             await self._press('esc')
         await self._click('active')
@@ -263,7 +263,7 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def snow_mountain_start(self, callback):
+    async def snow_mountain_start(self):
         await asyncio.sleep(5)
         print("【探索者】前往雪山")
         await self._click('active')
@@ -272,7 +272,6 @@ class Game(Concurrency):
         await self._click('adventure_snow_mountain')
         await self._click('adventure_go')
         print('【探索者】抵达雪山')
-        callback()
         self._free()
 
     @idle
@@ -450,7 +449,7 @@ class Game(Concurrency):
             return
 
         # 如果在地下城中
-        top_left = self._archor_low_precision('setting')
+        top_left = self._archor_low_precision('jump')
         if top_left:
             await self._click_low_precision('setting')
             await self._click('home')
@@ -464,16 +463,19 @@ class Game(Concurrency):
         top_left = self._archor('mail')
         if not top_left:
             await self._press('esc')
+            self._free()
 
         # 选关卡页面或者背包等二级页面
         top_left = self._archor('asset')
         if not top_left:
             await self._press('esc')
+            self._free()
 
         # 选关卡待确认页面
         top_left = self._archor('close')
         if not top_left:
             await self._press('esc')
+            self._free()
 
     @idle
     @asyncthrows
@@ -505,26 +507,74 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def guild_sign(self):
+    async def union_sign_start(self):
+        print('【探索者】5s后打开公会界面')
+        await asyncio.sleep(5)
         if not self._archor('mail'):
             await self._press('esc')
-        await self._press("F2")
-        print('【探索者】打开公会界面')
-        await self._click('guild_sign')
-        await self._click('guild_gold_sign')
-        await self._click_if('confirm', 'confirm_kr', 2)
-        await self._click_if('confirm', 'confirm_kr', 2)
-        self.guild_box()
+        await self._press("F7")
+        # await self.union_box()
         self._free()
 
     @idle
     @asyncthrows
-    async def guild_box(self):
+    async def union_sign(self):
+        await self._click('guild_sign')
+        await self._click('guild_gold_sign')
+        await self._click_if('confirm', 'confirm_kr', 2)
+        await self._click_if('confirm', 'confirm_kr', 2)
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def union_signed(self):
+        await self._press('esc')
+        await self._press('esc')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def union_sign_box1(self):
         async def cb_esc():
             await self._press('esc')
+        await self._click_low_precision_callback('guild_box1', callback=cb_esc)
+        self._free()
 
+    @idle
+    @asyncthrows
+    async def union_sign_box2(self):
+        async def cb_esc():
+            await self._press('esc')
+        await self._click_low_precision_callback('guild_box2', callback=cb_esc)
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def union_sign_box3(self):
+        async def cb_esc():
+            await self._press('esc')
+        await self._click_low_precision_callback('guild_box3', callback=cb_esc)
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def union_sign_box4(self):
+        async def cb_esc():
+            await self._press('esc')
+        await self._click_low_precision_callback('guild_box4', callback=cb_esc)
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def union_box(self):
+        async def cb_esc():
+            await self._press('esc')
         await self._click_low_precision_callback('guild_box1', callback=cb_esc)
         await self._click_low_precision_callback('guild_box2', callback=cb_esc)
         await self._click_low_precision_callback('guild_box3', callback=cb_esc)
         await self._click_low_precision_callback('guild_box4', callback=cb_esc)
         self._free()
+
+
+    def demon_start(self):
+        pass

@@ -1,24 +1,30 @@
-import functools
 import random
-import time
 from configparser import ConfigParser
 
-from voyager.control import keyUp, keyDown, press, moveTo, click, hold
+from voyager.control import keyUp, keyDown, press
 from voyager.game import Skill
 from voyager.infrastructure import idle, asyncthrows, Concurrency
-from voyager.recognition import Recogbot
 
 
 class Player(Concurrency):
 
     def __init__(self, name):
         super().__init__()
+        # 角色名称
         self.name = name
+        # 祥瑞溪谷次数
+        self.valley = 3
+        # 疲劳值
         self.pl = 100
+        # 福利
+        self.welfare = False
+        # 技能
         self.skills = {}
+        # Buff
         self.buff = {}
+        # 觉醒
         self.awake = None
-        self.recogbot = Recogbot()
+
         self._init_skills(name)
 
     def _init_skills(self, name):
@@ -88,8 +94,17 @@ class Player(Concurrency):
     def tired(self):
         return self.pl == 0
 
+    def shine(self):
+        return self.valley == 0
+
     def over_fatigued(self):
         self.pl = 0
+
+    def over_valley(self):
+        self.valley = 0
+
+    def over_welfare(self):
+        self.welfare = True
 
     # 自动释放buff
     def release_buff(self, key):

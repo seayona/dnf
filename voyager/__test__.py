@@ -54,8 +54,10 @@ if __name__ == '__main__':
     # player.cast('O')
     # player.cast('U')
 
-    player = Player('Seayona')
+    player = Player('Tyrrell')
+    recogbot = Recogbot()
 
     while True:
-        player.cast()
-        time.sleep(1)
+        for key in player.buff.keys():
+            if recogbot.buff(key):
+                player.release_buff(key)

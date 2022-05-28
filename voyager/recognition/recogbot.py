@@ -241,7 +241,7 @@ class Recogbot(object):
         return self._recog_low_precision('combo')
 
     def buff(self, target):
-        return self._recog('skills/' + target)
+        return self._recog_low_precision('skills/' + target)
 
     def close(self):
         return self._recog('close')
@@ -266,9 +266,23 @@ class Recogbot(object):
         max_val = self._match_max_val(target)
         return low <= max_val <= height
 
-    def guild_signed(self):
-        box = self._recog_diy_precision('guild_box1', 0.97) or self._recog_diy_precision(
-            'guild_box2', 0.97) or self._recog_diy_precision('guild_box3', 0.97) or self._recog_diy_precision(
-            'guild_box4', 0.97)
-        gold = self._recog('guild_gold_signed')
-        return box, gold
+    def union_sign(self):
+        return self._recog('guild_sign')
+
+    def union_sign_box1(self):
+        return self._recog_diy_precision('guild_box1', 0.97)
+
+    def union_sign_box2(self):
+        return self._recog_diy_precision('guild_box2', 0.97)
+
+    def union_sign_box3(self):
+        return self._recog_diy_precision('guild_box3', 0.97)
+
+    def union_sign_box4(self):
+        return self._recog_diy_precision('guild_box4', 0.97)
+
+    def union_signed(self):
+        return self._recog_diy_precision('guild_signed_coin', 0.97) \
+              and self._recog_diy_precision('guild_signed_carbon', 0.97) \
+              and self._recog_diy_precision('guild_signed_pill', 0.97) \
+              and self._recog('guild_gold_signed')

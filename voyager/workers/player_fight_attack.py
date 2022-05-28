@@ -9,10 +9,10 @@ class PlayerAttackWorker(QThread):
     # 定义一个信号
     trigger = pyqtSignal(str)
 
-    def __init__(self, player):
+    def __init__(self, voyager):
         super(PlayerAttackWorker, self).__init__()
-        self.player = player
-        self.recogbot = Recogbot()
+        self.player = voyager.player
+        self.recogbot = voyager.recogbot
 
     def _run(self):
         print('【自动攻击】Thread', int(QThread.currentThreadId()))

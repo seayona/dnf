@@ -6,12 +6,10 @@ from voyager.game import Player
 
 
 class PlayerSkillCooldownWorker(QThread):
-    # 定义一个信号
-    trigger = pyqtSignal(Player)
 
-    def __init__(self, player: Player):
+    def __init__(self, voyager):
         super(PlayerSkillCooldownWorker, self).__init__()
-        self.player = player
+        self.player = voyager.player
 
     def _run(self):
         self.player.cooldown()

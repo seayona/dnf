@@ -5,12 +5,12 @@ class PlayerFightWorker(QThread):
     # 定义一个信号
     trigger = pyqtSignal(str)
 
-    def __init__(self, game, recogbot, player):
+    def __init__(self, voyager):
         # 初始化函数，默认
         super(PlayerFightWorker, self).__init__()
-        self.game = game
-        self.recogbot = recogbot
-        self.player = player
+        self.game = voyager.game
+        self.recogbot = voyager.recogbot
+        self.player = voyager.player
 
     def _run(self):
         cls = self.recogbot.detect()
