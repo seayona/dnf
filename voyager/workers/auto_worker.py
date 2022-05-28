@@ -29,6 +29,7 @@ class AutoWorker(QThread):
         self.working = False
         self.workers = []
         self.workers_queue = []
+        self.switching = False
 
     # 初始化配置，读取角色列表
     def _init_players(self):
@@ -67,6 +68,9 @@ class AutoWorker(QThread):
     def _reset_works(self):
         self.workers_queue = self.workers.copy()
 
+    def _switch_complete(self):
+        self.switching = False
+
     # 获取当前正在工作的角色
     def current(self):
         conf = ConfigParser()
@@ -93,7 +97,13 @@ class AutoWorker(QThread):
 
     def switch_player(self):
         next_player = self.next_player()
-        self.game.switch(next_player, lambda player: (self._current_player_update(next_player), self._init_player(), self._reset_works()))
+        self.switching = True
+        self.game.switch(next_player, lambda player: (
+            self._current_player_update(next_player)
+            , self._init_player()
+            , self._reset_works()
+            , self._switch_complete
+        ))
 
     def append(self, worker):
         worker.trigger.connect(self._finish)
