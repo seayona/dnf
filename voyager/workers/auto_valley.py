@@ -1,3 +1,5 @@
+import time
+
 from PyQt5.QtCore import QThread, pyqtSignal
 
 
@@ -17,6 +19,7 @@ class AutoValleyWorker(AutoWorker):
         print("【一键溪谷】自动溪谷开始执行", int(QThread.currentThreadId()))
         while True:
             self.continuous_run()
+            time.sleep(5)
 
     # 停止线程
     def stop(self):

@@ -527,9 +527,10 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def union_signed(self):
+    async def union_signed(self, callback):
         await self._press('esc')
         await self._press('esc')
+        callback()
         self._free()
 
     @idle
@@ -537,6 +538,7 @@ class Game(Concurrency):
     async def union_sign_box1(self):
         async def cb_esc():
             await self._press('esc')
+
         await self._click_low_precision_callback('guild_box1', callback=cb_esc)
         self._free()
 
@@ -545,6 +547,7 @@ class Game(Concurrency):
     async def union_sign_box2(self):
         async def cb_esc():
             await self._press('esc')
+
         await self._click_low_precision_callback('guild_box2', callback=cb_esc)
         self._free()
 
@@ -553,6 +556,7 @@ class Game(Concurrency):
     async def union_sign_box3(self):
         async def cb_esc():
             await self._press('esc')
+
         await self._click_low_precision_callback('guild_box3', callback=cb_esc)
         self._free()
 
@@ -561,6 +565,7 @@ class Game(Concurrency):
     async def union_sign_box4(self):
         async def cb_esc():
             await self._press('esc')
+
         await self._click_low_precision_callback('guild_box4', callback=cb_esc)
         self._free()
 
@@ -569,12 +574,12 @@ class Game(Concurrency):
     async def union_box(self):
         async def cb_esc():
             await self._press('esc')
+
         await self._click_low_precision_callback('guild_box1', callback=cb_esc)
         await self._click_low_precision_callback('guild_box2', callback=cb_esc)
         await self._click_low_precision_callback('guild_box3', callback=cb_esc)
         await self._click_low_precision_callback('guild_box4', callback=cb_esc)
         self._free()
-
 
     def demon_start(self):
         pass

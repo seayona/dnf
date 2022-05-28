@@ -1,3 +1,5 @@
+import time
+
 from PyQt5.QtCore import QThread, pyqtSignal
 
 from .auto_worker import AutoWorker
@@ -22,6 +24,7 @@ class AutoStriveWorker(AutoWorker):
         print("【一键搬砖】自动搬砖开始执行", int(QThread.currentThreadId()))
         while True:
             self.continuous_run()
+            time.sleep(5)
 
     # 停止线程
     def stop(self):

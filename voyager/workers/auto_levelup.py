@@ -1,3 +1,5 @@
+import time
+
 from PyQt5.QtCore import QThread, pyqtSignal
 
 from .auto_worker import AutoWorker
@@ -23,6 +25,7 @@ class AutoLevelUpWorker(AutoWorker):
         print("【一键升级】一键升级开始执行", int(QThread.currentThreadId()))
         while True:
             self.continuous_run()
+            time.sleep(5)
 
     # 停止线程和线程唤起的其他线程
     def stop(self):

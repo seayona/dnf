@@ -90,7 +90,7 @@ class AutoWorker(QThread):
 
     def switch_player(self):
         next_player = self.next_player()
-        self.game.switch(next_player, lambda player: self._init_player(player))
+        self.game.switch(next_player, lambda player: (self._current_player_update(next_player), self._init_player()))
 
     def append(self, worker):
         worker.trigger.connect(self._finish)
@@ -98,8 +98,6 @@ class AutoWorker(QThread):
 
     # 任务执行完成
     def continuous_run(self):
-        self.recogbot.town()
-
         # 所有任务执行结束
         if not self.working and len(self.workers_queue) == 0:
             self.switch_player()

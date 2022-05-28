@@ -1,3 +1,5 @@
+import time
+
 from PyQt5.QtCore import QThread, pyqtSignal
 
 from .player_fight_snowmountain import PlayerFightWorker
@@ -24,6 +26,8 @@ class ValleyWorker(QThread):
         self.workers = [f, s, a]
 
     def _run(self):
+        if self.recogbot.back():
+            self.game.back()
 
         if self.recogbot.town():
             self.game.valley_start()
@@ -58,6 +62,7 @@ class ValleyWorker(QThread):
             s.start()
         while True:
             self._run()
+            time.sleep(0.5)
 
     def stop(self):
         print("【祥瑞溪谷】祥瑞溪谷停止执行")

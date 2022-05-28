@@ -1,3 +1,5 @@
+import time
+
 from PyQt5.QtCore import QThread, pyqtSignal
 
 from .worker_welfare_revival_coin import WelfareRevivalCoinWorker
@@ -49,6 +51,7 @@ class WelfareWorker(QThread):
         print("【探索者】福利领取开始执行", int(QThread.currentThreadId()))
         while True:
             self._run()
+            time.sleep(5)
 
     def stop(self):
         print("【探索者】福利领取停止执行")

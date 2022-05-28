@@ -1,3 +1,5 @@
+import time
+
 from PyQt5.QtCore import QThread, pyqtSignal
 
 
@@ -5,14 +7,13 @@ class WelfareUnionWorker(QThread):
     # 定义一个信号
     trigger = pyqtSignal(str)
 
-    def __init__(self, voyager ):
+    def __init__(self, voyager):
         super(WelfareUnionWorker, self).__init__()
         self.game = voyager.game
         self.recogbot = voyager.recogbot
         self.player = voyager.player
 
     def _run(self):
-
         # 在城镇中，还没有签到
         if self.recogbot.town():
             self.game.union_sign_start()
@@ -40,8 +41,7 @@ class WelfareUnionWorker(QThread):
         # 宝箱1、2、3都领了并且金币签到过了
         if self.recogbot.union_signed():
             print("【公会福利】工会福利领取完成")
-            self.game.union_signed()
-            self.trigger.emit(str('stop'))
+            self.game.union_signed(lambda: (self.player.over_welfare(), self.trigger.emit(str('stop'))))
 
     def run(self):
         print("【公会福利】公会福利开始执行", int(QThread.currentThreadId()))

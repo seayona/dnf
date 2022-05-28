@@ -1,3 +1,4 @@
+import time
 
 from PyQt5.QtCore import QThread, pyqtSignal, QTimer
 
@@ -19,6 +20,7 @@ class DemonWorker(QThread):
         print("【自动深渊】自动深渊开始执行")
         while True:
             self._run()
+            time.sleep(0.5)
 
     def stop(self):
         print("【自动深渊】自动深渊停止执行")
