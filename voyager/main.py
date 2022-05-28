@@ -8,7 +8,7 @@ from voyager.game import Player, Game
 from voyager.infrastructure import Notification
 from voyager.recognition import Recogbot
 from voyager.workers import GameWorker, ValleyWorker, AgencyMissionWorker, AutoStriveWorker, AutoLevelUpWorker, \
-    DemonWorker, WelfareWorker
+    DemonWorker, WelfareWorker, AutoWelfareWorker
 from voyager.workers.auto_valley import AutoValleyWorker
 
 print("【探索者】加载UI")
@@ -44,6 +44,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.btn_auto_work.clicked.connect(self.on_auto_work_clicked)
         self.btn_auto_valley.clicked.connect(self.on_auto_valley_clicked)
         self.btn_auto_levelup.clicked.connect(self.on_auto_levelup_clicked)
+        self.btn_auto_welfare.clicked.connect(self.on_auto_welfare_clicked)
 
         # UI界面，显示在右上角
         self.move(1560, 0)
@@ -56,12 +57,12 @@ class Voyager(QMainWindow, VoyagerWindow):
 
     def _disable(self):
         for btn in [self.btn_snowmountain, self.btn_valley, self.btn_welfare, self.btn_demon, self.btn_agency,
-                    self.btn_auto_work, self.btn_auto_valley, self.btn_auto_levelup]:
+                    self.btn_auto_work, self.btn_auto_valley, self.btn_auto_levelup, self.btn_auto_welfare]:
             btn.setEnabled(False)
 
     def _enable(self):
         for btn in [self.btn_snowmountain, self.btn_valley, self.btn_welfare, self.btn_demon, self.btn_agency,
-                    self.btn_auto_work, self.btn_auto_valley, self.btn_auto_levelup]:
+                    self.btn_auto_work, self.btn_auto_valley, self.btn_auto_levelup, self.btn_auto_welfare]:
             btn.setEnabled(True)
 
     def show_message(self, message):
@@ -88,6 +89,15 @@ class Voyager(QMainWindow, VoyagerWindow):
     # 一键升级
     def on_auto_levelup_clicked(self):
         l = AutoLevelUpWorker(self)
+        l.trigger.connect(self.on_stop_click)
+        l.start()
+
+        self.workers = [l]
+        self._disable()
+
+    # 一键福利
+    def on_auto_welfare_clicked(self):
+        l = AutoWelfareWorker(self)
         l.trigger.connect(self.on_stop_click)
         l.start()
 
