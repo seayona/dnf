@@ -86,9 +86,6 @@ class GameWorker(QThread):
         if self.voyager.recogbot.confirm():
             self.voyager.game.confirm()
 
-        if self.voyager.recogbot.close():
-            self.voyager.game.esc()
-
     def run(self):
         self.init()
         print("【雪山】雪山开始执行")
