@@ -33,7 +33,7 @@ class Voyager(QMainWindow, VoyagerWindow):
 
         self.game = Game()
         self.recogbot = Recogbot()
-        self.player = Player(self.players[0])
+        self.player = Player(players[0])
         self.notification = Notification()
 
         self.workers = []
