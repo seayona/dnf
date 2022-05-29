@@ -27,6 +27,7 @@ class PlayerFightWorker(QThread):
         if (cls['combo'][0] and cls['avatar'][0]) or (cls['combo'][0] and cls['boss'][0]):
             print("【雪山战斗】还有小可爱活着")
             self.voyager.player.cast()
+            self.voyager.matric.combo(cls['combo'])
 
         # 释放觉醒
         if cls['boss'][0]:

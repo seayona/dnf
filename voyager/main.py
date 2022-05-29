@@ -7,10 +7,12 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 
 from voyager.game import Player, Game
 from voyager.infrastructure import Notification
+from voyager.infrastructure.matric import Matric
 from voyager.recognition import Recogbot
 from voyager.workers import GameWorker, ValleyWorker, AgencyMissionWorker, AutoStriveWorker, AutoLevelUpWorker, \
     DemonWorker, WelfareWorker, AutoWelfareWorker
 from voyager.workers.auto_valley import AutoValleyWorker
+from voyager.workers.matric import MatricWorker
 
 print("【探索者】加载UI")
 VoyagerWindow, _ = uic.loadUiType("ui/main.ui")
@@ -35,12 +37,17 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.recogbot = Recogbot()
         self.player = Player(players[0])
         self.notification = Notification()
+        self.matric = Matric()
 
         self.workers = []
 
         print("【探索者】启动成功")
         print("【探索者】按F8键自动搬砖/F12键停止/Esc键退出程序")
         self._init_ui()
+
+        m = MatricWorker(self)
+        m.trigger.connect(self.on_btn_stop_clicked)
+        m.start()
 
     def _switch_player(self, q):
         self.player = Player(q.text())

@@ -19,6 +19,7 @@ class PlayerMissionFightWorker(QThread):
         if cls['combo'][0]:
             print("【目标检测】还有小可爱活着，无脑输出")
             self.voyager.player.cast()
+            self.voyager.matric.combo(cls['combo'])
 
     def run(self):
         self.init()
