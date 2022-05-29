@@ -82,7 +82,7 @@ class Voyager(QMainWindow, VoyagerWindow):
     @pyqtSlot()
     def on_btn_auto_work_clicked(self):
         a = AutoStriveWorker(self)
-        a.trigger.connect(self.on_btn_stop_click)
+        a.trigger.connect(self.on_btn_stop_clicked)
         a.start()
 
         self.workers = [a]
@@ -92,7 +92,7 @@ class Voyager(QMainWindow, VoyagerWindow):
     @pyqtSlot()
     def on_btn_auto_valley_clicked(self):
         a = AutoValleyWorker(self)
-        a.trigger.connect(self.on_btn_stop_click)
+        a.trigger.connect(self.on_btn_stop_clicked)
         a.start()
 
         self.workers = [a]
@@ -102,7 +102,7 @@ class Voyager(QMainWindow, VoyagerWindow):
     @pyqtSlot()
     def on_btn_auto_levelup_clicked(self):
         l = AutoLevelUpWorker(self)
-        l.trigger.connect(self.on_btn_stop_click)
+        l.trigger.connect(self.on_btn_stop_clicked)
         l.start()
 
         self.workers = [l]
@@ -112,7 +112,7 @@ class Voyager(QMainWindow, VoyagerWindow):
     @pyqtSlot()
     def on_btn_auto_welfare_clicked(self):
         l = AutoWelfareWorker(self)
-        l.trigger.connect(self.on_btn_stop_click)
+        l.trigger.connect(self.on_btn_stop_clicked)
         l.start()
 
         self.workers = [l]
@@ -122,7 +122,7 @@ class Voyager(QMainWindow, VoyagerWindow):
     @pyqtSlot()
     def on_btn_snowmountain_clicked(self):
         g = GameWorker(self)
-        g.trigger.connect(self.on_btn_stop_click)
+        g.trigger.connect(self.on_btn_stop_clicked)
         g.start()
         self.workers = [g]
         self._disable()
@@ -131,7 +131,7 @@ class Voyager(QMainWindow, VoyagerWindow):
     @pyqtSlot()
     def on_btn_valley_clicked(self):
         g = ValleyWorker(self)
-        g.trigger.connect(self.on_btn_stop_click)
+        g.trigger.connect(self.on_btn_stop_clicked)
         g.start()
         self.workers = [g]
         self._disable()
@@ -140,7 +140,7 @@ class Voyager(QMainWindow, VoyagerWindow):
     @pyqtSlot()
     def on_btn_welfare_clicked(self):
         g = WelfareWorker(self)
-        g.trigger.connect(self.on_btn_stop_click)
+        g.trigger.connect(self.on_btn_stop_clicked)
         g.start()
         self.workers = [g]
         self._disable()
@@ -149,16 +149,16 @@ class Voyager(QMainWindow, VoyagerWindow):
     @pyqtSlot()
     def on_btn_demon_clicked(self):
         g = DemonWorker(self)
-        g.trigger.connect(self.on_btn_stop_click)
+        g.trigger.connect(self.on_btn_stop_clicked)
         g.start()
         self.workers = [g]
         self._disable()
 
     # 自动升级
     @pyqtSlot()
-    def on_btn_agency_mission_clicked(self):
+    def on_btn_agency_clicked(self):
         g = AgencyMissionWorker(self)
-        g.trigger.connect(self.on_btn_stop_click)
+        g.trigger.connect(self.on_btn_stop_clicked)
         g.start()
         self.workers = [g]
         self._disable()
@@ -176,7 +176,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         if e.key() == Qt.Key_F8:
             self.on_work_clicked()
         if e.key() == Qt.Key_F12:
-            self.on_btn_stop_click()
+            self.on_btn_stop_clicked()
         if e.key() == Qt.Key_F9:
             self.close()
 
