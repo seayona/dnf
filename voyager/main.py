@@ -22,9 +22,18 @@ class Voyager(QMainWindow, VoyagerWindow):
         QMainWindow.__init__(self)
         self.setupUi(self)
 
+        print("【探索者】读取角色配置")
+        config = ConfigParser()
+        config.read('conf/player.ini', encoding='UTF-8')
+        players = config.sections()
+        print("【探索者】读取到的角色", players)
+        self.players = list(players)
+        self.strivers = list(filter(lambda p: config.get(p, 'Work') == 'Strive', players))
+        self.levelup = list(filter(lambda p: config.get(p, 'Work') == 'LevelUp', players))
+
         self.game = Game()
         self.recogbot = Recogbot()
-        self.player = Player('Tyrrell')
+        self.player = Player(self.players[0])
         self.notification = Notification()
 
         self.workers = []
@@ -38,13 +47,6 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.show_message(f"角色【{q.text()}】配置已加载")
 
     def _init_ui(self):
-        print("【探索者】读取角色配置")
-        config = ConfigParser()
-        config.read('conf/player.ini', encoding='UTF-8')
-        players = config.sections()
-        print("【探索者】读取到的角色", players)
-        strivers = list(filter(lambda p: config.get(p, 'Work') == 'Strive', players))
-        levelup = list(filter(lambda p: config.get(p, 'Work') == 'LevelUp', players))
 
         # UI界面，显示在右上角
         self.move(1560, 0)
@@ -52,11 +54,11 @@ class Voyager(QMainWindow, VoyagerWindow):
         m = self.menuBar().actions()[0].menu()
         m.triggered.connect(self.switch_player)
 
-        for s in strivers:
+        for s in self.strivers:
             m.addAction(s)
 
         m.addSeparator()
-        for s in levelup:
+        for s in self.levelup:
             m.addAction(s)
 
         # 置顶
