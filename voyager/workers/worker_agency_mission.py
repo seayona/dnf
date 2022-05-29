@@ -19,6 +19,8 @@ class AgencyMissionWorker(QThread):
         self.s = PlayerSkillCooldownWorker(self.voyager)
         self.a = PlayerAttackWorker(self.voyager)
 
+        self.count = 0
+
         self.workers = []
 
     def init(self):
@@ -30,12 +32,12 @@ class AgencyMissionWorker(QThread):
     def _run(self):
         cls = self.voyager.recogbot.detect()
 
-        # if self.count % 5 == 0:
-        #     # 装备修理
-        #     if not self.voyager.game.repaired and cls['bag'][0] and cls['bag'][2] < 200:
-        #         self.voyager.game.repair_and_sale(cls['bag'])
-        # else:
-        #     self.voyager.game.repaired = True
+        if self.count % 5 == 0:
+            # 装备修理
+            if not self.voyager.game.repaired and cls['bag'][0] and cls['bag'][2] < 200:
+                self.voyager.game.repair_and_sale(cls['bag'])
+        else:
+            self.voyager.game.repaired = True
         if not self.voyager.game.repaired and cls['bag'][0] and cls['bag'][2] < 200:
             self.voyager.game.repair_and_sale(cls['bag'])
 
@@ -45,7 +47,7 @@ class AgencyMissionWorker(QThread):
 
         # 地下城里面点击下个任务
         if self.voyager.game.repaired and cls['next'][0]:
-            # self.count += 1
+            self.count += 1
             self.voyager.game.next(cls['next'])
 
         # 自动装备
