@@ -125,7 +125,7 @@ class Recogbot(object):
         return self._recog('bag')
 
     def result(self):
-        return self._recog('result')
+        return self._recog_low_precision('result')
 
     def active(self):
         return self._recog('active')
@@ -235,7 +235,7 @@ class Recogbot(object):
         return self._recog('attack')
 
     def jump(self):
-        return self._recog('jump')
+        return self._recog_low_precision('jump')
 
     def combo(self):
         return self._recog_low_precision('combo')

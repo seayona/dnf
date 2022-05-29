@@ -439,10 +439,12 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def town(self):
+
         # 如果在地下城中，已通关
-        top_left = self._archor('result')
+        top_left = self._archor_low_precision('result')
+        print(top_left)
         if top_left:
-            await self._click_if('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
+            await self._click_if_low_precision('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
             # 等待返回城镇
             await asyncio.sleep(5)
             self._free()

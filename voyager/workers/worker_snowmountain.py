@@ -24,6 +24,11 @@ class GameWorker(QThread):
         self.workers = [f, a, c]
 
     def _run(self):
+
+        if self.player.tired() and (self.recogbot.jump() or self.recogbot.result()):
+            print("【雪山】疲劳值不足")
+            self.game.town()
+
         # 疲劳值未耗尽，人在城镇中，去搬砖
         if self.recogbot.town() and not self.player.tired():
             print("【一键搬砖】5秒后前往雪山")
@@ -54,29 +59,27 @@ class GameWorker(QThread):
             print("【雪山】装备与分解修理")
             self.game.repair_and_sale()
 
+        # 疲劳值不足，人在地下城中，返回城镇
+
+
         # 再次挑战
         if self.recogbot.replay():
             print("【雪山】再次挑战")
             self.game.replay()
 
         # 疲劳值不足，选择关卡的时候
-        if self.recogbot.insufficient_balance() and self.recogbot.close():
+        if self.recogbot.insufficient_balance():
             print("【雪山】疲劳值不足")
             self.player.over_fatigued()
             self.game.town()
-            self.trigger.emit(str('stop'))
-
-        # 疲劳值不足，人在地下城中，返回城镇
-        if self.player.tired() and (self.recogbot.jump() or self.recogbot.result()):
-            print("【雪山】疲劳值不足")
-            self.game.town()
-            self.trigger.emit(str('stop'))
 
         # 疲劳值不足，打完深渊的时候
         if self.recogbot.insufficient_balance_demon():
             print("【雪山】疲劳值不足，打完深渊的时候")
             self.player.over_fatigued()
             self.game.town()
+
+        if self.recogbot.town() and self.player.tired():
             self.trigger.emit(str('stop'))
 
         # 出现确认的弹框？
