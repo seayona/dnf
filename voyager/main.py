@@ -42,7 +42,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         print("【探索者】按F8键自动搬砖/F12键停止/Esc键退出程序")
         self._init_ui()
 
-    def switch_player(self, q):
+    def _switch_player(self, q):
         self.player = Player(q.text())
         self.show_message(f"角色【{q.text()}】配置已加载")
 
@@ -52,7 +52,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.move(1560, 0)
 
         m = self.menuBar().actions()[0].menu()
-        m.triggered.connect(self.switch_player)
+        m.triggered.connect(self._switch_player)
 
         for s in self.strivers:
             m.addAction(s)
