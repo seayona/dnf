@@ -9,45 +9,47 @@ class WelfareUnionWorker(QThread):
 
     def __init__(self, voyager):
         super(WelfareUnionWorker, self).__init__()
-        self.game = voyager.game
-        self.recogbot = voyager.recogbot
-        self.player = voyager.player
+        self.voyager = voyager
+        self.boxs = []
+        self._init_box()
+        self.running = False
+
+    def init(self):
+        self.running = True
+
+    def _init_box(self):
+        self.boxs = []
+        for i in range(5):
+            self.boxs.append({'signed': False, 'target': "union_box{}_helper".format(i + 1)})
+
+    def _box_signed_true(self, box):
+        box['signed'] = True
 
     def _run(self):
         # 在城镇中，还没有签到
-        if self.recogbot.town():
-            self.game.union_sign_start()
+        if self.voyager.recogbot.town():
+            self.voyager.game.union_sign_start()
 
         # 发现签到按钮
-        if self.recogbot.union_sign():
-            self.game.union_sign()
+        if self.voyager.recogbot.union_sign():
+            self.voyager.game.union_sign()
 
-        # 发现宝箱1
-        if self.recogbot.union_sign_box1():
-            self.game.union_sign_box1()
+        not_signed_box = list(filter(lambda item: not item['signed'], self.boxs))
+        if len(not_signed_box):
+            box = not_signed_box[0]
+            self.voyager.game.union_box_sign(box['target'], lambda: self._box_signed_true(box))
 
-        # 发现宝箱2
-        if self.recogbot.union_sign_box2():
-            self.game.union_sign_box2()
-
-        # 发现宝箱3
-        if self.recogbot.union_sign_box3():
-            self.game.union_sign_box3()
-
-        # 发现宝箱4
-        if self.recogbot.union_sign_box4():
-            self.game.union_sign_box4()
-
-        # 宝箱1、2、3都领了并且金币签到过了
-        if self.recogbot.union_signed():
+        if not self.voyager.recogbot.union_sign() and len(not_signed_box) == 0:
             print("【公会福利】工会福利领取完成")
-            self.game.union_signed(lambda: (self.player.over_welfare(), self.trigger.emit(str('stop'))))
+            self.voyager.game.union_signed(lambda: (self.voyager.player.over_welfare(), self.trigger.emit(str('stop'))))
 
     def run(self):
+        self.init()
+        self._init_box()
         print("【公会福利】公会福利开始执行", int(QThread.currentThreadId()))
-        while True:
+        while self.running:
             self._run()
 
     def stop(self):
         print("【公会福利】公会福利开始执行")
-        self.terminate()
+        self.running = False
