@@ -1,7 +1,8 @@
 import sys
+from configparser import ConfigParser
 
 from PyQt5 import uic
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import Qt, QTimer, pyqtSlot
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
 from voyager.game import Player, Game
@@ -32,28 +33,35 @@ class Voyager(QMainWindow, VoyagerWindow):
         print("【探索者】按F8键自动搬砖/F12键停止/Esc键退出程序")
         self._init_ui()
 
+    def switch_player(self, q):
+        self.player = Player(q.text())
+        self.show_message(f"角色【{q.text()}】配置已加载")
+
     def _init_ui(self):
-        self.btn_stop.clicked.connect(self.on_stop_click)
-
-        self.btn_snowmountain.clicked.connect(self.on_work_clicked)
-        self.btn_valley.clicked.connect(self.on_valley_clicked)
-        self.btn_welfare.clicked.connect(self.on_welfare_clicked)
-        self.btn_demon.clicked.connect(self.on_demon_clicked)
-        self.btn_agency.clicked.connect(self.on_agency_mission_clicked)
-
-        self.btn_auto_work.clicked.connect(self.on_auto_work_clicked)
-        self.btn_auto_valley.clicked.connect(self.on_auto_valley_clicked)
-        self.btn_auto_levelup.clicked.connect(self.on_auto_levelup_clicked)
-        self.btn_auto_welfare.clicked.connect(self.on_auto_welfare_clicked)
+        print("【探索者】读取角色配置")
+        config = ConfigParser()
+        config.read('conf/player.ini', encoding='UTF-8')
+        players = config.sections()
+        print("【探索者】读取到的角色", players)
+        strivers = list(filter(lambda p: config.get(p, 'Work') == 'Strive', players))
+        levelup = list(filter(lambda p: config.get(p, 'Work') == 'LevelUp', players))
 
         # UI界面，显示在右上角
         self.move(1560, 0)
 
+        m = self.menuBar().actions()[0].menu()
+        m.triggered.connect(self.switch_player)
+
+        for s in strivers:
+            m.addAction(s)
+
+        m.addSeparator()
+        for s in levelup:
+            m.addAction(s)
+
         # 置顶
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.show()
-        self.ckbox_auto_valley.setChecked(2)
-        self.ckbox_auto_welfare.setChecked(2)
 
     def _disable(self):
         for btn in [self.btn_snowmountain, self.btn_valley, self.btn_welfare, self.btn_demon, self.btn_agency,
@@ -69,7 +77,8 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.statusBar().showMessage(message)
 
     # 一键搬砖
-    def on_auto_work_clicked(self):
+    @pyqtSlot()
+    def on_btn_auto_work_clicked(self):
         a = AutoStriveWorker(self)
         a.trigger.connect(self.on_stop_click)
         a.start()
@@ -78,7 +87,8 @@ class Voyager(QMainWindow, VoyagerWindow):
         self._disable()
 
     # 一键溪谷
-    def on_auto_valley_clicked(self):
+    @pyqtSlot()
+    def on_btn_auto_valley_clicked(self):
         a = AutoValleyWorker(self)
         a.trigger.connect(self.on_stop_click)
         a.start()
@@ -87,7 +97,8 @@ class Voyager(QMainWindow, VoyagerWindow):
         self._disable()
 
     # 一键升级
-    def on_auto_levelup_clicked(self):
+    @pyqtSlot()
+    def on_btn_auto_levelup_clicked(self):
         l = AutoLevelUpWorker(self)
         l.trigger.connect(self.on_stop_click)
         l.start()
@@ -96,7 +107,8 @@ class Voyager(QMainWindow, VoyagerWindow):
         self._disable()
 
     # 一键福利
-    def on_auto_welfare_clicked(self):
+    @pyqtSlot()
+    def on_btn_auto_welfare_clicked(self):
         l = AutoWelfareWorker(self)
         l.trigger.connect(self.on_stop_click)
         l.start()
@@ -105,7 +117,8 @@ class Voyager(QMainWindow, VoyagerWindow):
         self._disable()
 
     # 自动搬砖
-    def on_work_clicked(self):
+    @pyqtSlot()
+    def on_btn_snowmountain_clicked(self):
         g = GameWorker(self)
         g.trigger.connect(self.on_stop_click)
         g.start()
@@ -113,7 +126,8 @@ class Voyager(QMainWindow, VoyagerWindow):
         self._disable()
 
     # 祥瑞溪谷
-    def on_valley_clicked(self):
+    @pyqtSlot()
+    def on_btn_valley_clicked(self):
         g = ValleyWorker(self)
         g.trigger.connect(self.on_stop_click)
         g.start()
@@ -121,7 +135,8 @@ class Voyager(QMainWindow, VoyagerWindow):
         self._disable()
 
     # 自动福利
-    def on_welfare_clicked(self):
+    @pyqtSlot()
+    def on_btn_welfare_clicked(self):
         g = WelfareWorker(self)
         g.trigger.connect(self.on_stop_click)
         g.start()
@@ -129,7 +144,8 @@ class Voyager(QMainWindow, VoyagerWindow):
         self._disable()
 
     # 自动深渊
-    def on_demon_clicked(self):
+    @pyqtSlot()
+    def on_btn_demon_clicked(self):
         g = DemonWorker(self)
         g.trigger.connect(self.on_stop_click)
         g.start()
@@ -137,7 +153,8 @@ class Voyager(QMainWindow, VoyagerWindow):
         self._disable()
 
     # 自动升级
-    def on_agency_mission_clicked(self):
+    @pyqtSlot()
+    def on_btn_agency_mission_clicked(self):
         g = AgencyMissionWorker(self)
         g.trigger.connect(self.on_stop_click)
         g.start()
@@ -145,7 +162,8 @@ class Voyager(QMainWindow, VoyagerWindow):
         self._disable()
 
     # 停止任务
-    def on_stop_click(self):
+    @pyqtSlot()
+    def on_btn_stop_click(self):
         print("【探索者】关闭自动搬砖模式")
         for w in self.workers:
             w.stop()

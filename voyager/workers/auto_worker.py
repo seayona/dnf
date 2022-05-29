@@ -41,7 +41,7 @@ class AutoWorker(QThread):
         players = config.sections()
         print("【探索者】读取到的角色", players)
 
-        if self.profession == 'Work' or self.profession == 'LevelUp':
+        if self.profession == 'Strive' or self.profession == 'LevelUp':
             self.players = list(filter(lambda p: config.get(p, 'Work') == self.profession, players))
         else:
             self.players = list(players)
