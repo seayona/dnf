@@ -1,5 +1,5 @@
-
 from PyQt5.QtCore import QThread, pyqtSignal
+
 
 class PlayerFightWorker(QThread):
     # 定义一个信号
@@ -22,7 +22,7 @@ class PlayerFightWorker(QThread):
             self.player.right()
 
         # 释放技能
-        if cls['combo'][0]:
+        if (cls['combo'][0] and cls['avatar'][0]) or (cls['combo'][0] and cls['boss'][0]):
             print("【战斗】还有小可爱活着")
             self.player.cast()
 
