@@ -583,5 +583,21 @@ class Game(Concurrency):
         await self._click_low_precision_callback('guild_box4', callback=cb_esc)
         self._free()
 
+    @idle
+    @asyncthrows
+    async def union_box_sign(self, target, callback):
+        async def cb_esc():
+            await self._press('esc')
+
+        top_left = self._archor_low_precision(target)
+        if top_left:
+            x, y = top_left
+            # 移动鼠标到按钮位置,点击按钮
+            click(x, y - 120)
+            await asyncio.sleep(2)
+            await cb_esc()
+            callback()
+        self._free()
+
     def demon_start(self):
         pass
