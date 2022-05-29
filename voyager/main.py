@@ -165,7 +165,7 @@ class Voyager(QMainWindow, VoyagerWindow):
 
     # 停止任务
     @pyqtSlot()
-    def on_btn_stop_click(self):
+    def on_btn_stop_clicked(self):
         print("【探索者】关闭自动搬砖模式")
         for w in self.workers:
             w.stop()
