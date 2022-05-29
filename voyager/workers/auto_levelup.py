@@ -10,6 +10,8 @@ from .worker_agency_mission import AgencyMissionWorker
 
 
 class AutoLevelUpWorker(AutoWorker):
+    # 定义一个信号
+    trigger = pyqtSignal(str)
 
     def __init__(self, voyager):
         super(AutoLevelUpWorker, self).__init__(voyager, 'LevelUp')
@@ -24,7 +26,7 @@ class AutoLevelUpWorker(AutoWorker):
         self.a = AgencyMissionWorker(self.voyager)
         self.a.trigger.connect(self.finish)
 
-        self.workers = [self.a, self.w, self.w]
+        self.workers = [self.w, self.v, self.a]
 
     def init(self):
         self.running = True
