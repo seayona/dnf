@@ -11,35 +11,26 @@ class PlayerAttackWorker(QThread):
 
     def __init__(self, voyager):
         super(PlayerAttackWorker, self).__init__()
-        self.player = voyager.player
-        self.recogbot = voyager.recogbot
+        self.voyager = voyager
+        self.running = False
+
+    def init(self):
+        self.running = True
 
     def _run(self):
-        print('【自动攻击】Thread', int(QThread.currentThreadId()))
-        for key in self.player.buff.keys():
-            if self.recogbot.buff(key):
-                self.player.release_buff(key)
+        for key in self.voyager.player.buff.keys():
+            if self.voyager.recogbot.buff(key):
+                self.voyager.player.release_buff(key)
 
-        self.player.attack()
+        self.voyager.player.attack()
 
     def run(self):
+        self.init()
         print("【自动攻击】战斗开始执行")
-        while True:
+        while self.running:
             self._run()
             time.sleep(3.2)
 
     def stop(self):
         print("【自动攻击】战斗停止执行")
-        self.terminate()
-
-    # def watch(self, player):
-    #     self.player = player
-
-    # def start(self):
-    #     print("【自动攻击】自动攻击开始执行")
-    #     self.timer.start(3200)
-    #
-    # def stop(self):
-    #     print("【自动攻击】自动攻击停止执行")
-    #     self.player.stand()
-    #     self.timer.stop()
+        self.running = False

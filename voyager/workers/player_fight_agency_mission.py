@@ -1,7 +1,6 @@
 from PyQt5.QtCore import QThread, pyqtSignal
 
 
-
 class PlayerMissionFightWorker(QThread):
     # 定义一个信号ex
     trigger = pyqtSignal(str)
@@ -9,21 +8,24 @@ class PlayerMissionFightWorker(QThread):
     def __init__(self, voyager):
         # 初始化函数，默认
         super(PlayerMissionFightWorker, self).__init__()
-        self.game = voyager.game
-        self.recogbot = voyager.recogbot
-        self.player = voyager.player
+        self.voyager = voyager
+        self.running = False
+
+    def init(self):
+        self.running = True
 
     def _run(self):
-        cls = self.recogbot.detect()
+        cls = self.voyager.recogbot.detect()
         if cls['combo'][0]:
             print("【目标检测】还有小可爱活着，无脑输出")
-            self.player.cast()
+            self.voyager.player.cast()
 
     def run(self):
+        self.init()
         print("【战斗】战斗开始执行")
-        while True:
+        while self.running:
             self._run()
 
     def stop(self):
         print("【战斗】战斗停止执行")
-        self.terminate()
+        self.running = False

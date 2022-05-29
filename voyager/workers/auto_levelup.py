@@ -10,26 +10,39 @@ from .worker_agency_mission import AgencyMissionWorker
 
 
 class AutoLevelUpWorker(AutoWorker):
-    # 定义一个信号
-    trigger = pyqtSignal(str)
 
     def __init__(self, voyager):
         super(AutoLevelUpWorker, self).__init__(voyager, 'LevelUp')
+        self.running = False
 
-        self.append(ValleyWorker(self.voyager))
-        self.append(WelfareWorker(self.voyager))
-        self.append(AgencyMissionWorker(self.voyager))
+        self.v = ValleyWorker(self.voyager)
+        self.v.trigger.connect(self.finish)
+
+        self.w = WelfareWorker(self.voyager)
+        self.w.trigger.connect(self.finish)
+
+        self.a = AgencyMissionWorker(self.voyager)
+        self.a.trigger.connect(self.finish)
+
+        self.workers = [self.a, self.w, self.w]
+
+    def init(self):
+        self.running = True
+        self.reset()
 
     # 线程入口
     def run(self):
+        self.init()
         print("【一键升级】一键升级开始执行", int(QThread.currentThreadId()))
-        while True:
+        while self.running:
             self.continuous_run()
             time.sleep(5)
 
     # 停止线程和线程唤起的其他线程
     def stop(self):
         print("【一键升级】一键升级停止执行")
-        for s in self.workers_queue:
+        for s in self.workers:
             s.stop()
-        self.terminate()
+        if self.worker is not None:
+            self.worker.stop()
+        self.running = False

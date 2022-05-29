@@ -13,51 +13,56 @@ class WelfareWorker(QThread):
     def __init__(self, voyager):
         super(WelfareWorker, self).__init__()
         self.voyager = voyager
-        self.game = voyager.game
-        self.recogbot = voyager.recogbot
-
-        self.worker = None
+        self.running = False
         self.working = False
+        self.worker = None
+        self.workers = []
 
         # 公会签到
-        w = WelfareUnionWorker(self.voyager)
-        w.trigger.connect(self._finish)
+        self.w = WelfareUnionWorker(self.voyager)
+        self.w.trigger.connect(self._finish)
 
         # 商城复活币
-        r = WelfareRevivalCoinWorker(self.voyager)
-        r.trigger.connect(self._finish)
+        self.r = WelfareRevivalCoinWorker(self.voyager)
+        self.r.trigger.connect(self._finish)
 
+    def init(self):
+        self.running = True
+        self.worker = None
+        self.working = False
         # 每日
 
         # 添加到队列
-        self.workers_queue = [w, r]
-        self.workers = [w, r]
+        self.workers = [self.w, self.r]
 
-    def _finish(self):
-        print(f"{self.worker.__class__.__name__}执行结束")
+    def _finish(self, params):
+        print("任务执行结束", params)
         self.worker.stop()
         self.working = False
-
-    def _reset_workers(self):
-        self.workers_queue = self.workers.copy()
+        self.worker = None
 
     def _run(self):
-        if not self.working and len(self.workers_queue) > 0:
-            self.worker = self.workers_queue.pop()
+        if not self.working and len(self.workers) > 0:
+            self.worker = self.workers.pop()
             self.worker.start()
-            print(f"{self.worker.__class__.__name__}开始执行")
             self.working = True
 
-        if not self.working and len(self.workers_queue) == 0:
-            self._reset_workers()
+        if not self.working and len(self.workers) == 0:
+            self.voyager.game.back()
             self.trigger.emit(str('stop'))
 
     def run(self):
-        print("【探索者】福利领取开始执行", int(QThread.currentThreadId()))
-        while True:
+        self.init()
+        print("【探索者】福利领取开始执行")
+        while self.running:
             self._run()
-            time.sleep(5)
+            self.sleep(1)
 
     def stop(self):
         print("【探索者】福利领取停止执行")
-        self.terminate()
+        print(self.worker)
+        for s in self.workers:
+            s.stop()
+        if self.worker is not None:
+            self.worker.stop()
+        self.running = False

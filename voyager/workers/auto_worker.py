@@ -10,26 +10,28 @@ class AutoWorker(QThread):
     CONF_PATH = './conf/auto.ini'
 
     def __init__(self, voyager, profession: str):
-        super(AutoWorker, self).__init__()
+        super().__init__()
         self.voyager = voyager
-        self.game = voyager.game
-        self.recogbot = voyager.recogbot
-        self.player = voyager.player
-        self.notification = voyager.notification
 
         # 工作类型，用于选择角色
         self.profession = profession
         # 角色列表
         self.players = []
+        self.workers = []
 
         self._init_players()
         self._init_player()
 
         self.worker = None
         self.working = False
-        self.workers = []
-        self.workers_queue = []
         self.switching = False
+        self.workers_queue = []
+
+    def reset(self):
+        self.worker = None
+        self.working = False
+        self.switching = False
+        self.workers_queue = self.workers.copy()
 
     # 初始化配置，读取角色列表
     def _init_players(self):
@@ -61,15 +63,13 @@ class AutoWorker(QThread):
         conf.set(self.profession, 'Player', value)
         conf.write(open(self.CONF_PATH, "w"))
 
-    def _finish(self):
-        self.worker.stop()
-        self.working = False
-
-    def _reset_works(self):
-        self.workers_queue = self.workers.copy()
-
     def _switch_complete(self):
         self.switching = False
+
+    def finish(self):
+        self.worker.stop()
+        self.worker = None
+        self.working = False
 
     # 获取当前正在工作的角色
     def current(self):
@@ -84,6 +84,8 @@ class AutoWorker(QThread):
             i = self.players.index(current)
             if i + 1 == len(self.players):
                 self.send("【自动任务】所有角色工作完成")
+                # 重置配置
+                self._current_player_update(self.players[0])
                 self.trigger.emit('stop')
                 return
             next_player = self.players[i + 1]
@@ -93,31 +95,32 @@ class AutoWorker(QThread):
 
     def send(self, message):
         print(f"【自动任务】{self.profession} {message}")
-        self.notification.send(message)
+        self.voyager.notification.send(message)
 
     def switch_player(self):
         next_player = self.next_player()
         self.switching = True
-        self.game.switch(next_player, lambda player: (
-            self._current_player_update(next_player)
-            , self._init_player()
-            , self._reset_works()
-            , self._switch_complete
-        ))
 
-    def append(self, worker):
-        worker.trigger.connect(self._finish)
-        self.workers_queue.append(worker)
-        self.workers.append(worker)
+        def callback(next_player):
+            self._current_player_update(next_player)
+            self._init_player()
+            self._switch_complete()
+            self.reset()
+
+        if next_player is not None:
+            self.voyager.game.switch(next_player, callback)
 
     # 任务执行完成
     def continuous_run(self):
+        if self.working:
+            return
+
         # 所有任务执行结束
-        if not self.working and len(self.workers_queue) == 0:
+        if len(self.workers_queue) == 0:
             self.switch_player()
 
         # 还有其他任务需要执行
-        if not self.working and len(self.workers_queue) > 0:
+        if len(self.workers_queue) > 0:
             self.worker = self.workers_queue.pop()
             self.worker.start()
             self.working = True

@@ -9,21 +9,26 @@ class WelfareRevivalCoinWorker(QThread):
 
     def __init__(self, voyager):
         super(WelfareRevivalCoinWorker, self).__init__()
-        self.game = voyager.game
-        self.recogbot = voyager.recogbot
-        self.player = voyager.player
+        self.voyager = voyager
+        self.running = False
+
+    def init(self):
+        self.running = True
 
     def _run(self):
-        # 复活币领取成功
-        pass
+
+        if True:
+            print("【复活币福利】复活币领取完成")
+            # 复活币领取成功
+            self.trigger.emit('stop')
 
     def run(self):
-        print("【自动福利】复活币福利开始执行", int(QThread.currentThreadId()))
-        self.trigger.emit(str('stop'))
-        while True:
+        self.init()
+        print("【自动福利】复活币福利开始执行")
+        while self.running:
             self._run()
-            time.sleep(1)
+            self.sleep(1)
 
     def stop(self):
         print("【自动福利】复活币福利执行结束")
-        self.terminate()
+        self.running = False
