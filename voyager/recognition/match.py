@@ -1,4 +1,5 @@
 import cv2
+from voyager.recognition import capture
 
 
 def match(image, target, imshow=False):
@@ -30,3 +31,9 @@ def match(image, target, imshow=False):
         cv2.waitKey(1)
 
     return max_val, image, top_left, bottom_right
+
+
+if __name__ == '__main__':
+    while True:
+        result=match(capture(), '../game/scene/union_box1_helper.PNG', True)
+        print(result[0],result[2])
