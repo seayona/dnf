@@ -260,7 +260,7 @@ class Recogbot(object):
         return self._recog_cheap('black_town_stuck')
 
     def heaven_stuck(self):
-        return self._recog_if('heaven_stuck1', 'heaven_stuck2')
+        return self._recog_low_precision_if('heaven_stuck1', 'heaven_stuck2')
 
     def _recog_diy_precision(self, target, low, height=1):
         max_val = self._match_max_val(target)
@@ -283,6 +283,6 @@ class Recogbot(object):
 
     def union_signed(self):
         return self._recog_diy_precision('guild_signed_coin', 0.97) \
-              and self._recog_diy_precision('guild_signed_carbon', 0.97) \
-              and self._recog_diy_precision('guild_signed_pill', 0.97) \
-              and self._recog('guild_gold_signed')
+               and self._recog_diy_precision('guild_signed_carbon', 0.97) \
+               and self._recog_diy_precision('guild_signed_pill', 0.97) \
+               and self._recog('guild_gold_signed')
