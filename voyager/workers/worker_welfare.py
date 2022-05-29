@@ -37,7 +37,8 @@ class WelfareWorker(QThread):
 
     def _finish(self, params):
         print("任务执行结束", params)
-        self.worker.stop()
+        if self.worker is not None:
+            self.worker.stop()
         self.working = False
         self.worker = None
 

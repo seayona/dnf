@@ -67,7 +67,8 @@ class AutoWorker(QThread):
         self.switching = False
 
     def finish(self):
-        self.worker.stop()
+        if self.worker is not None:
+            self.worker.stop()
         self.worker = None
         self.working = False
 
