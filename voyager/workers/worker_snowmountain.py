@@ -19,6 +19,7 @@ class GameWorker(QThread):
         self.f = PlayerFightWorker(self.voyager)
         self.a = PlayerAttackWorker(self.voyager)
         self.c = PlayerSkillCooldownWorker(self.voyager)
+        self.count = 0
 
     def init(self):
         self.running = True
@@ -58,14 +59,17 @@ class GameWorker(QThread):
             self.voyager.game.revival()
 
         # 装备修理
-        if not self.voyager.game.repaired and self.voyager.recogbot.bag():
+        if not self.voyager.game.repaired and self.voyager.recogbot.bag() and self.count % 4 == 0:
             print("【雪山】装备与分解修理")
             self.voyager.game.repair_and_sale()
+        else:
+            self.voyager.game.repaired = True
 
         # 再次挑战
-        if self.voyager.recogbot.replay():
+        if self.voyager.recogbot.replay() and self.voyager.game.repaired:
             print("【雪山】再次挑战")
             self.voyager.game.replay()
+            self.count += 1
 
         # 疲劳值不足，选择关卡的时候
         if self.voyager.recogbot.insufficient_balance():
