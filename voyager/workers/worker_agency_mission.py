@@ -32,7 +32,7 @@ class AgencyMissionWorker(QThread):
     def _run(self):
         cls = self.voyager.recogbot.detect()
 
-        if self.count % 5 == 0:
+        if self.count % 3 == 0:
             # 装备修理
             if not self.voyager.game.repaired and cls['bag'][0] and cls['bag'][2] < 200:
                 self.voyager.game.repair_and_sale(cls['bag'])

@@ -59,7 +59,7 @@ class GameWorker(QThread):
             self.voyager.game.revival()
 
         # 装备修理
-        if not self.voyager.game.repaired and self.voyager.recogbot.bag() and self.count % 4 == 0:
+        if not self.voyager.game.repaired and self.voyager.recogbot.bag() and self.count % 3 == 0:
             print("【雪山】装备与分解修理")
             self.voyager.game.repair_and_sale()
         else:
