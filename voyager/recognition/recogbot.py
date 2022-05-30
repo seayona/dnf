@@ -291,3 +291,9 @@ class Recogbot(object):
         if self._recog_diy_precision('guild_signed_book', 0.97):
             return 3
         return -1
+
+    def revival_coin_received(self):
+        return self._recog_if('mall_coin_received', "mall_coin_received_kr")
+
+    def revival_coin_status(self):
+        return self._recog("mall_price") and self._recog_if("mall_purchase", "mall_purchase_kr")

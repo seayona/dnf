@@ -547,18 +547,6 @@ class Game(Concurrency):
         callback()
         self._free()
 
-    async def cb_esc(self):
-        await self._press('esc')
-
-    @idle
-    @asyncthrows
-    async def union_box(self):
-        await self._click_low_precision_callback('guild_box1', callback=self.cb_esc())
-        await self._click_low_precision_callback('guild_box2', callback=self.cb_esc())
-        await self._click_low_precision_callback('guild_box3', callback=self.cb_esc())
-        await self._click_low_precision_callback('guild_box4', callback=self.cb_esc())
-        self._free()
-
     @idle
     @asyncthrows
     async def union_box_sign(self, target, callback):
@@ -569,18 +557,28 @@ class Game(Concurrency):
             # 移动鼠标到按钮位置,点击按钮
             click(x, y - 120)
             await asyncio.sleep(2)
-            await self.cb_esc()
+            await self._press('esc')
             callback()
         self._free()
 
     @idle
     @asyncthrows
-    async def goto_mall(self):
+    async def goto_mall_recovered_product(self):
         print('【探索者】5s后打开商城界面')
         await asyncio.sleep(5)
         if not self._archor('mail'):
             await self._press('esc')
-        await self._press("F7")
+        await self._press("F3")
+        await self._click_if("mall_prop", "mall_prop_kr")
+        await self._click_if("mall_recovered_product", "mall_recovered_product_kr")
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def mall_purchase(self):
+        await self._click_if("mall_purchase", "mall_purchase_kr", 2)
+        await self._click_if("mall_purchase", "mall_purchase_kr", 2)
+        await self._press('esc')
         self._free()
 
     def demon_start(self):
