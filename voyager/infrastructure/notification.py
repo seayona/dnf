@@ -8,7 +8,7 @@ class Notification(object):
     def __init__(self):
         print("【通知】读取通知配置")
         conf = ConfigParser()
-        conf.read('../conf/notification.ini', encoding='UTF-8')
+        conf.read('./conf/notification.ini', encoding='UTF-8')
 
         self.push_server_url = conf.get('Notification', 'PushServerUrl')
         self.token = conf.get('Notification', 'Token')
@@ -22,6 +22,3 @@ class Notification(object):
         if response.status_code == 200:
             print("【通知】通知发送成功")
 
-
-if __name__ == '__main__':
-    Notification().send('teest')
