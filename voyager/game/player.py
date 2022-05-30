@@ -76,6 +76,7 @@ class Player(Concurrency):
 
     def stand(self):
         keyUp('x')
+        press('x')
 
     def finisher(self):
         if self.awake is not None:
