@@ -41,6 +41,10 @@ class WelfareUnionWorker(QThread):
         if self.voyager.recogbot.union_sign():
             self.voyager.game.union_sign()
 
+        box_signed = self.voyager.recogbot.union_box_signed()
+        if box_signed != -1:
+            self._box_signed_true(self.boxs[box_signed])
+
         not_signed_box = list(filter(lambda item: not item['signed'], self.boxs))
         if len(not_signed_box):
             box = not_signed_box[0]

@@ -281,8 +281,13 @@ class Recogbot(object):
     def union_sign_box4(self):
         return self._recog_diy_precision('guild_box4', 0.97)
 
-    def union_signed(self):
-        return self._recog_diy_precision('guild_signed_coin', 0.97) \
-               and self._recog_diy_precision('guild_signed_carbon', 0.97) \
-               and self._recog_diy_precision('guild_signed_pill', 0.97) \
-               and self._recog('guild_gold_signed')
+    def union_box_signed(self):
+        if self._recog_diy_precision('guild_signed_coin', 0.97):
+            return 0
+        if self._recog_diy_precision('guild_signed_pill', 0.97):
+            return 1
+        if self._recog_diy_precision('guild_signed_carbon', 0.97):
+            return 2
+        if self._recog_diy_precision('guild_signed_book', 0.97):
+            return 3
+        return -1
