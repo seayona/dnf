@@ -22,7 +22,6 @@ class ValleyWorker(QThread):
         self.s = PlayerSkillCooldownWorker(self.voyager)
         self.a = PlayerAttackWorker(self.voyager)
 
-
     def init(self):
         self.running = True
         self.workers = [self.f, self.s, self.a]
@@ -38,10 +37,17 @@ class ValleyWorker(QThread):
             self.voyager.player.over_valley()
             self.voyager.game.esc()
             self.voyager.game.esc()
+            return
+
+        if self.voyager.recogbot.town() and not self.voyager.player.valley:
             self.trigger.emit(str('stop'))
             return
 
-        # 发现祥瑞溪谷入口
+        if not self.voyager.player.valley and not self.voyager.recogbot.town():
+            self.voyager.game.esc()
+            return
+
+            # 发现祥瑞溪谷入口
         if self.voyager.recogbot.daily_valley():
             print("【祥瑞溪谷】发现祥瑞溪谷入口！")
             self.voyager.game.valley_fight()
