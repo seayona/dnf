@@ -379,7 +379,8 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def switch(self, player, callback):
-        await self._press('esc')
+        if not self._archor('player_create_grey') and not self._archor('player_create'):
+            await self._press('esc')
         # 选择角色
         await self._click('switch')
         # 等待7秒加载选择角色界面
