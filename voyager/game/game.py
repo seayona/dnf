@@ -379,53 +379,29 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def switch(self, player, callback):
-        if not self._archor('player_create_grey') and not self._archor('player_create'):
-            await self._press('esc')
-        # 选择角色
-        await self._click('switch')
-        # 等待7秒加载选择角色界面
-        await asyncio.sleep(7)
-        # 选择角色
+        if not self._archor('choose') and not not self._archor('choose_kr'):
+            await self._goto_choose_player()
+        else:
+            await self._switch_find_player(player, callback)
+        self._free()
+
+    async def _goto_choose_player(self):
+        top_left = self._archor('activity')
+        if top_left:
+            x, y = top_left
+            await self._click_xy(x + 120, y)
+            # 选择角色
+            await self._click('switch')
+
+    async def _switch_find_player(self, player, callback):
+        print('【选择角色】当前页没找到，翻到下页')
+        await self._player_switch_next()
+        await asyncio.sleep(1.5)
         target = 'players/' + player
         top_left = self._archor_low_precision(target)
         if top_left:
             await self._player_switch(target)
-            self._free()
             callback(player)
-            return
-        print('【选择角色】第一页没找到，翻到第二页')
-        # 翻到第二页
-        await self._player_switch_next()
-        await asyncio.sleep(1.5)
-        top_left = self._archor_low_precision(target)
-        if top_left:
-            await self._player_switch(target)
-            self._free()
-            callback(player)
-            return
-
-        print('【选择角色】第二页没找到，翻到第三页')
-        # 翻到第三页
-        await self._player_switch_next()
-        await asyncio.sleep(1.5)
-        top_left = self._archor_low_precision(target)
-        if top_left:
-            await self._player_switch(target)
-            self._free()
-            callback(player)
-            return
-        self._free()
-        print('【选择角色】第三页没找到，翻到第四页')
-        # 翻到第四页
-        await self._player_switch_next()
-        await asyncio.sleep(1.5)
-        top_left = self._archor_low_precision(target)
-        if top_left:
-            await self._player_switch(target)
-            self._free()
-            callback(player)
-            return
-        self._free()
 
     @idle
     @asyncthrows
