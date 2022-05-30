@@ -413,6 +413,17 @@ class Game(Concurrency):
             callback(player)
             return
         self._free()
+        print('【选择角色】第三页没找到，翻到第四页')
+        # 翻到第四页
+        await self._player_switch_next()
+        await asyncio.sleep(1.5)
+        top_left = self._archor_low_precision(target)
+        if top_left:
+            await self._player_switch(target)
+            self._free()
+            callback(player)
+            return
+        self._free()
 
     @idle
     @asyncthrows
@@ -535,59 +546,21 @@ class Game(Concurrency):
         callback()
         self._free()
 
-    @idle
-    @asyncthrows
-    async def union_sign_box1(self):
-        async def cb_esc():
-            await self._press('esc')
-
-        await self._click_low_precision_callback('guild_box1', callback=cb_esc)
-        self._free()
-
-    @idle
-    @asyncthrows
-    async def union_sign_box2(self):
-        async def cb_esc():
-            await self._press('esc')
-
-        await self._click_low_precision_callback('guild_box2', callback=cb_esc)
-        self._free()
-
-    @idle
-    @asyncthrows
-    async def union_sign_box3(self):
-        async def cb_esc():
-            await self._press('esc')
-
-        await self._click_low_precision_callback('guild_box3', callback=cb_esc)
-        self._free()
-
-    @idle
-    @asyncthrows
-    async def union_sign_box4(self):
-        async def cb_esc():
-            await self._press('esc')
-
-        await self._click_low_precision_callback('guild_box4', callback=cb_esc)
-        self._free()
+    async def cb_esc(self):
+        await self._press('esc')
 
     @idle
     @asyncthrows
     async def union_box(self):
-        async def cb_esc():
-            await self._press('esc')
-
-        await self._click_low_precision_callback('guild_box1', callback=cb_esc)
-        await self._click_low_precision_callback('guild_box2', callback=cb_esc)
-        await self._click_low_precision_callback('guild_box3', callback=cb_esc)
-        await self._click_low_precision_callback('guild_box4', callback=cb_esc)
+        await self._click_low_precision_callback('guild_box1', callback=self.cb_esc())
+        await self._click_low_precision_callback('guild_box2', callback=self.cb_esc())
+        await self._click_low_precision_callback('guild_box3', callback=self.cb_esc())
+        await self._click_low_precision_callback('guild_box4', callback=self.cb_esc())
         self._free()
 
     @idle
     @asyncthrows
     async def union_box_sign(self, target, callback):
-        async def cb_esc():
-            await self._press('esc')
 
         top_left = self._archor_low_precision(target)
         if top_left:
@@ -595,8 +568,19 @@ class Game(Concurrency):
             # 移动鼠标到按钮位置,点击按钮
             click(x, y - 120)
             await asyncio.sleep(2)
-            await cb_esc()
+            await self.cb_esc()
             callback()
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def revival_coin_get(self):
+        print('【探索者】5s后打开商城界面')
+        await asyncio.sleep(5)
+        if not self._archor('mail'):
+            await self._press('esc')
+        await self._press("F7")
+
         self._free()
 
     def demon_start(self):

@@ -17,7 +17,7 @@ class Player(Concurrency):
         # 疲劳值
         self.pl = 100
         # 福利
-        self.welfare = False
+        self.welfare = {'union': False, 'revival_coin': False}
         # 技能
         self.skills = {}
         # Buff
@@ -84,7 +84,6 @@ class Player(Concurrency):
             self.awake.cast()
             self._attack()
 
-
     def right(self):
         keyDown('right')
 
@@ -100,8 +99,8 @@ class Player(Concurrency):
     def over_valley(self):
         self.valley = 0
 
-    def over_welfare(self):
-        self.welfare = True
+    def over_welfare(self, scene):
+        self.welfare[scene] = True
 
     # 自动释放buff
     def release_buff(self, key):
