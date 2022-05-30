@@ -149,6 +149,7 @@ class Game(Concurrency):
     @asyncthrows
     async def replay(self):
         self.reset()
+        await asyncio.sleep(5)
         await self._click_if_low_precision('replay', 'replay_kr')
         await self._click_if('confirm', 'confirm_kr')
         print('【探索者】开始再次挑战')
@@ -574,13 +575,12 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def revival_coin_get(self):
+    async def goto_mall(self):
         print('【探索者】5s后打开商城界面')
         await asyncio.sleep(5)
         if not self._archor('mail'):
             await self._press('esc')
         await self._press("F7")
-
         self._free()
 
     def demon_start(self):
