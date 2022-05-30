@@ -16,7 +16,7 @@ class PlayerMissionFightWorker(QThread):
 
     def _run(self):
         cls = self.voyager.recogbot.detect()
-        if cls['combo'][0] and cls['avatar'][0]:
+        if (cls['combo'][0] and cls['avatar'][0]) or (cls['combo'][0] and cls['boss'][0]):
             print("【目标检测】还有小可爱活着，无脑输出")
             self.voyager.player.cast()
             self.voyager.matric.combo(cls['combo'])
