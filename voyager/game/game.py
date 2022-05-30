@@ -149,7 +149,7 @@ class Game(Concurrency):
     @asyncthrows
     async def replay(self):
         self.reset()
-        await asyncio.sleep(3)
+        await asyncio.sleep(4)
         await self._click_if_low_precision('replay', 'replay_kr')
         await self._click_if('confirm', 'confirm_kr')
         print('【探索者】开始再次挑战')
