@@ -38,8 +38,8 @@ class AgencyMissionWorker(QThread):
                 self.voyager.game.repair_and_sale(cls['bag'])
         else:
             self.voyager.game.repaired = True
-        if not self.voyager.game.repaired and cls['bag'][0] and cls['bag'][2] < 200:
-            self.voyager.game.repair_and_sale(cls['bag'])
+        # if not self.voyager.game.repaired and cls['bag'][0] and cls['bag'][2] < 200:
+        #     self.voyager.game.repair_and_sale(cls['bag'])
 
         # 出现游戏教程，对话时按Esc跳过
         if cls['skip'][0] or cls['tutorial'][0]:

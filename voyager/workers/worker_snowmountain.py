@@ -57,12 +57,12 @@ class GameWorker(QThread):
         if self.voyager.recogbot.dead():
             print("【雪山】死亡")
             self.voyager.game.revival()
-
+        cls = self.voyager.recogbot.detect()
         # 装备修理
         if self.count % 4 == 0:
-            if not self.voyager.game.repaired and self.voyager.recogbot.bag():
+            if not self.voyager.game.repaired and cls['bag'][2] < 200:
                 print("【雪山】装备与分解修理")
-                self.voyager.game.repair_and_sale()
+                self.voyager.game.repair_and_sale(cls['bag'])
         else:
             self.voyager.game.repaired = True
 
