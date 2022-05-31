@@ -213,8 +213,8 @@ class Recogbot(object):
     def sylia(self):
         return self._recog_if('sylia', 'sylia_kr')
 
-    def insufficient_balance_mission(self):
-        return self._recog_low_precision('insufficient_balance_mission')
+    def insufficient_balance_entry(self):
+        return self._recog_low_precision('insufficient_balance_entry')
 
     def agency_mission_confirm(self):
         return self._recog_if('agency_mission_confirm', 'agency_mission_confirm_kr')
@@ -282,6 +282,9 @@ class Recogbot(object):
         return self._recog_diy_precision('guild_signed_carbon', 0.97)
 
     def union_box4_signed(self):
+        return self._recog_diy_precision('guild_signed_book', 0.97)
+
+    def union_box5_signed(self):
         return self._recog_diy_precision('guild_signed_book', 0.97)
 
     def union_box_signed(self, index):

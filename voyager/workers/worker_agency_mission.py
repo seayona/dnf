@@ -71,7 +71,7 @@ class AgencyMissionWorker(QThread):
             self.voyager.game.revival()
 
         # 疲劳值不足
-        if self.voyager.recogbot.insufficient_balance_mission():
+        if self.voyager.recogbot.insufficient_balance_entry():
             self.voyager.game.agency_mission_finish()
             self.voyager.player.over_fatigued()
             self.trigger.emit(str('stop'))

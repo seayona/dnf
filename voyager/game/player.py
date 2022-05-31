@@ -17,7 +17,7 @@ class Player(Concurrency):
         # 疲劳值
         self.pl = 100
         # 福利
-        self.welfare = {'union': False, 'revival_coin': False}
+        self.welfare = {'union': False, 'revival_coin': False, 'daily': False}
         # 技能
         self.skills = {}
         # Buff
@@ -87,6 +87,11 @@ class Player(Concurrency):
 
     def right(self):
         keyDown('right')
+
+    def stop_right(self, callback):
+        keyUp('right')
+        press('right')
+        callback()
 
     def tired(self):
         return self.pl == 0

@@ -471,7 +471,7 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def heaven_mission_receive(self):
-        await self._click('heaven_mission_receive')
+        await self._click_if('heaven_mission_receive', 'heaven_mission_receive_kr')
         print('【探索者】天界任务领取')
         self._free()
 
@@ -554,7 +554,7 @@ class Game(Concurrency):
     @asyncthrows
     async def mall_purchase(self):
         await self._click_if("mall_purchase", "mall_purchase_kr", 2)
-        await self._click_if("mall_purchase", "mall_purchase_kr", 2)
+        await self._click_if("mall_purchase", "mall_purchase2_kr", 2)
         await self._press('esc')
         self._free()
 

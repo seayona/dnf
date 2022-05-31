@@ -10,16 +10,21 @@ class PlayerFightWorker(QThread):
         super(PlayerFightWorker, self).__init__()
         self.voyager = voyager
         self.running = False
+        self.is_meeting_lion = False
 
     def init(self):
         self.running = True
+
+    def meeting_lion(self):
+        self.is_meeting_lion = True
 
     def _run(self):
         cls = self.voyager.recogbot.detect()
 
         # 发现狮子头入口
         if self.voyager.game.lionAlive and cls['door'][0] and cls['lion_entry'][0]:
-            print("【雪山战斗】发现狮子头入口!")
+            print("【雪山战斗】发现狮子头入口!", self.voyager.game.lionAlive)
+            self.is_meeting_lion = False
             self.voyager.player.stand()
             self.voyager.player.right()
 
@@ -37,6 +42,9 @@ class PlayerFightWorker(QThread):
         # 狮子头
         if cls['lion'][0]:
             print("【雪山战斗】发现狮子头!")
+            if not self.is_meeting_lion:
+                self.voyager.player.stop_right(lambda: self.meeting_lion())
+                
             self.voyager.game.lion_clear()
             self.voyager.player.attack()
             self.voyager.player.finisher()

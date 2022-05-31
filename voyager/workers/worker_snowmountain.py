@@ -73,7 +73,7 @@ class GameWorker(QThread):
             self.count += 1
 
         # 疲劳值不足，选择关卡的时候
-        if self.voyager.recogbot.insufficient_balance():
+        if self.voyager.recogbot.insufficient_balance() or self.voyager.recogbot.insufficient_balance_entry():
             print("【雪山】疲劳值不足")
             self.voyager.player.over_fatigued()
             self.voyager.game.town()
