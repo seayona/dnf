@@ -85,13 +85,19 @@ class Player(Concurrency):
             self.awake.cast()
             self._attack()
 
-    def right(self):
+    @idle
+    @asyncthrows
+    async def right(self):
         keyDown('right')
+        await asyncio.sleep(2)
+        self.stop_right()
+        self._free()
 
-    def stop_right(self, callback):
+    def stop_right(self, callback=None):
         keyUp('right')
         press('right')
-        callback()
+        if callback is not None:
+            callback()
 
     def tired(self):
         return self.pl == 0
