@@ -382,14 +382,14 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def switch(self, player, callback):
-        if not self._archor('choose') and not not self._archor('choose_kr'):
+        if self._archor('choose') is None and self._archor('choose_kr') is None:
             await self._goto_choose_player()
         else:
             await self._switch_find_player(player, callback)
         self._free()
 
     async def _goto_choose_player(self):
-        top_left = self._archor('activity')
+        top_left = self._archor_low_precision('activity')
         if top_left:
             x, y = top_left
             await self._click_xy(x + 120, y)
