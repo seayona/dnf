@@ -32,7 +32,7 @@ class GameWorker(QThread):
         if self.voyager.player.tired() and (self.voyager.recogbot.jump() or self.voyager.recogbot.result()):
             print("【雪山】疲劳值不足")
             self.voyager.game.town()
-
+        print(self.voyager.recogbot.town(), self.voyager.player.tired())
         # 疲劳值未耗尽，人在城镇中，去搬砖
         if self.voyager.recogbot.town() and not self.voyager.player.tired():
             print("【一键搬砖】5秒后前往雪山")
@@ -58,10 +58,10 @@ class GameWorker(QThread):
             print("【雪山】死亡")
             self.voyager.game.revival()
         cls = self.voyager.recogbot.detect()
-        # 装备修理
+        # # 装备修理
         if self.count % 4 == 0:
-            if not self.voyager.game.repaired and cls['bag'][2] < 200:
-                print("【雪山】装备与分解修理")
+            if not self.voyager.game.repaired and cls['bag'][0] and cls['bag'][2] < 200:
+                print("【雪山】装备与分解修理", cls['bag'])
                 self.voyager.game.repair_and_sale(cls['bag'])
         else:
             self.voyager.game.repaired = True
