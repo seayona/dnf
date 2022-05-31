@@ -42,7 +42,7 @@ class AgencyMissionWorker(QThread):
         #     self.voyager.game.repair_and_sale(cls['bag'])
 
         # 出现游戏教程，对话时按Esc跳过
-        if cls['skip'][0] or cls['tutorial'][0]:
+        if cls['skip'][0] or cls['tutorial'][0] or self.voyager.recogbot.talk_skip():
             self.voyager.game.esc()
 
         # 地下城里面点击下个任务

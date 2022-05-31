@@ -250,7 +250,7 @@ class Recogbot(object):
         return self._recog_if('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
 
     def heaven_mission_receive(self):
-        return self._recog('heaven_mission_receive')
+        return self._recog_if('heaven_mission_receive', 'heaven_mission_receive_kr')
 
     def _recog_cheap(self, target):
         max_val = self._match_max_val(target)
@@ -266,31 +266,28 @@ class Recogbot(object):
         max_val = self._match_max_val(target)
         return low <= max_val <= height
 
+    def talk_skip(self):
+        return self._recog_low_precision_if('talk_skip_kr', 'talk_skip')
+
     def union_sign(self):
         return self._recog('guild_sign')
 
-    def union_sign_box1(self):
-        return self._recog_diy_precision('guild_box1', 0.97)
+    def union_box1_signed(self):
+        return self._recog_diy_precision('guild_signed_coin', 0.97)
 
-    def union_sign_box2(self):
-        return self._recog_diy_precision('guild_box2', 0.97)
+    def union_box2_signed(self):
+        return self._recog_diy_precision('guild_signed_pill', 0.97)
 
-    def union_sign_box3(self):
-        return self._recog_diy_precision('guild_box3', 0.97)
+    def union_box3_signed(self):
+        return self._recog_diy_precision('guild_signed_carbon', 0.97)
 
-    def union_sign_box4(self):
-        return self._recog_diy_precision('guild_box4', 0.97)
+    def union_box4_signed(self):
+        return self._recog_diy_precision('guild_signed_book', 0.97)
 
-    def union_box_signed(self):
-        if self._recog_diy_precision('guild_signed_coin', 0.97):
-            return 0
-        if self._recog_diy_precision('guild_signed_pill', 0.97):
-            return 1
-        if self._recog_diy_precision('guild_signed_carbon', 0.97):
-            return 2
-        if self._recog_diy_precision('guild_signed_book', 0.97):
-            return 3
-        return -1
+    def union_box_signed(self, index):
+        fun_name = "union_box{}_signed".format(index + 1)
+        fun = getattr(self, fun_name)
+        return fun()
 
     def revival_coin_received(self):
         return self._recog_if('mall_coin_received', "mall_coin_received_kr")
