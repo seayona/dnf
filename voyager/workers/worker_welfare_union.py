@@ -20,7 +20,8 @@ class WelfareUnionWorker(QThread):
     def _init_box(self):
         self.boxs = []
         for i in range(5):
-            self.boxs.append({'signed': False, 'target': "union_box{}_helper".format(i + 1)})
+            self.boxs.append({'signed': False, 'target': "union_box{}_helper".format(i + 1),
+                              'target_kr': "union_box{}_helper_kr".format(i + 1)})
 
     def _box_signed_true(self, box):
         box['signed'] = True
@@ -51,7 +52,7 @@ class WelfareUnionWorker(QThread):
         not_signed_box = list(filter(lambda item: not item['signed'], self.boxs))
         if len(not_signed_box):
             box = not_signed_box[0]
-            self.voyager.game.union_box_sign(box['target'], lambda: self._box_signed_true(box))
+            self.voyager.game.union_box_sign(box['target'], box['target_kr'], lambda: self._box_signed_true(box))
 
         if not self.voyager.recogbot.union_sign() and len(not_signed_box) == 0:
             print("【公会福利】工会福利领取完成")

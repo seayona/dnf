@@ -39,6 +39,9 @@ class Game(Concurrency):
             x, y = top_left
             return x + 10, y + 8
 
+    def _archor_low_precision_if(self, target, target2, img=None):
+        return self._archor_low_precision(target, img) or self._archor_low_precision(target2, img)
+
     async def _click(self, target, sleep=1, img=None):
         top_left = self._archor(target, img)
         if top_left:
@@ -526,9 +529,9 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def union_box_sign(self, target, callback):
+    async def union_box_sign(self, target, target_kr, callback):
 
-        top_left = self._archor_low_precision(target)
+        top_left = self._archor_low_precision_if(target, target_kr)
         if top_left:
             x, y = top_left
             # 移动鼠标到按钮位置,点击按钮
@@ -536,6 +539,7 @@ class Game(Concurrency):
             await asyncio.sleep(2)
             await self._press('esc')
             callback()
+
         self._free()
 
     @idle
