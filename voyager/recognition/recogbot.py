@@ -300,3 +300,26 @@ class Recogbot(object):
 
     def revival_coin_status(self):
         return self._recog("mall_price") and self._recog_if("mall_purchase", "mall_purchase_kr")
+
+    def disrepair(self):
+        return self._recog('disrepair')
+
+    def get_all(self):
+        return self._recog_if('get_all', 'get_all_kr')
+
+    def achievement_daily_sella(self):
+        return self._recog('achievement_daily_sella')
+
+    def achievement_daily_active(self):
+        return self._recog_if('achievement_daily_active', 'achievement_daily_active_kr')
+
+    def achievement_weekly_active(self):
+        return self._recog_if('achievement_weekly_active', 'achievement_weekly_active_kr')
+
+    def achievement_daily_box(self):
+        return self._recog('achievement_daily_3') or self._recog('achievement_daily_6') or self._recog(
+            'achievement_daily_9')
+
+    def achievement_weekly_box(self):
+        return self._recog('achievement_weekly_2') or self._recog('achievement_weekly_4') or self._recog(
+            'achievement_weekly_6') or self._recog('achievement_weekly_8') or self._recog('achievement_weekly_10')

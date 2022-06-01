@@ -88,6 +88,10 @@ class GameWorker(QThread):
         if self.voyager.recogbot.town() and self.voyager.player.tired():
             self.trigger.emit(str('stop'))
 
+        # 武器报废
+        if self.voyager.recogbot.disrepair():
+            self.voyager.game.repair()
+
         # 出现确认的弹框？
         if self.voyager.recogbot.confirm():
             self.voyager.game.confirm()
