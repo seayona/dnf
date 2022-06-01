@@ -397,14 +397,16 @@ class Game(Concurrency):
             await self._click('switch')
 
     async def _switch_find_player(self, player, callback):
-        print('【选择角色】当前页没找到，翻到下页')
-        await self._player_switch_next()
-        await asyncio.sleep(1.5)
+
         target = 'players/' + player
         top_left = self._archor_low_precision(target)
         if top_left:
             await self._player_switch(target)
             callback(player)
+            return
+        print('【选择角色】当前页没找到，翻到下页')
+        await self._player_switch_next()
+        await asyncio.sleep(1.5)
 
     @idle
     @asyncthrows

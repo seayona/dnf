@@ -121,6 +121,9 @@ class Recogbot(object):
     def boss_valley(self):
         return self._recog('valley_boss')
 
+    def valley_confirm_grey(self):
+        return self._recog_if("valley_confirm_grey", "valley_confirm_grey_kr")
+
     def bag(self):
         return self._recog('bag')
 
