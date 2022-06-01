@@ -32,7 +32,7 @@ class ValleyWorker(QThread):
         if self.voyager.recogbot.town():
             self.voyager.game.valley_start()
 
-        if self.voyager.recogbot.daliy_valley_completed():
+        if self.voyager.recogbot.daliy_valley_completed() or self.voyager.recogbot.valley_confirm_grey():
             print(f"【祥瑞溪谷】祥瑞溪谷已刷完！{self.voyager.player}")
             self.voyager.player.over_valley()
             self.voyager.game.esc()
