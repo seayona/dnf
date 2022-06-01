@@ -105,3 +105,13 @@ if __name__ == "__main__":
                     print("【目标检测】检测到游戏教程", (x, y))
                 if names[int(cls)] == 'combo' and float(f'{conf:.2f}') > 0.5:
                     print("【目标检测】检测到游戏教程", (x, y))
+                if names[int(cls)] == 'close' and float(f'{conf:.2f}') > 0.5:
+                    print("【目标检测】检测到菜单关闭按钮", (x, y))
+                if names[int(cls)] == 'switch' and float(f'{conf:.2f}') > 0.5:
+                    print("【目标检测】检测到角色切换按钮", (x, y))
+                if names[int(cls)] == 'menu' and float(f'{conf:.2f}') > 0.5:
+                    print("【目标检测】检测到菜单按钮", (x, y))
+                if names[int(cls)] == 'setting' and float(f'{conf:.2f}') > 0.5:
+                    print("【目标检测】检测到设置按钮", (x, y))
+                if names[int(cls)] == 'box' and float(f'{conf:.2f}') > 0.5:
+                    print("【目标检测】检测到宝箱", (x, y))
