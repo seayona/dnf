@@ -69,6 +69,12 @@ class GameWorker(QThread):
             print("【雪山】死亡")
             self.voyager.game.revival()
 
+        # 疲劳值不足，再次挑战的时候
+        if self.voyager.recogbot.insufficient_balance():
+            print("【雪山】疲劳值不足")
+            self.voyager.player.over_fatigued()
+            self.voyager.game.confirm()
+
         # 疲劳值不足，选择关卡的时候
         if self.voyager.recogbot.insufficient_balance_entry():
             print("【雪山】疲劳值不足")

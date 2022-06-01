@@ -165,6 +165,9 @@ class Recogbot(object):
     def equip(self):
         return self._recog_if('equip', 'equip_kr')
 
+    def insufficient_balance(self):
+        return self._recog_low_precision_if('insufficient_balance', 'insufficient_balance_kr')
+
     def insufficient_balance_entry(self):
         return self._recog_low_precision('insufficient_balance_entry')
 

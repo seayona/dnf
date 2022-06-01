@@ -26,7 +26,7 @@ class AutoStriveWorker(AutoWorker):
         self.a = GameWorker(self.voyager)
         self.a.trigger.connect(self.finish)
 
-        self.workers = [self.a, self.w, self.v]
+        self.workers = [self.v, self.w, self.a]
 
     def init(self):
         self.running = True
