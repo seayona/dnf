@@ -566,3 +566,67 @@ class Game(Concurrency):
 
     def demon_start(self):
         pass
+
+    @idle
+    @asyncthrows
+    async def repair(self):
+        await self._click('disrepair')
+        await self._click_if('repair_confirm', 'repair_confirm_kr')
+
+    @idle
+    @asyncthrows
+    async def goto_achievement(self):
+        print('【探索者】5s后打开成就界面')
+        await asyncio.sleep(5)
+        await self._click('active')
+        await self._click('achievement')
+        self._free()
+
+    async def _achievement_box(self, targets):
+        await asyncio.sleep(1)
+        top_left = self._archor(targets.pop())
+        if top_left:
+            x, y = top_left
+            await self._click_xy(x, y - 100, 2)
+            self._press('esc')
+
+    @idle
+    @asyncthrows
+    async def achievement_daily_box(self):
+        print('【成就】领取每日箱子')
+        targets = ['achievement_daily_3', 'achievement_daily_6', 'achievement_daily_9']
+        self._achievement_box(targets)
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def achievement_get_all(self):
+        print('【成就】一键领取')
+        self._click_if('get_all', 'get_all_kr', 3)
+        self._press('esc')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def achievement_daily_sella(self):
+        print('【成就】领取泰拉箱子')
+        self._click('achievement_daily_sella')
+        self._click_if("achievement_sella_box_use", "achievement_sella_box_use_kr", 2)
+        self._press('esc')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def goto_achievement_weekly(self):
+        print('【成就】转到每周福利')
+        self._click_if('achievement_daily_dis', 'achievement_daily_dis_kr')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def achievement_weekly_box(self):
+        print('【成就】领取每周箱子')
+        targets = ['achievement_weekly_2', 'achievement_weekly_4', 'achievement_weekly_6', 'achievement_weekly_8',
+                   'achievement_weekly_10']
+        self._achievement_box(targets)
+        self._free()
