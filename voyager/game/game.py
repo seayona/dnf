@@ -372,11 +372,16 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def goto_choose_player(self, cls):
+    async def open_menu(self, menu):
         # 点击菜单
-        await self._click_xy(cls['menu'][1], cls['menu'][2])
-        # 点击选择角色
-        await self._click_xy(cls['switch'][1], cls['switch'][2])
+        await self._click_xy(menu[1], menu[2])
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def switch_player(self, switch):
+        # 点击菜单
+        await self._click_xy(switch[1], switch[2])
         # 等待选择角色页面出现
         await asyncio.sleep(5)
         self._free()
