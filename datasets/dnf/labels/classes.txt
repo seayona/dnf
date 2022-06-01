@@ -8,3 +8,14 @@ skip
 lion_entry
 combo
 door
+passing
+box
+close
+switch
+menu
+setting
+buff
+jump
+result
+skill
+demon

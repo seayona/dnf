@@ -14,9 +14,8 @@ val: images  # val images (relative to 'path') 128 images
 test:  # test images (optional)
 
 # Classes
-nc: 10  # number of classes
-names: [ 'lion','boss','avatar','next','bag','tutorial','skip','lion_entry','combo','door' ]  # class names
-
+nc: 21  # number of classes
+names: [ 'lion','boss','avatar','next','bag','tutorial','skip','lion_entry','combo','door','passing','box','close','switch','menu','setting','buff','jump','result','skill','demon' ]  # class names
 
 # Download script/URL (optional)
 #download: https://ultralytics.com/assets/coco128.zip
