@@ -62,18 +62,14 @@ class AgencyMissionWorker(QThread):
             print("【目标检测】战斗奖励，战斗结束!")
             self.voyager.game.reward()
 
-        # 返回
-        if self.voyager.recogbot.back():
-            self.voyager.game.back()
-
         # 死亡
         if self.voyager.recogbot.dead():
             self.voyager.game.revival()
 
         # 疲劳值不足
         if self.voyager.recogbot.insufficient_balance_entry():
-            self.voyager.game.agency_mission_finish()
             self.voyager.player.over_fatigued()
+            self.voyager.game.agency_mission_finish()
             self.trigger.emit(str('stop'))
 
         if self.voyager.recogbot.next_agency():

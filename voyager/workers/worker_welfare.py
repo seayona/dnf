@@ -49,7 +49,6 @@ class WelfareWorker(QThread):
             self.working = True
 
         if not self.working and len(self.workers) == 0:
-            self.voyager.game.back()
             self.trigger.emit(str('stop'))
 
     def run(self):

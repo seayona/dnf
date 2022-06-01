@@ -39,12 +39,15 @@ class PlayerFightWorker(QThread):
             print("【雪山战斗】发现Boss!")
             self.voyager.player.finisher()
 
+        if cls['demon'][0]:
+            print("【雪山战斗】发现深渊恶魔!")
+            self.voyager.player.finisher()
+
         # 狮子头
         if cls['lion'][0]:
             print("【雪山战斗】发现狮子头!")
             if not self.is_meeting_lion:
                 self.voyager.player.stop_right(lambda: self.meeting_lion())
-                
             self.voyager.game.lion_clear()
             self.voyager.player.attack()
             self.voyager.player.finisher()

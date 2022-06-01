@@ -5,8 +5,6 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from .auto_worker import AutoWorker
 
 from .worker_welfare import WelfareWorker
-from .worker_welfare_union import WelfareUnionWorker
-from .worker_welfare_revival_coin import WelfareRevivalCoinWorker
 
 
 class AutoWelfareWorker(AutoWorker):

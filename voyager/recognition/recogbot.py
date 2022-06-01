@@ -36,28 +36,19 @@ class Recogbot(object):
         max_val = self._match_max_val(target2)
         return 0.99 < max_val <= 1
 
-    def loveyAlive(self):
-        pred, names = detect()
-        for i, det in enumerate(pred):
-            if len(det) < 1:
-                continue
-            for *_, conf, cls in reversed(det):
-                if names[int(cls)] == 'avatar' and float(f'{conf:.2f}') > 0.5:
-                    return True
-                if names[int(cls)] == 'lion' and float(f'{conf:.2f}') > 0.5:
-                    return True
-                if names[int(cls)] == 'boss' and float(f'{conf:.2f}') > 0.5:
-                    return True
-                if names[int(cls)] == 'next' and float(f'{conf:.2f}') > 0.5:
-                    return False
-                if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.5:
-                    return False
-        return False
+    def _recog_cheap(self, target):
+        max_val = self._match_max_val(target)
+        return 0.9 < max_val <= 1
+
+    def _recog_diy_precision(self, target, low, height=1):
+        max_val = self._match_max_val(target)
+        return low <= max_val <= height
 
     def detect(self):
         pred, names = detect()
         result = {}
-        for s in ['lion', 'boss', 'avatar', 'next', 'bag', 'tutorial', 'skip', 'lion_entry', 'combo', 'door']:
+        for s in ['lion', 'boss', 'avatar', 'next', 'bag', 'tutorial', 'skip', 'lion_entry', 'combo', 'door', 'passing',
+                  'box', 'close', 'switch', 'menu', 'setting', 'buff', 'jump', 'result', 'skill', 'demon']:
             result[s] = (False, 0, 0)
         for i, det in enumerate(pred):
             if len(det) < 1:
@@ -94,17 +85,43 @@ class Recogbot(object):
                 if names[int(cls)] == 'door' and float(f'{conf:.2f}') > 0.5:
                     print("【实时检测】连击数", (x, y))
                     result['door'] = (True, x, y)
+                if names[int(cls)] == 'close' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到菜单关闭按钮", (x, y))
+                    result['close'] = (True, x, y)
+                if names[int(cls)] == 'switch' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到角色切换按钮", (x, y))
+                    result['switch'] = (True, x, y)
+                if names[int(cls)] == 'menu' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到菜单按钮", (x, y))
+                    result['menu'] = (True, x, y)
+                if names[int(cls)] == 'buff' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到角色Buff", (x, y))
+                    result['buff'] = (True, x, y)
+                if names[int(cls)] == 'jump' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到跳跃按钮", (x, y))
+                    result['jump'] = (True, x, y)
+                if names[int(cls)] == 'setting' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到设置按钮", (x, y))
+                    result['setting'] = (True, x, y)
+                if names[int(cls)] == 'box' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到宝箱", (x, y))
+                    result['box'] = (True, x, y)
+                if names[int(cls)] == 'demon' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到深渊恶魔", (x, y))
+                    result['demon'] = (True, x, y)
+                if names[int(cls)] == 'passing' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到传送门", (x, y))
+                    result['passing'] = (True, x, y)
+                if names[int(cls)] == 'result' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到战斗结果", (x, y))
+                    result['result'] = (True, x, y)
+                if names[int(cls)] == 'skill' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到技能按钮", (x, y))
+                    result['skill'] = (True, x, y)
         return result
 
-    def lion(self):
-        pred, names = detect()
-        for i, det in enumerate(pred):
-            if len(det) < 1:
-                continue
-            for *_, conf, cls in reversed(det):
-                if names[int(cls)] == 'lion' and float(f'{conf:.2f}') > 0.6:
-                    return True
-        return False
+    def start_game(self):
+        return self._recog_if('choose', 'choose_kr')
 
     def reward(self):
         return self._recog('reward')
@@ -115,26 +132,8 @@ class Recogbot(object):
     def clear(self):
         return self._recog('go')
 
-    def boss(self):
-        return self._recog('boss')
-
-    def boss_valley(self):
-        return self._recog('valley_boss')
-
     def valley_confirm_grey(self):
         return self._recog_if("valley_confirm_grey", "valley_confirm_grey_kr")
-
-    def bag(self):
-        return self._recog('bag')
-
-    def result(self):
-        return self._recog_low_precision('result')
-
-    def active(self):
-        return self._recog('active')
-
-    def daily(self):
-        return self._recog('daily')
 
     def daily_valley(self):
         return self._recog('valley')
@@ -151,40 +150,11 @@ class Recogbot(object):
     def dead(self):
         return self._recog_if('dead', 'dead_kr')
 
-    def insufficient_balance(self):
-        return self._recog_low_precision_if('insufficient_balance', 'insufficient_balance_kr')
-
     def lion_clear(self):
         return self._recog('lion_clear')
 
-    def detect_skip(self):
-        pred, names = detect()
-        skip = False
-        for i, det in enumerate(pred):
-            if len(det) < 1:
-                continue
-            for *xyxy, conf, cls in reversed(det):
-                x, y = (int(xyxy[0]), int(xyxy[1]))
-                if names[int(cls)] == 'skip' and float(f'{conf:.2f}') > 0.8:
-                    skip = True
-                    print("检测到对话", (x, y))
-                if names[int(cls)] == 'tutorial' and float(f'{conf:.2f}') > 0.6:
-                    skip = True
-                    print("【目标检测】检测到教程", (x, y))
-        return skip
-
     def confirm(self):
         return self._recog_if('confirm', 'confirm_kr')
-
-    def setting(self):
-        return self._recog('setting')
-
-    def next(self):
-        img = capture(990, 0, 300, 380)
-        # 检测目标位置
-        max_val, img, top_left, right_bottom = match(img, f'./game/scene/next.png')
-        # print(f'【模板匹配】 {target} {max_val}')
-        return 0.94 < max_val <= 1
 
     def next_agency(self):
         return self._recog('next_agency')
@@ -194,27 +164,6 @@ class Recogbot(object):
 
     def equip(self):
         return self._recog_if('equip', 'equip_kr')
-
-    def click_close(self):
-        return self._recog_low_precision('click_close')
-
-    def back(self):
-        return self._recog('back')
-
-    def lion_entry2(self):
-        return self._recog_low_precision('lion_entry')
-
-    def lion_entry1(self):
-        return self._recog_low_precision('lion_entry2')
-
-    def lion_entry(self):
-        return self._recog_low_precision('lion')
-
-    def insufficient_balance_demon(self):
-        return self._recog_low_precision_if('insufficient_balance_demon', 'insufficient_balance_demon_kr')
-
-    def sylia(self):
-        return self._recog_if('sylia', 'sylia_kr')
 
     def insufficient_balance_entry(self):
         return self._recog_low_precision('insufficient_balance_entry')
@@ -228,46 +177,20 @@ class Recogbot(object):
     def agency_mission_get(self):
         return self._recog_if('agency_mission_get', 'agency_mission_get_kr')
 
-    def town(self):
-        return self._recog('mail')
-
-    def message(self):
-        return self._recog('message')
-
-    def attack(self):
-        return self._recog('attack')
-
-    def jump(self):
-        return self._recog_low_precision('jump')
-
-    def combo(self):
-        return self._recog_low_precision('combo')
-
     def buff(self, target):
         return self._recog_low_precision('skills/' + target)
 
     def close(self):
         return self._recog('close')
 
-    def back_to_town(self):
-        return self._recog_if('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
-
     def heaven_mission_receive(self):
         return self._recog_if('heaven_mission_receive', 'heaven_mission_receive_kr')
-
-    def _recog_cheap(self, target):
-        max_val = self._match_max_val(target)
-        return 0.9 < max_val <= 1
 
     def black_town_stuck(self):
         return self._recog_cheap('black_town_stuck')
 
     def heaven_stuck(self):
         return self._recog_low_precision_if('heaven_stuck1', 'heaven_stuck2')
-
-    def _recog_diy_precision(self, target, low, height=1):
-        max_val = self._match_max_val(target)
-        return low <= max_val <= height
 
     def talk_skip(self):
         return self._recog_low_precision_if('talk_skip_kr', 'talk_skip')

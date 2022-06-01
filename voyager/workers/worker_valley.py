@@ -29,31 +29,19 @@ class ValleyWorker(QThread):
             s.start()
 
     def _run(self):
-        if self.voyager.recogbot.town():
+        cls = self.voyager.recogbot.detect()
+
+        # 人在城镇，去打溪谷
+        if cls['menu'][0]:
             self.voyager.game.valley_start()
 
-        if self.voyager.recogbot.daliy_valley_completed() or self.voyager.recogbot.valley_confirm_grey():
-            print(f"【祥瑞溪谷】祥瑞溪谷已刷完！{self.voyager.player}")
-            self.voyager.player.over_valley()
-            self.voyager.game.esc()
-            self.voyager.game.esc()
-            return
-
-        if self.voyager.recogbot.town() and not self.voyager.player.valley:
-            self.trigger.emit(str('stop'))
-            return
-
-        if not self.voyager.player.valley and not self.voyager.recogbot.town():
-            self.voyager.game.esc()
-            return
-
-            # 发现祥瑞溪谷入口
-        if self.voyager.recogbot.daily_valley():
+        # 发现祥瑞溪谷入口
+        if self.voyager.recogbot.daily_valley() and not self.voyager.player.shine():
             print("【祥瑞溪谷】发现祥瑞溪谷入口！")
             self.voyager.game.valley_fight()
 
-        # 溪谷再次挑战
-        if self.voyager.recogbot.replay():
+        # 战斗已结束，溪谷再次挑战
+        if cls['skill'][0] and self.voyager.recogbot.replay():
             self.voyager.game.valley_replay()
 
         # 死亡
@@ -63,6 +51,19 @@ class ValleyWorker(QThread):
         # 返回日常界面
         if self.voyager.recogbot.daily_valley_town():
             self.voyager.game.valley_town()
+
+        if self.voyager.recogbot.daliy_valley_completed():
+            print(f"【祥瑞溪谷】祥瑞溪谷已刷完！")
+            self.voyager.player.over_valley()
+            self.voyager.game.back_town_valley()
+
+        if self.voyager.recogbot.valley_confirm_grey() and self.voyager.recogbot.close():
+            print(f"【祥瑞溪谷】祥瑞溪谷已刷完！不要在点了！")
+            self.voyager.player.over_valley()
+            self.voyager.game.back_town_valley()
+
+        if cls['menu'][0] and self.voyager.player.shine():
+            self.trigger.emit(str('stop'))
 
     def run(self):
         self.init()

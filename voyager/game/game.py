@@ -241,10 +241,8 @@ class Game(Concurrency):
     @asyncthrows
     async def valley_start(self):
         await asyncio.sleep(2)
-        if not self._archor('mail'):
-            await self._press('esc')
         await self._click('active')
-        await self._click('daily')
+        await self._click('daily', 0)
         print('【探索者】打开日常界面')
         self._free()
 
@@ -289,14 +287,6 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def snow_mountain_finish(self):
-        await self._press('esc')
-        await self._click('adventure_snow_mountain_town')
-        print('【探索者】雪山搬砖完成，下班！')
-        self._free()
-
-    @idle
-    @asyncthrows
     async def confirm(self):
         await self._click_if('confirm', 'confirm_kr')
         print('【探索者】确认！')
@@ -317,6 +307,7 @@ class Game(Concurrency):
         # 返回！
         await self._click_if('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
         print('【探索者】结束任务，返回城镇！')
+        await asyncio.sleep(5)
         self._free()
 
     @idle
@@ -381,32 +372,29 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def switch(self, player, callback):
-        if self._archor('choose') is None and self._archor('choose_kr') is None:
-            await self._goto_choose_player()
-        else:
-            await self._switch_find_player(player, callback)
+    async def goto_choose_player(self, cls):
+        # 点击菜单
+        await self._click_xy(cls['menu'][1], cls['menu'][2])
+        # 点击选择角色
+        await self._click_xy(cls['switch'][1], cls['switch'][2])
+        # 等待选择角色页面出现
+        await asyncio.sleep(5)
         self._free()
 
-    async def _goto_choose_player(self):
-        top_left = self._archor_low_precision('activity')
-        if top_left:
-            x, y = top_left
-            await self._click_xy(x + 120, y)
-            # 选择角色
-            await self._click('switch')
-
-    async def _switch_find_player(self, player, callback):
-
+    @idle
+    @asyncthrows
+    async def switch_find_player(self, player, callback):
         target = 'players/' + player
         top_left = self._archor_low_precision(target)
         if top_left:
             await self._player_switch(target)
             callback(player)
+            self._free()
             return
         print('【选择角色】当前页没找到，翻到下页')
         await self._player_switch_next()
         await asyncio.sleep(1.5)
+        self._free()
 
     @idle
     @asyncthrows
@@ -439,7 +427,6 @@ class Game(Concurrency):
         print(top_left)
         if top_left:
             await self._click_if_low_precision('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
-            # 等待返回城镇
             await asyncio.sleep(5)
             self._free()
             return
@@ -472,6 +459,84 @@ class Game(Concurrency):
         if not top_left:
             await self._press('esc')
             self._free()
+
+    @idle
+    @asyncthrows
+    async def back_town_mission(self):
+        top_left = self._archor('close')
+        if top_left:
+            await self._click('close')
+
+        top_left = self._archor('back')
+        if top_left:
+            await self._click('back')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def back_town_snowmountain(self):
+        top_left = self._archor_low_precision_if('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
+        if top_left:
+            await self._click_if_low_precision('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
+            await asyncio.sleep(5)
+            self._free()
+
+    @idle
+    @asyncthrows
+    async def back_town_valley(self):
+        top_left = self._archor('close')
+        if top_left:
+            await self._click('close')
+
+        top_left = self._archor('back')
+        if top_left:
+            await self._click('back')
+        # 等待线程检测到溪谷已打完
+        await asyncio.sleep(5)
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def back_town_union_signed(self):
+        top_left = self._archor('close')
+        if top_left:
+            await self._click('close')
+
+        top_left = self._archor('back')
+        if top_left:
+            await self._click('back')
+        # 等待线程检测到签到已结束
+        await asyncio.sleep(5)
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def back_town_coin_received(self):
+        top_left = self._archor('back')
+        if top_left:
+            await self._click('back')
+        # 等待线程检测到复活币领取已结束
+        await asyncio.sleep(5)
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def back_town_achievement(self):
+        top_left = self._archor('back')
+        if top_left:
+            await self._click('back')
+        # 等待线程检测到成就领取已结束
+        await asyncio.sleep(5)
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def back_town(self, setting):
+        await self._click_xy(setting[1], setting[2])
+        await self._click('home')
+        await self._click_if('confirm', 'confirm_kr')
+        await asyncio.sleep(5)
+        self._free()
 
     @idle
     @asyncthrows
@@ -519,14 +584,6 @@ class Game(Concurrency):
         await self._click('guild_gold_sign')
         await self._click_if('confirm', 'confirm_kr', 2)
         await self._click_if('confirm', 'confirm_kr', 2)
-        self._free()
-
-    @idle
-    @asyncthrows
-    async def union_signed(self, callback):
-        await self._press('esc')
-        await self._press('esc')
-        callback()
         self._free()
 
     @idle

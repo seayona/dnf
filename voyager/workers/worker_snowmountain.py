@@ -28,17 +28,28 @@ class GameWorker(QThread):
             s.start()
 
     def _run(self):
+        cls = self.voyager.recogbot.detect()
 
-        if self.voyager.player.tired() and (self.voyager.recogbot.jump() or self.voyager.recogbot.result()):
-            print("【雪山】疲劳值不足")
-            self.voyager.game.town()
+        # 第一次一定修理
+        if self.count % 2 == 1 and not self.voyager.recogbot.disrepair():
+            self.voyager.game.repaired = True
+
+        # 武器报废
+        if cls['door'][0] and self.voyager.recogbot.disrepair():
+            self.voyager.player.stand()
+            self.voyager.game.repair()
 
         # 疲劳值未耗尽，人在城镇中，去搬砖
-        if self.voyager.recogbot.town() and not self.voyager.player.tired():
+        if not self.voyager.player.tired() and cls['menu'][0]:
             print("【一键搬砖】5秒后前往雪山")
-            # 防止重复开启线程
             self.voyager.game.snow_mountain_start()
 
+        # 疲劳值不足，人在地下城，战斗已结束
+        if self.voyager.player.tired() and cls['result'][0]:
+            print("【雪山】疲劳值不足")
+            self.voyager.game.back_town_snowmountain()
+
+        #  已进入狮子头房间
         if self.voyager.recogbot.lion_clear():
             print("【雪山】狮子头已处理!")
             self.voyager.game.lion_clear()
@@ -57,44 +68,31 @@ class GameWorker(QThread):
         if self.voyager.recogbot.dead():
             print("【雪山】死亡")
             self.voyager.game.revival()
-        cls = self.voyager.recogbot.detect()
-        # # 装备修理
-        if self.count % 4 == 0:
-            if not self.voyager.game.repaired and cls['bag'][0] and cls['bag'][2] < 200:
-                print("【雪山】装备与分解修理", cls['bag'])
-                self.voyager.game.repair_and_sale(cls['bag'])
-                return
-        else:
-            self.voyager.game.repaired = True
 
-        # 再次挑战
-        if self.voyager.recogbot.replay() and self.voyager.game.repaired:
+        # 疲劳值不足，选择关卡的时候
+        if self.voyager.recogbot.insufficient_balance_entry():
+            print("【雪山】疲劳值不足")
+            self.voyager.player.over_fatigued()
+            self.voyager.game.back_town_mission()
+
+        # 打完深渊
+        if cls['passing'][0] and cls['door'][0]:
+            self.voyager.game.back_town(cls['setting'])
+
+        # 疲劳值耗尽，人在城镇
+        if self.voyager.player.tired() and cls['menu'][0]:
+            self.trigger.emit(str('stop'))
+
+        # 战斗已结束，还没有修理
+        if not self.voyager.game.repaired and cls['result'][0] and cls['bag'][0] and cls['bag'][2] < 200:
+            print("【雪山】装备与分解修理", cls['bag'])
+            self.voyager.game.repair_and_sale(cls['bag'])
+
+        # 战斗已结束，再次挑战
+        if cls['result'][0] and self.voyager.recogbot.replay() and self.voyager.game.repaired:
             print("【雪山】再次挑战")
             self.voyager.game.replay()
             self.count += 1
-
-        # 疲劳值不足，选择关卡的时候
-        if self.voyager.recogbot.insufficient_balance() or self.voyager.recogbot.insufficient_balance_entry():
-            print("【雪山】疲劳值不足")
-            self.voyager.player.over_fatigued()
-            self.voyager.game.town()
-
-        # 疲劳值不足，打完深渊的时候
-        if self.voyager.recogbot.insufficient_balance_demon():
-            print("【雪山】疲劳值不足，打完深渊的时候")
-            self.voyager.player.over_fatigued()
-            self.voyager.game.town()
-
-        if self.voyager.recogbot.town() and self.voyager.player.tired():
-            self.trigger.emit(str('stop'))
-
-        # 武器报废
-        if self.voyager.recogbot.disrepair():
-            self.voyager.game.repair()
-
-        # 出现确认的弹框？
-        if self.voyager.recogbot.confirm():
-            self.voyager.game.confirm()
 
     def run(self):
         self.init()

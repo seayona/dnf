@@ -27,19 +27,14 @@ class WelfareUnionWorker(QThread):
         box['signed'] = True
 
     def _run(self):
-        if self.voyager.player.welfare['union'] and self.voyager.recogbot.town():
-            self.trigger.emit(str('stop'))
-            return
-        if self.voyager.player.welfare['union'] and not self.voyager.recogbot.town():
-            self.voyager.game.esc()
-            return
+        cls = self.voyager.recogbot.detect()
 
         # 在城镇中，还没有签到
-        if self.voyager.recogbot.town():
+        if cls['menu'][0] and not self.voyager.player.welfare['union']:
             self.voyager.game.union_sign_start()
 
         # 发现签到按钮
-        if self.voyager.recogbot.union_sign():
+        if self.voyager.recogbot.union_sign() and not self.voyager.player.welfare['union']:
             self.voyager.game.union_sign()
 
         for index in range(len(self.boxs)):
@@ -47,13 +42,17 @@ class WelfareUnionWorker(QThread):
                 self._box_signed_true(self.boxs[index])
 
         not_signed_box = list(filter(lambda item: not item['signed'], self.boxs))
-        if len(not_signed_box):
+        if len(not_signed_box) and not self.voyager.player.welfare['union']:
             box = not_signed_box[0]
             self.voyager.game.union_box_sign(box['target'], box['target_kr'], lambda: self._box_signed_true(box))
 
-        if not self.voyager.recogbot.union_sign() and len(not_signed_box) == 0:
+        if not self.voyager.recogbot.union_sign() and len(not_signed_box) == 0 and not self.voyager.player.welfare['union']:
             print("【公会福利】工会福利领取完成")
-            self.voyager.game.union_signed(lambda: self.voyager.player.over_welfare('union'))
+            self.voyager.player.over_welfare('union')
+            self.voyager.game.back_town_union_signed()
+
+        if self.voyager.player.welfare['union'] and cls['menu'][0]:
+            self.trigger.emit(str('stop'))
 
     def run(self):
         self.init()
