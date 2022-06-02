@@ -52,7 +52,7 @@ class Game(Concurrency):
 
     async def _click_xy(self, x, y, sleep=1):
         # 移动鼠标到按钮位置,点击按钮
-        click(x, y)
+        click(x + 10, y + 8)
         await asyncio.sleep(sleep)
 
     async def _click_if(self, target1, target2, sleep=1, img=None):
@@ -195,7 +195,7 @@ class Game(Concurrency):
         # 确认修理
         await self._click_if('repair_confirm', 'repair_confirm_kr')
         # 返回！
-        await self._press('esc')
+        await self._click('close')
 
         await self._sale()
         # 标记修理状态
@@ -211,10 +211,10 @@ class Game(Concurrency):
         await self._click_if('sale_select', 'sale_select_kr')
         # 确认分解
         await self._click('sale_confirm')
+        # 确认
+        await self._click_if('confirm', 'confirm_kr')
         # 返回！
-        await self._press('esc')
-        # 返回！
-        await self._press('esc')
+        await self._click('close')
         # 执行售卖
         await self._click('sell')
         # 确认售卖
@@ -223,11 +223,9 @@ class Game(Concurrency):
         await self._click('sale_confirm')
         # 确认分解
         # 返回！
-        await self._press('esc')
+        await self._click('close')
         # 返回！
-        await self._press('esc')
-        # 返回！
-        await self._press('esc')
+        await self._click('back')
         print('【探索者】装备分解完成')
 
     @idle
@@ -300,11 +298,6 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def agency_mission_finish(self):
-        # 返回！
-        await self._press('esc')
-        # 返回！
-        await self._press('esc')
-        # 返回！
         await self._click_if('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
         print('【探索者】结束任务，返回城镇！')
         await asyncio.sleep(5)
@@ -425,48 +418,6 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def town(self):
-
-        # 如果在地下城中，已通关
-        top_left = self._archor_low_precision('result')
-        print(top_left)
-        if top_left:
-            await self._click_if_low_precision('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
-            await asyncio.sleep(5)
-            self._free()
-            return
-
-        # 如果在地下城中
-        top_left = self._archor_low_precision('jump')
-        if top_left:
-            await self._click_low_precision('setting')
-            await self._click('home')
-            await self._click_if('confirm', 'confirm_kr')
-            # 等待返回城镇
-            await asyncio.sleep(5)
-            self._free()
-            return
-
-        # 如果在城镇中，但是看不到邮箱按钮，尝试按一次esc
-        top_left = self._archor('mail')
-        if not top_left:
-            await self._press('esc')
-            self._free()
-
-        # 选关卡页面或者背包等二级页面
-        top_left = self._archor('asset')
-        if not top_left:
-            await self._press('esc')
-            self._free()
-
-        # 选关卡待确认页面
-        top_left = self._archor('close')
-        if not top_left:
-            await self._press('esc')
-            self._free()
-
-    @idle
-    @asyncthrows
     async def back_town_mission(self):
         top_left = self._archor('close')
         if top_left:
@@ -483,6 +434,7 @@ class Game(Concurrency):
         top_left = self._archor_low_precision_if('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
         if top_left:
             await self._click_if_low_precision('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
+            await self._click_if('confirm', 'confirm_kr')
             await asyncio.sleep(5)
             self._free()
 
@@ -506,6 +458,7 @@ class Game(Concurrency):
         top_left = self._archor('close')
         if top_left:
             await self._click('close')
+            await self._click('back')
 
         top_left = self._archor('back')
         if top_left:
@@ -576,8 +529,6 @@ class Game(Concurrency):
     async def union_sign_start(self):
         print('【探索者】5s后打开公会界面')
         await asyncio.sleep(5)
-        if not self._archor('mail'):
-            await self._press('esc')
         await self._press("F7")
         # await self.union_box()
         self._free()
@@ -594,7 +545,6 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def union_box_sign(self, target, target_kr, callback):
-
         top_left = self._archor_low_precision_if(target, target_kr)
         if top_left:
             x, y = top_left
@@ -611,8 +561,6 @@ class Game(Concurrency):
     async def goto_mall_recovered_product(self):
         print('【探索者】5s后打开商城界面')
         await asyncio.sleep(5)
-        if not self._archor('mail'):
-            await self._press('esc')
         await self._press("F3")
         await self._click_if("mall_prop", "mall_prop_kr")
         await self._click_if("mall_recovered_product", "mall_recovered_product_kr")

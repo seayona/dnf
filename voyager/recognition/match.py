@@ -1,5 +1,8 @@
 import cv2
-from voyager.recognition import capture
+import numpy as np
+
+from .tamplate_matching import TemplateMatching
+from .capture import capture
 
 
 def match(image, target, imshow=False):
@@ -33,7 +36,18 @@ def match(image, target, imshow=False):
     return max_val, image, top_left, bottom_right
 
 
-if __name__ == '__main__':
-    while True:
-        result=match(capture(), '../game/scene/union_box1_helper.PNG', True)
-        print(result[0],result[2])
+# def match(image, target, imshow=False, rgb=True):
+#     # 识别目标区域: 点序:左上->左下->右下->右上, 左上(min,min)右x下(max,max)
+#     # rectangle = (left_top_pos, left_bottom_pos, right_bottom_pos, right_top_pos)
+#     result = TemplateMatching(
+#         cv2.imdecode(np.fromfile(target, dtype=np.uint8), cv2.IMREAD_COLOR),
+#         image,
+#         threshold=0.8,
+#         rgb=rgb
+#     ).find_best_result()
+#     if imshow and result is not None:
+#         # 在窗口截图中匹配位置画红色方框
+#         cv2.rectangle(image, result['rectangle'][0], result['rectangle'][2], (0, 0, 255), 2)
+#         cv2.imshow('Match Template', image)
+#         cv2.waitKey(1)
+#     return result['confidence'], image, result['rectangle'][0], result['rectangle'][2]

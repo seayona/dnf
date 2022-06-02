@@ -51,6 +51,13 @@ class Voyager(QMainWindow, VoyagerWindow):
 
     def _switch_player(self, q):
         self.player = Player(q.text())
+        conf = ConfigParser()
+        conf.read('./conf/auto.ini')
+        conf.set('Strive', 'Player', q.text())
+        conf.set('LevelUp', 'Player', q.text())
+        conf.set('Valley', 'Player', q.text())
+        conf.set('Welfare', 'Player', q.text())
+        conf.write(open('./conf/auto.ini', "w"))
         self.show_message(f"角色【{q.text()}】配置已加载")
 
     def _init_ui(self):

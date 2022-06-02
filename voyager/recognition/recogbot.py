@@ -1,5 +1,7 @@
 from detect_dnf import detect
-from voyager.recognition import capture, match
+
+from .capture import capture
+from .match import match
 
 
 class Recogbot(object):
@@ -12,7 +14,7 @@ class Recogbot(object):
         img = capture()
         # 检测目标位置
         max_val, img, top_left, right_bottom = match(img, f'./game/scene/{target}.png')
-        # print(f'【模板匹配】 {target} {max_val}')
+        print(f'【模板匹配】 {target} {max_val}')
         return max_val
 
     def _recog(self, target):
@@ -170,6 +172,9 @@ class Recogbot(object):
 
     def insufficient_balance_entry(self):
         return self._recog_low_precision('insufficient_balance_entry')
+
+    def insufficient_balance_demon(self):
+        return self._recog_low_precision('insufficient_balance_demon')
 
     def agency_mission_confirm(self):
         return self._recog_if('agency_mission_confirm', 'agency_mission_confirm_kr')
