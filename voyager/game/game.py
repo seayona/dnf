@@ -368,7 +368,7 @@ class Game(Concurrency):
     @asyncthrows
     async def open_menu(self, menu):
         # 点击菜单
-        await self._click_xy(menu[1], menu[2])
+        await self._click_xy(menu[1]+10, menu[2]+5)
         self._free()
 
     @idle
