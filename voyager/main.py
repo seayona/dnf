@@ -47,7 +47,7 @@ class Voyager(QMainWindow, VoyagerWindow):
 
         m = MatricWorker(self)
         m.trigger.connect(self.on_btn_stop_clicked)
-        # m.start()
+        m.start()
 
     def _switch_player(self, q):
         self.player = Player(q.text())
