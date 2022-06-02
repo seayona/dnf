@@ -539,8 +539,8 @@ class Game(Concurrency):
     async def union_sign(self):
         await self._click('guild_sign')
         await self._click('guild_gold_sign')
-        await self._click_if('confirm', 'confirm_kr', 1.5)
-        await self._click_if('confirm', 'confirm_kr', 1.5)
+        await self._click_if('confirm', 'confirm_kr', 2)
+        await self._click_if('confirm', 'confirm_kr', 2)
         self._free()
 
     @idle
