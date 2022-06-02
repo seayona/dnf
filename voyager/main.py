@@ -183,7 +183,8 @@ class Voyager(QMainWindow, VoyagerWindow):
         print("【探索者】关闭自动搬砖模式")
         for w in self.workers:
             w.stop()
-
+        self.game = Game()
+        self.matric = Matric()
         self._enable()
 
     def keyPressEvent(self, e):
