@@ -49,7 +49,7 @@ class ValleyWorker(QThread):
             self.voyager.game.revival()
 
         # 返回日常界面
-        if self.voyager.recogbot.daily_valley_town():
+        if self.voyager.recogbot.daily_valley_town() and not self.voyager.recogbot.replay():
             self.voyager.game.valley_town()
 
         if self.voyager.recogbot.daliy_valley_completed():
