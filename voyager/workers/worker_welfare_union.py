@@ -1,5 +1,3 @@
-import time
-
 from PyQt5.QtCore import QThread, pyqtSignal
 
 
@@ -27,31 +25,28 @@ class WelfareUnionWorker(QThread):
         box['signed'] = True
 
     def _run(self):
-        cls = self.voyager.recogbot.detect()
+        # 在城镇中，还没有签到
+        if self.voyager.recogbot.town() and not self.voyager.player.welfare['union']:
+            self.voyager.game.union_sign_start()
+
+        # 在城镇中，已签到
+        if self.voyager.player.welfare['union'] and self.voyager.recogbot.town():
+            self.trigger.emit(str('stop'))
+
+        # 发现签到按钮
+        if (not self.voyager.recogbot.town()) and self.voyager.recogbot.union_sign() and not self.voyager.player.welfare['union']:
+            self.voyager.game.union_sign()
 
         for index in range(len(self.boxs)):
             if self.voyager.recogbot.union_box_signed(index):
                 self._box_signed_true(self.boxs[index])
 
-        # 在城镇中，还没有签到
-        if cls['menu'][0] and not self.voyager.player.welfare['union']:
-            self.voyager.game.union_sign_start()
-
-        # 在城镇中，已签到
-        if self.voyager.player.welfare['union'] and cls['menu'][0]:
-            self.trigger.emit(str('stop'))
-
-        # 发现签到按钮
-        if not cls['menu'][0] and self.voyager.recogbot.union_sign() and not self.voyager.player.welfare['union']:
-            self.voyager.game.union_sign()
-
         not_signed_box = list(filter(lambda item: not item['signed'], self.boxs))
-        if not cls['menu'][0] and len(not_signed_box) and not self.voyager.player.welfare['union']:
+        if (not self.voyager.recogbot.town()) and len(not_signed_box) != 0:
             box = not_signed_box[0]
             self.voyager.game.union_box_sign(box['target'], box['target_kr'], lambda: self._box_signed_true(box))
 
-        if not cls['menu'][0] and not self.voyager.recogbot.union_sign() and len(not_signed_box) == 0 and not \
-                self.voyager.player.welfare['union']:
+        if (not self.voyager.recogbot.town()) and len(not_signed_box) == 0:
             print("【公会福利】工会福利领取完成")
             self.voyager.player.over_welfare('union')
             self.voyager.game.back_town_union_signed()

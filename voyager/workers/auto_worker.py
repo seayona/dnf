@@ -129,5 +129,7 @@ class AutoWorker(QThread):
         # 还有其他任务需要执行
         if len(self.workers_queue) > 0:
             self.worker = self.workers_queue.pop()
+            # 等待上个任务完全停止
+            self.sleep(10)
             self.worker.start()
             self.working = True

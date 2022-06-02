@@ -45,6 +45,8 @@ class WelfareWorker(QThread):
     def _run(self):
         if not self.working and len(self.workers) > 0:
             self.worker = self.workers.pop()
+            # 等待上个任务完全停止
+            self.sleep(10)
             self.worker.start()
             self.working = True
 

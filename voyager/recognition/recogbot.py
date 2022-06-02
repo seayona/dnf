@@ -125,6 +125,9 @@ class Recogbot(object):
     def start_game(self):
         return self._recog_if('choose', 'choose_kr')
 
+    def town(self):
+        return self._recog('mail')
+
     def reward(self):
         return self._recog('reward')
 
