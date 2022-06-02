@@ -116,6 +116,9 @@ class AutoWorker(QThread):
         if self.voyager.recogbot.start_game():
             next_player = self.next_player()
 
+            if next_player is None:
+                return
+
             def callback(next_player):
                 self._current_player_update(next_player)
                 self._init_player()
