@@ -33,10 +33,6 @@ class WelfareUnionWorker(QThread):
         if cls['menu'][0] and not self.voyager.player.welfare['union']:
             self.voyager.game.union_sign_start()
 
-        # 发现签到按钮
-        if self.voyager.recogbot.union_sign() and not self.voyager.player.welfare['union']:
-            self.voyager.game.union_sign()
-
         for index in range(len(self.boxs)):
             if self.voyager.recogbot.union_box_signed(index):
                 self._box_signed_true(self.boxs[index])
@@ -50,9 +46,6 @@ class WelfareUnionWorker(QThread):
             'union']:
             print("【公会福利】工会福利领取完成")
             self.voyager.player.over_welfare('union')
-            self.voyager.game.back_town_union_signed()
-
-        if self.voyager.player.welfare['union'] and not cls['menu'][0]:
             self.voyager.game.back_town_union_signed()
 
         if self.voyager.player.welfare['union'] and cls['menu'][0]:
