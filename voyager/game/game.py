@@ -221,7 +221,8 @@ class Game(Concurrency):
         await self._click_if('sell_select', 'sell_select_kr')
         # 确认分解,按钮与分解一毛一样
         await self._click('sale_confirm')
-        # 确认分解
+        # 确认
+        await self._click_if('confirm', 'confirm_kr')
         # 返回！
         await self._click('close')
         # 返回！
