@@ -33,6 +33,10 @@ class WelfareUnionWorker(QThread):
         if cls['menu'][0] and not self.voyager.player.welfare['union']:
             self.voyager.game.union_sign_start()
 
+        # 发现签到按钮
+        if self.voyager.recogbot.union_sign() and not self.voyager.player.welfare['union']:
+            self.voyager.game.union_sign()
+
         for index in range(len(self.boxs)):
             if self.voyager.recogbot.union_box_signed(index):
                 self._box_signed_true(self.boxs[index])
