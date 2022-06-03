@@ -11,12 +11,14 @@ class PlayerFightWorker(QThread):
         self.voyager = voyager
         self.running = False
         self.is_meeting_lion = False
+        self.lion_entry_stand_count = 0
 
     def init(self):
         self.running = True
 
     def meeting_lion(self):
         self.is_meeting_lion = True
+        self.lion_entry_stand_count = 0
 
     def _run(self):
         cls = self.voyager.recogbot.detect()
@@ -25,7 +27,9 @@ class PlayerFightWorker(QThread):
         if self.voyager.game.lionAlive and cls['door'][0] and cls['lion_entry'][0]:
             print("【雪山战斗】发现狮子头入口!", self.voyager.game.lionAlive)
             self.is_meeting_lion = False
-            self.voyager.player.stand()
+            if self.lion_entry_stand_count < 1:
+                self.voyager.player.stand()
+                self.lion_entry_stand_count += 1
             self.voyager.player.right()
 
         # 释放技能
