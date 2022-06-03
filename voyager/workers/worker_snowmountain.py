@@ -82,7 +82,7 @@ class GameWorker(QThread):
             self.voyager.game.back_town_mission()
 
         # 疲劳值不足，深渊的时候
-        if cls['passing'][0] and self.voyager.recogbot.insufficient_balance_demon():
+        if cls['passing'][0] and cls['door'][0]:
             print("【雪山】疲劳值不足")
             self.voyager.player.over_fatigued()
             self.voyager.game.back_town(cls['setting'])

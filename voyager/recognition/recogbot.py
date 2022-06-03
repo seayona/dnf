@@ -14,7 +14,7 @@ class Recogbot(object):
         img = capture()
         # 检测目标位置
         max_val, img, top_left, right_bottom = match(img, f'./game/scene/{target}.png')
-        print(f'【模板匹配】 {target} {max_val}')
+        print(f'【模板匹配】 {target} {max_val} {top_left}')
         return max_val
 
     def _recog(self, target):
