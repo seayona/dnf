@@ -368,8 +368,10 @@ class Game(Concurrency):
     @asyncthrows
     async def open_menu(self, menu):
         # 点击菜单
-        await self._click_xy(menu[1]+10, menu[2]+5)
-        self._free()
+        top_left = self._archor_low_precision('activity')
+        if top_left:
+            x, y = top_left
+            await self._click_xy(x + 120, y)
 
     @idle
     @asyncthrows

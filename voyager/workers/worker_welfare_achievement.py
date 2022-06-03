@@ -20,10 +20,9 @@ class WelfareAchievementWorker(QThread):
         self.weekly = False
 
     def _run(self):
-        cls = self.voyager.recogbot.detect()
 
         # 没领取打开成就页面
-        if cls['menu'][0] and not self.voyager.player.welfare['achievement']:
+        if self.voyager.recogbot.town() and not self.voyager.player.welfare['achievement']:
             self.voyager.game.goto_achievement()
 
         # 在每日页面
@@ -59,7 +58,7 @@ class WelfareAchievementWorker(QThread):
             self.voyager.game.back_town_achievement()
 
         # 领取后在城镇stop
-        if cls['menu'][0] and self.voyager.player.welfare['achievement']:
+        if self.voyager.recogbot.town() and self.voyager.player.welfare['achievement']:
             self.trigger.emit(str('stop'))
 
     def run(self):

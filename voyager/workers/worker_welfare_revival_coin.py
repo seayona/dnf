@@ -16,10 +16,9 @@ class WelfareRevivalCoinWorker(QThread):
         self.running = True
 
     def _run(self):
-        cls = self.voyager.recogbot.detect()
 
         # 没领取打开商城页面
-        if cls['menu'][0] and not self.voyager.player.welfare['revival_coin']:
+        if self.voyager.recogbot.town() and not self.voyager.player.welfare['revival_coin']:
             self.voyager.game.goto_mall_recovered_product()
 
         # 已领取
@@ -32,7 +31,7 @@ class WelfareRevivalCoinWorker(QThread):
             self.voyager.game.mall_purchase()
 
         # 领取后在城镇stop
-        if cls['menu'][0] and self.voyager.player.welfare['revival_coin']:
+        if self.voyager.recogbot.town() and self.voyager.player.welfare['revival_coin']:
             self.trigger.emit(str('stop'))
 
     def run(self):

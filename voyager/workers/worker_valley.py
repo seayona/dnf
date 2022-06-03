@@ -29,10 +29,9 @@ class ValleyWorker(QThread):
             s.start()
 
     def _run(self):
-        cls = self.voyager.recogbot.detect()
 
         # 人在城镇，去打溪谷
-        if cls['menu'][0]:
+        if self.voyager.recogbot.town():
             self.voyager.game.valley_start()
 
         # 发现祥瑞溪谷入口
@@ -41,7 +40,7 @@ class ValleyWorker(QThread):
             self.voyager.game.valley_fight()
 
         # 战斗已结束，溪谷再次挑战
-        if cls['skill'][0] and self.voyager.recogbot.replay():
+        if self.voyager.recogbot.replay():
             self.voyager.game.valley_replay()
 
         # 死亡
@@ -62,7 +61,7 @@ class ValleyWorker(QThread):
             self.voyager.player.over_valley()
             self.voyager.game.back_town_valley()
 
-        if cls['menu'][0] and self.voyager.player.shine():
+        if self.voyager.recogbot.town() and self.voyager.player.shine():
             self.trigger.emit(str('stop'))
 
     def run(self):

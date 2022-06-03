@@ -9,13 +9,8 @@ lion_entry
 combo
 door
 passing
-box
+skill
 close
 switch
-menu
-setting
-buff
-jump
 result
-skill
-demon
+setting

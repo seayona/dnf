@@ -105,8 +105,8 @@ class AutoWorker(QThread):
             self.voyager.game.back_town(cls['setting'])
 
         # 所有任务执行结束，人在城镇，打开菜单
-        if len(self.workers_queue) == 0 and cls['menu'][0]:
-            self.voyager.game.open_menu(cls['menu'])
+        if len(self.workers_queue) == 0 and self.voyager.recogbot.town():
+            self.voyager.game.open_menu()
 
         # 所有任务执行结束，人在城镇，打开菜单
         if len(self.workers_queue) == 0 and cls['switch'][0]:

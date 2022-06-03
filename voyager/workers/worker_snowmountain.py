@@ -40,7 +40,7 @@ class GameWorker(QThread):
             self.voyager.game.repair()
 
         # 疲劳值未耗尽，人在城镇中，去搬砖
-        if not self.voyager.player.tired() and cls['menu'][0]:
+        if not self.voyager.player.tired() and self.voyager.recogbot.town():
             print("【一键搬砖】5秒后前往雪山")
             self.voyager.game.snow_mountain_start()
 
@@ -88,7 +88,7 @@ class GameWorker(QThread):
             self.voyager.game.back_town(cls['setting'])
 
         # 疲劳值耗尽，人在城镇
-        if self.voyager.player.tired() and cls['menu'][0]:
+        if self.voyager.player.tired() and self.voyager.recogbot.town():
             self.trigger.emit(str('stop'))
 
         # 战斗已结束，还没有修理
