@@ -30,7 +30,17 @@ class AgencyMissionWorker(QThread):
             s.start()
 
     def _run(self):
+
         cls = self.voyager.recogbot.detect()
+
+        if self.voyager.recogbot.town() and self.voyager.player.tired():
+            self.trigger.emit(str('stop'))
+            return
+
+            # 在图里，没pl
+        if self.voyager.player.tired() and cls['result'][0]:
+            self.voyager.game.back_town_dungeon()
+            return
 
         if self.count % 3 == 0:
             # 装备修理
@@ -38,8 +48,10 @@ class AgencyMissionWorker(QThread):
                 self.voyager.game.repair_and_sale(cls['bag'])
         else:
             self.voyager.game.repaired = True
-        # if not self.voyager.game.repaired and cls['bag'][0] and cls['bag'][2] < 200:
-        #     self.voyager.game.repair_and_sale(cls['bag'])
+
+        # 出现技能面板，返回
+        if self.voyager.recogbot.skill_back():
+            self.voyager.game.skill_back()
 
         # 出现游戏教程，对话时按Esc跳过
         if cls['skip'][0] or cls['tutorial'][0] or self.voyager.recogbot.talk_skip():
@@ -70,7 +82,6 @@ class AgencyMissionWorker(QThread):
         if self.voyager.recogbot.insufficient_balance_entry():
             self.voyager.player.over_fatigued()
             self.voyager.game.agency_mission_finish()
-            self.trigger.emit(str('stop'))
 
         if self.voyager.recogbot.next_agency():
             self.voyager.game.next_agency()

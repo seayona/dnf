@@ -299,7 +299,8 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def agency_mission_finish(self):
-        await self._click_if('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
+        await self._click('close')
+        await self._click('back')
         print('【探索者】结束任务，返回城镇！')
         await asyncio.sleep(5)
         self._free()
@@ -366,20 +367,25 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def open_menu(self, menu):
+    async def open_menu(self):
         # 点击菜单
         top_left = self._archor_low_precision('activity')
         if top_left:
             x, y = top_left
             await self._click_xy(x + 120, y)
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def skill_back(self):
+        await self._click("skill_back")
+        self._free()
 
     @idle
     @asyncthrows
     async def switch_player(self, switch):
         # 点击菜单
-        await self._click_xy(switch[1], switch[2])
-        # 等待选择角色页面出现
-        await asyncio.sleep(5)
+        await self._click_xy(switch[1] + 20, switch[2] + 20)
         self._free()
 
     @idle
@@ -433,10 +439,10 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def back_town_snowmountain(self):
-        top_left = self._archor_low_precision_if('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
+    async def back_town_dungeon(self):
+        top_left = self._archor_low_precision_if('adventure_dungeon_town', 'adventure_dungeon_town_kr')
         if top_left:
-            await self._click_if_low_precision('adventure_snow_mountain_town', 'adventure_snow_mountain_town_kr')
+            await self._click_if_low_precision('adventure_dungeon_town', 'adventure_dungeon_town_kr')
             await self._click_if('confirm', 'confirm_kr')
             await asyncio.sleep(5)
             self._free()

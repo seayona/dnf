@@ -137,6 +137,9 @@ class Recogbot(object):
     def clear(self):
         return self._recog('go')
 
+    def skill_back(self):
+        return self._recog_if('skill_back',"skill_back_kr")
+
     def valley_confirm_grey(self):
         return self._recog_if("valley_confirm_grey", "valley_confirm_grey_kr")
 

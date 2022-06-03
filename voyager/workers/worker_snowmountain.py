@@ -47,7 +47,7 @@ class GameWorker(QThread):
         # 疲劳值不足，人在地下城，战斗已结束
         if self.voyager.player.tired() and cls['result'][0]:
             print("【雪山】疲劳值不足")
-            self.voyager.game.back_town_snowmountain()
+            self.voyager.game.back_town_dungeon()
 
         #  已进入狮子头房间
         if self.voyager.recogbot.lion_clear():
