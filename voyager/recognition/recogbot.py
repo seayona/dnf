@@ -138,7 +138,7 @@ class Recogbot(object):
         return self._recog('go')
 
     def skill_back(self):
-        return self._recog_if('skill_back',"skill_back_kr")
+        return self._recog_if('skill_back', "skill_back_kr")
 
     def valley_confirm_grey(self):
         return self._recog_if("valley_confirm_grey", "valley_confirm_grey_kr")
@@ -204,7 +204,7 @@ class Recogbot(object):
         return self._recog_cheap('black_town_stuck')
 
     def heaven_stuck(self):
-        return self._recog_low_precision_if('heaven_stuck1', 'heaven_stuck2')
+        return self._recog_cheap('heaven_stuck1') or self._recog_cheap('heaven_stuck2')
 
     def talk_skip(self):
         return self._recog_low_precision_if('talk_skip_kr', 'talk_skip')
