@@ -26,6 +26,8 @@ class Player(Concurrency):
         # 觉醒
         self.awake = None
 
+        self.stand_status = False
+
         self._init_skills(name)
 
     def _init_skills(self, name):
@@ -43,11 +45,15 @@ class Player(Concurrency):
                 self.buff[b[1]] = Skill(str(b[0]), 0)
 
     def _attack(self):
-        keyUp('x')
-        keyDown('x')
+        if not self.stand_status:
+            keyUp('x')
+            keyDown('x')
 
     def attack(self):
         self._attack()
+
+    def attack_active(self):
+        self.stand_status = False
 
     def cooldown(self):
         for s in self.skills.values():
@@ -55,13 +61,13 @@ class Player(Concurrency):
 
     @idle
     @asyncthrows
-    async def cast(self, s=None):
-        if s is None:
+    async def cast(self, key=None):
+        if key is None:
             skills = sorted(self.skills.values(), key=lambda s: s.remain)
             print(skills)
             await skills[0].cast_async()
         else:
-            skill = self.skills[s]
+            skill = self.skills[key]
             await skill.cast_async()
         self._attack()
         self._free()
@@ -76,6 +82,7 @@ class Player(Concurrency):
             s.cast()
 
     def stand(self):
+        self.stand_status = True
         keyUp('x')
         press('x')
 
@@ -94,11 +101,9 @@ class Player(Concurrency):
         self.stop_right()
         self._free()
 
-    def stop_right(self, callback=None):
+    def stop_right(self):
         keyUp('right')
         press('right')
-        if callback is not None:
-            callback()
 
     def tired(self):
         return self.pl == 0
@@ -118,3 +123,24 @@ class Player(Concurrency):
     # 自动释放buff
     def release_buff(self, key):
         self.buff[key].cast()
+
+    @idle
+    @asyncthrows
+    async def dodge_direction(self, direction):
+        keyDown(direction)
+        await asyncio.sleep(0.5)
+        press('v')
+        await asyncio.sleep(0.2)
+        press('v')
+        await asyncio.sleep(0.2)
+        keyUp(direction)
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def slowly_hit(self):
+        for _ in range(5):
+            press('x')
+            await asyncio.sleep(0.35)
+        self.cast()
+        self._free()
