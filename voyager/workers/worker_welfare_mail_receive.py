@@ -29,10 +29,6 @@ class WelfareMailReceive(QThread):
             self.voyager.player.over_welfare('mail')
             self.voyager.game.back()
 
-        # 领取后在城镇stop
-        if True:
-            self.trigger.emit(str('stop'))
-
     def run(self):
         self.init()
         print("【自动福利】邮件开始执行")
