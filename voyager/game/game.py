@@ -367,7 +367,7 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def open_menu(self):
+    async def open_menu(self, menu):
         # 点击菜单
         top_left = self._archor_low_precision('activity')
         if top_left:
@@ -385,7 +385,9 @@ class Game(Concurrency):
     @asyncthrows
     async def switch_player(self, switch):
         # 点击菜单
-        await self._click_xy(switch[1] + 20, switch[2] + 20)
+        await self._click_xy(switch[1], switch[2])
+        # 等待选择角色页面出现
+        await asyncio.sleep(5)
         self._free()
 
     @idle

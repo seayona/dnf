@@ -3,7 +3,7 @@ from configparser import ConfigParser
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt, QTimer, pyqtSlot
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QCheckBox
 
 from voyager.game import Player, Game
 from voyager.infrastructure import Notification
@@ -45,9 +45,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         print("【探索者】按F8键自动搬砖/F12键停止/Esc键退出程序")
         self._init_ui()
 
-        m = MatricWorker(self)
-        m.trigger.connect(self.on_btn_stop_clicked)
-        m.start()
+        self.matric_worker = MatricWorker(self)
 
     def _switch_player(self, q):
         self.player = Player(q.text())
@@ -65,6 +63,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         # UI界面，显示在右上角
         self.move(1560, 0)
 
+        # 初始化角色列表
         m = self.menuBar().actions()[0].menu()
         m.triggered.connect(self._switch_player)
 
@@ -111,6 +110,14 @@ class Voyager(QMainWindow, VoyagerWindow):
 
         self.workers = [a]
         self._disable()
+
+    # 一键升级
+    @pyqtSlot()
+    def on_widget_switch_clicked(self):
+        if self.widget_switch.state:
+            self.matric_worker.start()
+        else:
+            self.matric_worker.stop()
 
     # 一键升级
     @pyqtSlot()
@@ -180,7 +187,7 @@ class Voyager(QMainWindow, VoyagerWindow):
     # 停止任务
     @pyqtSlot()
     def on_btn_stop_clicked(self):
-        print("【探索者】关闭自动搬砖模式")
+        print("【探索者】关闭自动模式")
         for w in self.workers:
             w.stop()
         self.game = Game()

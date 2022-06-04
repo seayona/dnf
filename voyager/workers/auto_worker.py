@@ -108,7 +108,7 @@ class AutoWorker(QThread):
         if len(self.workers_queue) == 0 and self.voyager.recogbot.town() and not cls['switch'][0]:
             self.voyager.game.open_menu()
 
-        # 所有任务执行结束，人在城镇，打开菜单
+        # 所有任务执行结束，人在城镇，菜单已打开，选择角色
         if len(self.workers_queue) == 0 and cls['switch'][0]:
             self.voyager.game.switch_player(cls['switch'])
 
