@@ -664,3 +664,51 @@ class Game(Concurrency):
         self._click_if('mail_receive', 'mail_receive_kr')
         self._click('confirm', 'confirm_kr')
         self._free()
+
+    @idle
+    @asyncthrows
+    async def goto_vault(self, bag):
+        await self._click_xy(bag[1] + 10, bag[2] + 8)
+        await self.click_if('collect_vault', 'collect_vault_kr')
+        await self.click_if('collect_gang_vault', 'collect_gang_vault_kr')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def click_any(self, target):
+        await self._click(target)
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def precious_to_vault(self, preciouses, callback):
+        img = capture(500, 0, 700, 800)
+        click_count = 0
+        for item in preciouses:
+            if item['collect']:
+                continue
+            top_left = self._archor(item['target'], img)
+            if top_left is not None:
+                x, y = top_left
+                await self._click_xy, (x + 15, y + 15, 0.5)
+                item['collect'] = True
+                click_count += 1
+
+        if click_count > 0:
+            await self._click('move_to_vault')
+            await self._click_if('confirm', 'confirm_kr')
+
+        callback()
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def back_town_vault(self):
+        top_left = self._archor('close')
+        if top_left:
+            await self._click('close')
+
+        top_left = self._archor('back')
+        if top_left:
+            await self._click('back')
+        self._free()

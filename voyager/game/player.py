@@ -25,6 +25,8 @@ class Player(Concurrency):
         self.buff = {}
         # 觉醒
         self.awake = None
+        # 收菜
+        self.collected = False
 
         self.stand_status = False
 
@@ -122,6 +124,9 @@ class Player(Concurrency):
 
     def over_welfare(self, scene):
         self.welfare[scene] = True
+
+    def over_collect(self):
+        self.collected = True
 
     # 自动释放buff
     def release_buff(self, key):

@@ -269,3 +269,9 @@ class Recogbot(object):
 
     def mail_received(self):
         return self._recog_if('mail_received', 'mail_received_kr')
+
+    def recog_any(self, target):
+        return self._recog(target)
+
+    def recog_empty_cell(self):
+        return self._recog('emtpy_cell')
