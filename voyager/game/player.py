@@ -18,7 +18,7 @@ class Player(Concurrency):
         # 疲劳值
         self.pl = 100
         # 福利
-        self.welfare = {'union': False, 'revival_coin': False, 'achievement': False}
+        self.welfare = {'union': False, 'revival_coin': False, 'achievement': False, 'mail': False}
         # 技能
         self.skills = {}
         # Buff

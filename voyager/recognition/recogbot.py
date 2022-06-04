@@ -260,3 +260,12 @@ class Recogbot(object):
     def achievement_weekly_box(self):
         return self._recog('achievement_weekly_2') or self._recog('achievement_weekly_4') or self._recog(
             'achievement_weekly_6') or self._recog('achievement_weekly_8') or self._recog('achievement_weekly_10')
+
+    def in_mail(self):
+        return self._recog_if('mail_self', 'mail_self_kr')
+
+    def mail_receive(self):
+        return self._recog_if('mail_receive', 'mail_receive_kr')
+
+    def mail_received(self):
+        return self._recog_if('mail_received', 'mail_received_kr')

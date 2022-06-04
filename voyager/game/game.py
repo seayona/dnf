@@ -650,3 +650,17 @@ class Game(Concurrency):
                    'achievement_weekly_10']
         self._achievement_box(targets)
         self._free()
+
+    @idle
+    @asyncthrows
+    async def goto_mail(self):
+        print('【福利】正在打开邮件')
+        self._click('mail')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def mail_receive(self):
+        self._click_if('mail_receive', 'mail_receive_kr')
+        self._click('confirm', 'confirm_kr')
+        self._free()
