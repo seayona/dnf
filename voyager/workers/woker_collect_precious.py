@@ -19,7 +19,6 @@ class CollectPrecious(QThread):
         self.detect_count = 0
         self.preciouses = [
             {
-
                 'list': [
                     {'name': '碳', 'target': '', 'target_binding': '', 'collect': 0},
                     {'name': '深渊票', 'target': '', 'target_binding': '', 'collect': 0},
