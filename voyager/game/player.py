@@ -62,6 +62,11 @@ class Player(Concurrency):
     @idle
     @asyncthrows
     async def cast(self, key=None):
+        await self._cast(key)
+        self._attack()
+        self._free()
+
+    async def _cast(self, key=None):
         if key is None:
             skills = sorted(self.skills.values(), key=lambda s: s.remain)
             print(skills)
@@ -69,8 +74,6 @@ class Player(Concurrency):
         else:
             skill = self.skills[key]
             await skill.cast_async()
-        self._attack()
-        self._free()
 
     def cast_random(self):
         s = random.choice(list(self.skills.keys()))
@@ -141,6 +144,6 @@ class Player(Concurrency):
     async def slowly_hit(self):
         for _ in range(5):
             press('x')
-            await asyncio.sleep(0.35)
-        self.cast()
+            await asyncio.sleep(0.25)
+        await self._cast()
         self._free()
