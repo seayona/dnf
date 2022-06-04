@@ -691,8 +691,16 @@ class Game(Concurrency):
             if top_left is not None:
                 x, y = top_left
                 await self._click_xy, (x + 15, y + 15, 0.5)
-                item['collect'] = True
+                item['collect'] = 2 if 'target_binding' not in item else 1
                 click_count += 1
+
+            if 'target_binding' in item:
+                top_left = self._archor(item['target_binding'], img)
+                if top_left is not None:
+                    x, y = top_left
+                    await self._click_xy, (x + 15, y + 15, 0.5)
+                    item['collect'] = 2 if item['collect'] == 1 else 1
+                    click_count += 1
 
         if click_count > 0:
             await self._click('move_to_vault')

@@ -21,30 +21,31 @@ class CollectPrecious(QThread):
             {
 
                 'list': [
-                    {'name': '碳', 'target': '', 'collect': False},
-                    {'name': '深渊票', 'target': '', 'collect': False},
-                    {'name': '红宝石', 'target': '', 'collect': False},
-                    {'name': '蓝宝石', 'target': '', 'collect': False},
-                    {'name': '绿宝石', 'target': '', 'collect': False},
-                    {'name': '紫宝石', 'target': '', 'collect': False},
-                    {'name': '钻石', 'target': '', 'collect': False},
-                    {'name': '布片', 'target': '', 'collect': False},
-                    {'name': '碎骨', 'target': '', 'collect': False},
-                    {'name': '砥石', 'target': '', 'collect': False},
-                    {'name': '布片', 'target': '', 'collect': False},
-                    {'name': '皮革', 'target': '', 'collect': False},
-                    {'name': '白眼', 'target': '', 'collect': False},
-                    {'name': '蓝眼', 'target': '', 'collect': False},
-                    {'name': '紫眼', 'target': '', 'collect': False},
-                    {'name': '粉眼', 'target': '', 'collect': False},
-                    {'name': '金眼', 'target': '', 'collect': False},
+                    {'name': '碳', 'target': '', 'target_binding': '', 'collect': 0},
+                    {'name': '深渊票', 'target': '', 'target_binding': '', 'collect': 0},
+                    {'name': '洗练石', 'target': '', 'target_binding': '', 'collect': 0},
+                    {'name': '红宝石', 'target': '', 'target_binding': '', 'collect': 0},
+                    {'name': '蓝宝石', 'target': '', 'target_binding': '', 'collect': 0},
+                    {'name': '绿宝石', 'target': '', 'target_binding': '', 'collect': 0},
+                    {'name': '紫宝石', 'target': '', 'target_binding': '', 'collect': 0},
+                    {'name': '钻石', 'target': '', 'target_binding': '', 'collect': 0},
+                    {'name': '布片', 'target': '', 'target_binding': '', 'collect': 0},
+                    {'name': '碎骨', 'target': '', 'target_binding': '', 'collect': 0},
+                    {'name': '砥石', 'target': '', 'target_binding': '', 'collect': 0},
+                    {'name': '铁片', 'target': '', 'target_binding': '', 'collect': 0},
+                    {'name': '皮革', 'target': '', 'target_binding': '', 'collect': 0},
+                    {'name': '白眼', 'target': '', 'target_binding': '', 'collect': 0},
+                    {'name': '蓝眼', 'target': '', 'target_binding': '', 'collect': 0},
+                    {'name': '紫眼', 'target': '', 'target_binding': '', 'collect': 0},
+                    {'name': '粉眼', 'target': '', 'target_binding': '', 'collect': 0},
+                    {'name': '金眼', 'target': '', 'target_binding': '', 'collect': 0},
                 ],
                 'target': '',
                 'target_active': '',
                 'clear': False
             },
             {
-                'list': [{'name': '雪山卡', 'target': '', 'collect': False}],
+                'list': [{'name': '雪山卡', 'target': '', 'collect': 0}],
                 'target': '',
                 'target_active': '',
                 'clear': False
@@ -75,7 +76,7 @@ class CollectPrecious(QThread):
 
         # 账号金库激活，材料未收集
         if self.voyager.recogbot.gang_vault_active() and len(not_collect) > 0:
-            not_collect_preciouses = list(filter(lambda k: not k['collect'], not_collect[0]['list']))
+            not_collect_preciouses = list(filter(lambda k: not k['collect'] == 2, not_collect[0]['list']))
 
             # [入库操作过3次，有空格子] or [入库所有标记True] or [入库操作过5次] ->本项入库完成
             if (self.detect_count > 3 and self.voyager.recogbot.recog_empty_cell()) or len(
