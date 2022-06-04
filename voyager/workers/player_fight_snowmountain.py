@@ -50,6 +50,10 @@ class PlayerFightWorker(QThread):
         if not cls['lion_entry'][0]:
             self.voyager.player.attack_active()
 
+        # 出现对话时按Esc跳过
+        if cls['skip'][0] or self.voyager.recogbot.talk_skip():
+            self.voyager.game.esc()
+
         # 释放技能
         if (cls['combo'][0] and cls['avatar'][0]) or (cls['combo'][0] and cls['boss'][0]):
             print("【雪山战斗】还有小可爱活着")
