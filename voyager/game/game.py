@@ -267,7 +267,7 @@ class Game(Concurrency):
     async def snow_mountain_start(self):
         await asyncio.sleep(2)
         print("【探索者】前往雪山")
-        await self._click('active')
+        await self._click('active', 2)
         await self._click('adventure_box')
         await self._click('adventure_hard_level')
         await self._click('adventure_snow_mountain')
