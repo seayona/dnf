@@ -204,7 +204,7 @@ class Recogbot(object):
         return self._recog_cheap('black_town_stuck')
 
     def heaven_stuck(self):
-        return self._recog_cheap('heaven_stuck1') or self._recog_cheap('heaven_stuck2')
+        return self._recog_diy_precision('heaven_stuck1', 0.92) or self._recog_diy_precision('heaven_stuck2', 0.92)
 
     def talk_skip(self):
         return self._recog_low_precision_if('talk_skip_kr', 'talk_skip')
