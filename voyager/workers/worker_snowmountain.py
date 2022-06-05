@@ -31,7 +31,7 @@ class GameWorker(QThread):
         cls = self.voyager.recogbot.detect()
 
         # 第一次一定修理
-        if self.count % 2 == 1 and not self.voyager.recogbot.disrepair():
+        if self.count % 4 == 0 and not self.voyager.recogbot.disrepair():
             self.voyager.game.repaired = True
 
         # 武器报废
