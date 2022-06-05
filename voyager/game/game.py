@@ -592,6 +592,7 @@ class Game(Concurrency):
         await self._click('disrepair')
         await self._click_if('repair_confirm', 'repair_confirm_kr')
         await self._click('close')
+        self._free()
 
     @idle
     @asyncthrows
