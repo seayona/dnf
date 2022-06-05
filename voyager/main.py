@@ -44,8 +44,8 @@ class Voyager(QMainWindow, VoyagerWindow):
         print("【探索者】启动成功")
         print("【探索者】按F8键自动搬砖/F12键停止/Esc键退出程序")
         self._init_ui()
-
         self.matric_worker = MatricWorker(self)
+        self._init()
 
     def _switch_player(self, q):
         self.player = Player(q.text())
@@ -77,6 +77,10 @@ class Voyager(QMainWindow, VoyagerWindow):
         # 置顶
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.show()
+
+    def _init(self):
+        self.widget_switch.state = True
+        self.matric_switch()
 
     def _disable(self):
         for btn in [self.btn_snowmountain, self.btn_valley, self.btn_welfare, self.btn_demon, self.btn_agency,
@@ -114,6 +118,9 @@ class Voyager(QMainWindow, VoyagerWindow):
     # 一键升级
     @pyqtSlot()
     def on_widget_switch_clicked(self):
+        self.matric_switch()
+
+    def matric_switch(self):
         if self.widget_switch.state:
             self.matric_worker.start()
         else:
