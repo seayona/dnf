@@ -38,14 +38,14 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.player = Player(players[0])
         self.notification = Notification()
         self.matric = Matric()
+        self.matric_worker = MatricWorker(self)
 
         self.workers = []
 
         print("【探索者】启动成功")
         print("【探索者】按F8键自动搬砖/F12键停止/Esc键退出程序")
         self._init_ui()
-        self.matric_worker = MatricWorker(self)
-        self._init()
+        self._init_worker()
 
     def _switch_player(self, q):
         self.player = Player(q.text())
@@ -78,7 +78,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.show()
 
-    def _init(self):
+    def _init_worker(self):
         self.widget_switch.state = True
         self.matric_switch()
 

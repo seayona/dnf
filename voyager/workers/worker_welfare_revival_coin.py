@@ -32,7 +32,7 @@ class WelfareRevivalCoinWorker(QThread):
 
         # 领取后在城镇stop
         if self.voyager.recogbot.town() and self.voyager.player.welfare['revival_coin']:
-            self.trigger.emit(str('stop'))
+            self.trigger.emit(self.__class__.__name__)
 
     def run(self):
         self.init()

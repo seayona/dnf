@@ -58,7 +58,7 @@ class CollectPrecious(QThread):
         cls = self.voyager.recogbot.detect()
         # 入库完毕，在城镇
         if self.voyager.recogbot.town() and self.voyager.player.collected:
-            self.trigger.emit(str('stop'))
+            self.trigger.emit(self.__class__.__name__)
             return
 
         # 还没入库，在城镇去金库

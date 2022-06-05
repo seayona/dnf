@@ -17,7 +17,7 @@ class DemonWorker(QThread):
         self.running = True
 
     def _run(self):
-        self.trigger.emit(str('stop'))
+        self.trigger.emit(self.__class__.__name__)
 
     def run(self):
         self.init()

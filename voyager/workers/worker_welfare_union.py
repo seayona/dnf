@@ -33,7 +33,7 @@ class WelfareUnionWorker(QThread):
 
         # 在城镇中，已签到
         if self.voyager.player.welfare['union'] and self.voyager.recogbot.town():
-            self.trigger.emit(str('stop'))
+            self.trigger.emit(self.__class__.__name__)
 
         # 发现签到按钮
         if (not self.voyager.recogbot.town()) and self.voyager.recogbot.union_sign() and not self.voyager.player.welfare['union']:

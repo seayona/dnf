@@ -88,7 +88,7 @@ class GameWorker(QThread):
 
         # 疲劳值耗尽，人在城镇
         if self.voyager.player.tired() and self.voyager.recogbot.town():
-            self.trigger.emit(str('stop'))
+            self.trigger.emit(self.__class__.__name__)
 
         # 战斗已结束，还没有修理
         if not self.voyager.game.repaired and cls['result'][0] and cls['bag'][0] and cls['bag'][2] < 200:

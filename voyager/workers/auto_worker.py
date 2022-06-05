@@ -61,11 +61,16 @@ class AutoWorker(QThread):
         conf.set(self.profession, 'Player', value)
         conf.write(open(self.CONF_PATH, "w"))
 
-    def finish(self):
-        if self.worker is not None:
+    def finish(self, args):
+        if self.worker is None:
+            print(f"【自动任务】意外的线程结束：{args}")
+            return
+
+        if self.worker.__class__.__name__ == args:
+            print("【自动任务】任务执行结束", args)
             self.worker.stop()
-        self.worker = None
-        self.working = False
+            self.worker = None
+            self.working = False
 
     # 获取当前正在工作的角色
     def current(self):
@@ -82,7 +87,7 @@ class AutoWorker(QThread):
                 self.send("【自动任务】所有角色工作完成")
                 # 重置配置
                 self._current_player_update(self.players[0])
-                self.trigger.emit('stop')
+                self.trigger.emit(self.__class__.__name__)
                 return
             next_player = self.players[i + 1]
         else:
@@ -128,8 +133,8 @@ class AutoWorker(QThread):
 
         # 还有其他任务需要执行
         if len(self.workers_queue) > 0:
-            self.worker = self.workers_queue.pop()
             # 等待上个任务完全停止
             self.sleep(10)
+            self.worker = self.workers_queue.pop()
             self.worker.start()
             self.working = True

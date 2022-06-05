@@ -34,7 +34,7 @@ class AgencyMissionWorker(QThread):
         cls = self.voyager.recogbot.detect()
 
         if self.voyager.recogbot.town() and self.voyager.player.tired():
-            self.trigger.emit(str('stop'))
+            self.trigger.emit(self.__class__.__name__)
             return
 
             # 在图里，没pl

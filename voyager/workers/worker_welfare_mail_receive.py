@@ -17,7 +17,7 @@ class WelfareMailReceive(QThread):
 
     def _run(self):
         if self.voyager.recogbot.town() and self.voyager.player.welfare['mail']:
-            self.trigger.emit(str('stop'))
+            self.trigger.emit(self.__class__.__name__)
 
         if self.voyager.recogbot.town() and not self.voyager.player.welfare['mail']:
             self.voyager.game.goto_mail()

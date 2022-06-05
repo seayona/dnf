@@ -62,7 +62,7 @@ class ValleyWorker(QThread):
             self.voyager.game.back_town_valley()
 
         if self.voyager.recogbot.town() and self.voyager.player.shine():
-            self.trigger.emit(str('stop'))
+            self.trigger.emit(self.__class__.__name__)
 
     def run(self):
         self.init()
