@@ -96,7 +96,8 @@ class GameWorker(QThread):
             self.voyager.game.repair_and_sale(cls['bag'])
 
         # 战斗已结束，再次挑战
-        if cls['result'][0] and self.voyager.recogbot.replay() and self.voyager.game.repaired:
+        if cls['result'][
+            0] and self.voyager.recogbot.replay() and self.voyager.game.repaired and not self.voyager.player.tired():
             print("【雪山】再次挑战")
             self.voyager.game.replay()
             self.count += 1
