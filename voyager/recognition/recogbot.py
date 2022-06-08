@@ -111,7 +111,7 @@ class Recogbot(object):
                 if names[int(cls)] == 'demon' and float(f'{conf:.2f}') > 0.5:
                     print("【实时检测】检测到深渊恶魔", (x, y))
                     result['demon'] = (True, x, y)
-                if names[int(cls)] == 'passing' and float(f'{conf:.2f}') > 0.5:
+                if names[int(cls)] == 'passing' and float(f'{conf:.2f}') > 0.8:
                     print("【实时检测】检测到传送门", (x, y))
                     result['passing'] = (True, x, y)
                 if names[int(cls)] == 'result' and float(f'{conf:.2f}') > 0.5:
