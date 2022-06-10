@@ -64,8 +64,9 @@ class Player(Concurrency):
     @idle
     @asyncthrows
     async def cast(self, key=None):
-        await self._cast(key)
-        self._attack()
+        if not self.stand_status:
+            await self._cast(key)
+            self._attack()
         self._free()
 
     async def _cast(self, key=None):
