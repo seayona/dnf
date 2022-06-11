@@ -8,7 +8,7 @@ class Notification(object):
     def __init__(self):
         print("【通知】读取通知配置")
         conf = ConfigParser()
-        conf.read('../conf/notification.ini', encoding='UTF-8')
+        conf.read('./conf/notification.ini', encoding='UTF-8')
 
         self.push_server_url = conf.get('Notification', 'PushServerUrl')
         try:
