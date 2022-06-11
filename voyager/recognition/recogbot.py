@@ -140,17 +140,23 @@ class Recogbot(object):
     def skill_back(self):
         return self._recog_if('skill_back', "skill_back_kr")
 
-    def valley_confirm_grey(self):
+    def daily_confirm_grey(self):
         return self._recog_if("valley_confirm_grey", "valley_confirm_grey_kr")
 
     def daily_valley(self):
         return self._recog('valley')
 
-    def daliy_valley_completed(self):
+    def daily_valley_completed(self):
         return self._recog('valley_completed')
 
-    def daily_valley_town(self):
+    def daily_town(self):
         return self._recog_if('valley_town', 'valley_town_kr')
+
+    def daily_south(self):
+        return self._recog('south')
+
+    def daily_south_completed(self):
+        return self._recog('south_completed')
 
     def entry_snow_mountain(self):
         return self._recog('adventure_snow_mountain_entry')

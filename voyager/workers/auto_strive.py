@@ -7,6 +7,7 @@ from .auto_worker import AutoWorker
 from .worker_valley import ValleyWorker
 from .worker_welfare import WelfareWorker
 from .worker_snowmountain import GameWorker
+from .worker_south import SouthWorker
 
 
 class AutoStriveWorker(AutoWorker):
@@ -26,7 +27,10 @@ class AutoStriveWorker(AutoWorker):
         self.a = GameWorker(self.voyager)
         self.a.trigger.connect(self.finish)
 
-        self.workers = [self.v, self.w, self.a]
+        self.s = SouthWorker(self.voyager)
+        self.s.trigger.connect(self.finish)
+
+        self.workers = [self.s, self.v, self.w, self.a]
 
     def init(self):
         self.running = True

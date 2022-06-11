@@ -19,6 +19,8 @@ class Player(Concurrency):
         self.pl = 100
         # 福利
         self.welfare = {'union': False, 'revival_coin': False, 'achievement': False, 'mail': False}
+        # 南部
+        self.south = False
         # 技能
         self.skills = {}
         # Buff
@@ -117,11 +119,17 @@ class Player(Concurrency):
     def shine(self):
         return self.valley == 0
 
+    def ticket(self):
+        return self.south
+
     def over_fatigued(self):
         self.pl = 0
 
     def over_valley(self):
         self.valley = 0
+
+    def over_south(self):
+        self.south = True
 
     def over_welfare(self, scene):
         self.welfare[scene] = True

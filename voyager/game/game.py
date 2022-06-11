@@ -238,7 +238,7 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def valley_start(self):
+    async def daily_start(self):
         await asyncio.sleep(2)
         await self._click('active')
         await self._click('daily', 0)
@@ -255,11 +255,19 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def valley_town(self):
+    async def south_fight(self):
+        await self._click('south')
+        await self._click_if('valley_confirm', 'valley_confirm_kr')
+        print('【探索者】开始挑战南部')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def daily_town(self, wait=3):
         # 等待碎片捡完
-        await asyncio.sleep(3)
+        await asyncio.sleep(wait)
         await self._click_if('valley_town', 'valley_town_kr')
-        print('【探索者】祥瑞溪谷结束，回到城镇')
+        print('【探索者】日常结束，回到城镇')
         self._free()
 
     @idle
@@ -449,7 +457,7 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def back_town_valley(self):
+    async def back_town_daily(self):
         top_left = self._archor('close')
         if top_left:
             await self._click('close')

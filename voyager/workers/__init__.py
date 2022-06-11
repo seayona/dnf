@@ -15,3 +15,4 @@ from .worker_agency_mission import *
 from .worker_welfare import *
 from .worker_welfare_union import *
 from .worker_welfare_revival_coin import *
+from .worker_south import *
