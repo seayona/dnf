@@ -65,7 +65,7 @@ class DailyWork(QThread):
 
         # 返回日常界面
         if self.voyager.recogbot.daily_town() and not self.voyager.recogbot.replay():
-            self.voyager.game.daily_town()
+            self.voyager.game.daily_town(self.back_town_wait)
 
         if self._recog_work_completed():
             print(f"【{self.current_work}】{self.current_work}已刷完！")
