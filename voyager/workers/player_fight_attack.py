@@ -19,7 +19,7 @@ class PlayerAttackWorker(QThread):
 
     def _run(self):
         for key in self.voyager.player.buff.keys():
-            if self.voyager.recogbot.buff(key):
+            if self.voyager.recogbot.skill(key):
                 self.voyager.player.release_buff(key)
 
         self.voyager.player.attack()

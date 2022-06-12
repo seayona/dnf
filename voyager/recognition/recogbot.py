@@ -158,6 +158,15 @@ class Recogbot(object):
     def daily_south_completed(self):
         return self._recog('south_completed')
 
+    def daily_result(self):
+        return self._recog('daily_result')
+
+    def daily_goblin(self):
+        return self._recog('goblin')
+
+    def daily_goblin_completed(self):
+        return self._recog('goblin_completed')
+
     def entry_snow_mountain(self):
         return self._recog('adventure_snow_mountain_entry')
 
@@ -197,7 +206,7 @@ class Recogbot(object):
     def agency_mission_get(self):
         return self._recog_if('agency_mission_get', 'agency_mission_get_kr')
 
-    def buff(self, target):
+    def skill(self, target):
         return self._recog_low_precision('skills/' + target)
 
     def close(self):

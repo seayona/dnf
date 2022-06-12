@@ -8,6 +8,7 @@ from .worker_valley import ValleyWorker
 from .worker_welfare import WelfareWorker
 from .worker_snowmountain import GameWorker
 from .worker_south import SouthWorker
+from .worker_goblin import GoblinWorker
 
 
 class AutoStriveWorker(AutoWorker):
@@ -30,7 +31,10 @@ class AutoStriveWorker(AutoWorker):
         self.s = SouthWorker(self.voyager)
         self.s.trigger.connect(self.finish)
 
-        self.workers = [self.s, self.v, self.w, self.a]
+        self.g = GoblinWorker(self.voyager)
+        self.g.trigger.connect(self.finish)
+
+        self.workers = [self.s, self.g, self.v, self.w, self.a]
 
     def init(self):
         self.running = True
@@ -42,7 +46,7 @@ class AutoStriveWorker(AutoWorker):
         print("【一键搬砖】自动搬砖开始执行", int(QThread.currentThreadId()))
         while self.running:
             self.continuous_run()
-            time.sleep(5)
+            time.sleep(1.5)
 
     # 停止线程
     def stop(self):

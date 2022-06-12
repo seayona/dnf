@@ -16,3 +16,4 @@ from .worker_welfare import *
 from .worker_welfare_union import *
 from .worker_welfare_revival_coin import *
 from .worker_south import *
+from .worker_goblin import *

@@ -21,6 +21,7 @@ class Player(Concurrency):
         self.welfare = {'union': False, 'revival_coin': False, 'achievement': False, 'mail': False}
         # 南部
         self.south = False
+        self.goblin = False
         # 技能
         self.skills = {}
         # Buff
@@ -42,7 +43,7 @@ class Player(Concurrency):
             self.skills[s[0]] = Skill(str(s[0]), s[1])
         if conf.has_option(name, 'Awake'):
             s = eval(conf.get(name, 'Awake'))
-            self.awake = Skill(str(s[0]), s[1])
+            self.awake = {'skill': Skill(str(s[0]), 0), 'icon': s[1]}
         if conf.has_option(name, 'Buffs'):
             buffs = eval(conf.get(name, 'Buffs'))
             for b in buffs:
@@ -94,12 +95,15 @@ class Player(Concurrency):
         keyUp('x')
         press('x')
 
-    def finisher(self):
+    @idle
+    @asyncthrows
+    async def finisher(self):
         if self.awake is not None:
-            print(f'【角色控制】准备释放觉醒 CD {self.awake.remain}')
-            self.awake.cast()
-            self.awake.cast()
+            self.awake['skill'].cast()
+            await asyncio.sleep(4)
+            self.awake['skill'].cast()
             self._attack()
+            self._free()
 
     @idle
     @asyncthrows
@@ -122,6 +126,9 @@ class Player(Concurrency):
     def ticket(self):
         return self.south
 
+    def rich(self):
+        return self.goblin
+
     def over_fatigued(self):
         self.pl = 0
 
@@ -130,6 +137,9 @@ class Player(Concurrency):
 
     def over_south(self):
         self.south = True
+
+    def over_goblin(self):
+        self.goblin = True
 
     def over_welfare(self, scene):
         self.welfare[scene] = True

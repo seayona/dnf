@@ -247,18 +247,10 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def valley_fight(self):
-        await self._click('valley')
+    async def daily_fight(self, daily_type):
+        await self._click(daily_type)
         await self._click_if('valley_confirm', 'valley_confirm_kr')
-        print('【探索者】开始挑战祥瑞溪谷')
-        self._free()
-
-    @idle
-    @asyncthrows
-    async def south_fight(self):
-        await self._click('south')
-        await self._click_if('valley_confirm', 'valley_confirm_kr')
-        print('【探索者】开始挑战南部')
+        print(f'【探索者】开始挑战每日任务：{daily_type}')
         self._free()
 
     @idle

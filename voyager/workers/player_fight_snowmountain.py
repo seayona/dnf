@@ -63,11 +63,11 @@ class PlayerFightWorker(QThread):
         # 释放觉醒
         if cls['boss'][0]:
             print("【雪山战斗】发现Boss!")
-            self.voyager.player.finisher()
+            self._finisher()
 
         if cls['demon'][0]:
             print("【雪山战斗】发现深渊恶魔!")
-            self.voyager.player.finisher()
+            self._finisher()
 
         # 狮子头
         if cls['lion'][0]:
@@ -79,6 +79,10 @@ class PlayerFightWorker(QThread):
 
             self.voyager.game.lion_clear()
             self.voyager.player.attack()
+            self._finisher()
+
+    def _finisher(self):
+        if self.voyager.recogbot.skill(self.voyager.player.awake['icon']):
             self.voyager.player.finisher()
 
     def run(self):

@@ -37,7 +37,7 @@ class ValleyWorker(QThread):
         # 发现祥瑞溪谷入口
         if self.voyager.recogbot.daily_valley() and not self.voyager.player.shine():
             print("【祥瑞溪谷】发现祥瑞溪谷入口！")
-            self.voyager.game.valley_fight()
+            self.voyager.game.daily_fight('valley')
 
         # 战斗已结束，溪谷再次挑战
         if self.voyager.recogbot.replay():
