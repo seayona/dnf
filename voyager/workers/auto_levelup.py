@@ -4,7 +4,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 
 from .auto_worker import AutoWorker
 
-from .worker_valley import ValleyWorker
+from .worker_daily_valley import ValleyWorker
 from .worker_welfare import WelfareWorker
 from .worker_agency_mission import AgencyMissionWorker
 

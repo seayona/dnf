@@ -160,7 +160,7 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def valley_replay(self):
+    async def daily_replay(self):
         self.reset()
         await asyncio.sleep(3)
         await self._click_if_low_precision('replay', 'replay_kr')

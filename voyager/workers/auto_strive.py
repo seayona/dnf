@@ -4,11 +4,12 @@ from PyQt5.QtCore import QThread, pyqtSignal
 
 from .auto_worker import AutoWorker
 
-from .worker_valley import ValleyWorker
+from .worker_daily_valley import ValleyWorker
 from .worker_welfare import WelfareWorker
 from .worker_snowmountain import GameWorker
-from .worker_south import SouthWorker
-from .worker_goblin import GoblinWorker
+from .worker_daily_south import SouthWorker
+from .worker_daily_goblin import GoblinWorker
+from .worker_daily_carbon import CarbonWorker
 
 
 class AutoStriveWorker(AutoWorker):
@@ -34,7 +35,10 @@ class AutoStriveWorker(AutoWorker):
         self.g = GoblinWorker(self.voyager)
         self.g.trigger.connect(self.finish)
 
-        self.workers = [self.s, self.g, self.v, self.w, self.a]
+        self.c = CarbonWorker(self.voyager)
+        self.c.trigger.connect(self.finish)
+
+        self.workers = [self.c, self.s, self.g, self.v, self.w, self.a]
 
     def init(self):
         self.running = True

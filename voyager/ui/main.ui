@@ -121,7 +121,7 @@
      <string>自动深渊</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="btn_auto_valley">
+   <widget class="QPushButton" name="btn_auto_daily">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -131,7 +131,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>一键溪谷</string>
+     <string>一键每日</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btn_auto_welfare">

@@ -167,6 +167,12 @@ class Recogbot(object):
     def daily_goblin_completed(self):
         return self._recog('goblin_completed')
 
+    def daily_carbon(self):
+        return self._recog('carbon')
+
+    def daily_carbon_completed(self):
+        return self._recog('carbon_completed')
+
     def entry_snow_mountain(self):
         return self._recog('adventure_snow_mountain_entry')
 

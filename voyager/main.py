@@ -11,7 +11,7 @@ from voyager.infrastructure.matric import Matric
 from voyager.recognition import Recogbot
 from voyager.workers import GameWorker, ValleyWorker, AgencyMissionWorker, AutoStriveWorker, AutoLevelUpWorker, \
     DemonWorker, WelfareWorker, AutoWelfareWorker
-from voyager.workers.auto_valley import AutoValleyWorker
+from voyager.workers.auto_daily import AutoDailyWorker
 from voyager.workers.matric import MatricWorker
 
 print("【探索者】加载UI")
@@ -84,12 +84,12 @@ class Voyager(QMainWindow, VoyagerWindow):
 
     def _disable(self):
         for btn in [self.btn_snowmountain, self.btn_valley, self.btn_welfare, self.btn_demon, self.btn_agency,
-                    self.btn_auto_work, self.btn_auto_valley, self.btn_auto_levelup, self.btn_auto_welfare]:
+                    self.btn_auto_work, self.btn_auto_daily, self.btn_auto_levelup, self.btn_auto_welfare]:
             btn.setEnabled(False)
 
     def _enable(self):
         for btn in [self.btn_snowmountain, self.btn_valley, self.btn_welfare, self.btn_demon, self.btn_agency,
-                    self.btn_auto_work, self.btn_auto_valley, self.btn_auto_levelup, self.btn_auto_welfare]:
+                    self.btn_auto_work, self.btn_auto_daily, self.btn_auto_levelup, self.btn_auto_welfare]:
             btn.setEnabled(True)
 
     def show_message(self, message):
@@ -107,8 +107,8 @@ class Voyager(QMainWindow, VoyagerWindow):
 
     # 一键溪谷
     @pyqtSlot()
-    def on_btn_auto_valley_clicked(self):
-        a = AutoValleyWorker(self)
+    def on_btn_auto_daily_clicked(self):
+        a = AutoDailyWorker(self)
         a.trigger.connect(self.on_btn_stop_clicked)
         a.start()
 
