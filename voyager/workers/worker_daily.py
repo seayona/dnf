@@ -59,6 +59,9 @@ class DailyWork(QThread):
         if self.voyager.recogbot.replay():
             self.voyager.game.daily_replay()
 
+        if self.voyager.recogbot.daily_result():
+            self.voyager.game.esc()
+
         # 死亡
         if self.voyager.recogbot.dead():
             self.voyager.game.revival()
