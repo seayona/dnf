@@ -20,4 +20,4 @@ class GoblinWorker(DailyWork):
         return self.voyager.recogbot.daily_goblin()
 
     def _recog_work_completed(self):
-        return self.voyager.recogbot.daily_goblin()
+        return self.voyager.recogbot.daily_goblin_completed()
