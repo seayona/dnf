@@ -296,3 +296,9 @@ class Recogbot(object):
 
     def recog_empty_cell(self):
         return self._recog('emtpy_cell')
+
+    def replay_prop(self):
+        return self._recog_if('replay_prop', 'replay_prop_kr')
+
+    def sm_boss_entry(self):
+        return self._recog_low_precision('sm_boss_entry')

@@ -1,3 +1,4 @@
+import datetime
 from PyQt5.QtCore import QThread, pyqtSignal, QTimer
 
 from .player_fight_snowmountain import PlayerFightWorker
@@ -20,8 +21,10 @@ class GameWorker(QThread):
         self.a = PlayerAttackWorker(self.voyager)
         self.c = PlayerSkillCooldownWorker(self.voyager)
         self.count = 0
+        self.last_out_stuck = None
 
     def init(self):
+        self.last_out_stuck = datetime.datetime.now()
         self.running = True
         self.workers = [self.f, self.a, self.c]
         for s in self.workers:
@@ -101,6 +104,18 @@ class GameWorker(QThread):
             print("【雪山】再次挑战")
             self.voyager.game.replay()
             self.count += 1
+
+        # 再次挑战弹窗
+        if self.voyager.recogbot.replay_prop():
+            self.voyager.game.confirm()
+
+        # 雪山脱困
+        if self.voyager.recogbot.sm_boss_entry() and cls['door'][0]:
+            combo_diff = (datetime.datetime.now() - self.voyager.matric.combos.data()[-1][0])
+            out_stuck_diff = datetime.datetime.now() - self.last_out_stuck
+            if combo_diff.seconds > 30 and out_stuck_diff > 20:
+                self.voyager.game.out_stuck('up')
+                self.last_out_stuck = datetime.datetime.now()
 
     def run(self):
         self.init()

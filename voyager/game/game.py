@@ -520,6 +520,7 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def out_stuck(self, direction):
+        await self._press('x', 0.3)
         await self._key_hold(direction)
         print('【探索者】正在脱困')
         self._free()
