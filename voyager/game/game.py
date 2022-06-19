@@ -14,11 +14,11 @@ class Game(Concurrency):
         self.repaired = False
         self.lionAlive = True
 
-    def _archor(self, target, img=None):
+    def _archor(self, target, img=None, debug=False):
         if img is None:
             img = capture()
         # 检测再次挑战的按钮位置
-        max_val, img, top_left, right_bottom = match(img, './game/scene/' + target + '.png')
+        max_val, img, top_left, right_bottom = match(img, './game/scene/' + target + '.png', debug)
         print(f'【模板匹配】{target} {max_val} {top_left}')
         if top_left[0] == 0 and top_left[1] == 0:
             return False
@@ -671,8 +671,8 @@ class Game(Concurrency):
     @asyncthrows
     async def goto_vault(self, bag):
         await self._click_xy(bag[1] + 10, bag[2] + 8)
-        await self.click_if('collect_vault', 'collect_vault_kr')
-        await self.click_if('collect_gang_vault', 'collect_gang_vault_kr')
+        await self._click_if('collect_vault', 'collect_vault_kr')
+        await self._click_if('collect_gang_vault', 'collect_gang_vault_kr')
         self._free()
 
     @idle
@@ -684,23 +684,23 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def precious_to_vault(self, preciouses, callback):
-        img = capture(500, 0, 700, 800)
+        img = capture(640, 0, 640, 800)
         click_count = 0
         for item in preciouses:
-            if item['collect']:
+            if item['collect'] == 2:
                 continue
-            top_left = self._archor(item['target'], img)
+            top_left = self._archor(f"preciouses/{item['target']}", img)
             if top_left is not None:
                 x, y = top_left
-                await self._click_xy, (x + 15, y + 15, 0.5)
+                await self._click_xy(640 + x + 15, y + 15, 0.5)
                 item['collect'] = 2 if 'target_binding' not in item else 1
                 click_count += 1
 
             if 'target_binding' in item:
-                top_left = self._archor(item['target_binding'], img)
+                top_left = self._archor(f"preciouses/{item['target_binding']}", img)
                 if top_left is not None:
                     x, y = top_left
-                    await self._click_xy, (x + 15, y + 15, 0.5)
+                    await self._click_xy(640 + x + 15, y + 15, 0.5)
                     item['collect'] = 2 if item['collect'] == 1 else 1
                     click_count += 1
 

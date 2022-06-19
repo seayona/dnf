@@ -9,41 +9,41 @@ class Recogbot(object):
     def __init__(self):
         pass
 
-    def _match_max_val(self, target):
+    def _match_max_val(self, target, img):
         # 获取屏幕截图
-        img = capture()
+        img = img if img is not None else capture()
         # 检测目标位置
         max_val, img, top_left, right_bottom = match(img, f'./game/scene/{target}.png')
         print(f'【模板匹配】 {target} {max_val} {top_left}')
         return max_val
 
-    def _recog(self, target):
-        return 0.99 < self._match_max_val(target) <= 1
+    def _recog(self, target, img=None):
+        return 0.99 < self._match_max_val(target, img) <= 1
 
-    def _recog_if(self, target1, target2):
-        max_val = self._match_max_val(target1)
+    def _recog_if(self, target1, target2, img=None):
+        max_val = self._match_max_val(target1, img)
         if 0.99 < max_val <= 1:
             return True
-        max_val = self._match_max_val(target2)
+        max_val = self._match_max_val(target2, img)
         return 0.99 < max_val <= 1
 
-    def _recog_low_precision(self, target):
-        max_val = self._match_max_val(target)
+    def _recog_low_precision(self, target, img=None):
+        max_val = self._match_max_val(target, img)
         return 0.94 < max_val <= 1
 
-    def _recog_low_precision_if(self, target, target2):
-        max_val = self._match_max_val(target)
+    def _recog_low_precision_if(self, target, target2, img=None):
+        max_val = self._match_max_val(target, img)
         if 0.94 < max_val <= 1:
             return True
-        max_val = self._match_max_val(target2)
+        max_val = self._match_max_val(target2, img)
         return 0.99 < max_val <= 1
 
-    def _recog_cheap(self, target):
-        max_val = self._match_max_val(target)
+    def _recog_cheap(self, target, img=None):
+        max_val = self._match_max_val(target, img)
         return 0.9 < max_val <= 1
 
-    def _recog_diy_precision(self, target, low, height=1):
-        max_val = self._match_max_val(target)
+    def _recog_diy_precision(self, target, low, height=1, img=None):
+        max_val = self._match_max_val(target, img)
         return low <= max_val <= height
 
     def detect(self):
@@ -294,11 +294,15 @@ class Recogbot(object):
     def recog_any(self, target):
         return self._recog(target)
 
-    def recog_empty_cell(self):
-        return self._recog('emtpy_cell')
+    def has_empty_cell(self):
+        img = capture(640, 0, 640, 800)
+        return self._recog('empty_cell', img)
 
     def replay_prop(self):
         return self._recog_if('replay_prop', 'replay_prop_kr')
 
     def sm_boss_entry(self):
         return self._recog_low_precision('sm_boss_entry')
+
+    def gang_vault_active(self):
+        return self._recog_if('gang_vault_active', 'gang_vault_active_kr')

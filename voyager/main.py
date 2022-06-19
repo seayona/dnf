@@ -10,8 +10,7 @@ from voyager.infrastructure import Notification
 from voyager.infrastructure.matric import Matric
 from voyager.recognition import Recogbot
 from voyager.workers import GameWorker, ValleyWorker, AgencyMissionWorker, AutoStriveWorker, AutoLevelUpWorker, \
-    DemonWorker, WelfareWorker, AutoWelfareWorker
-from voyager.workers.auto_daily import AutoDailyWorker
+    DemonWorker, WelfareWorker, AutoWelfareWorker, AutoDailyWorker, AutoHarvestWorker
 from voyager.workers.matric import MatricWorker
 
 print("【探索者】加载UI")
@@ -115,7 +114,16 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.workers = [a]
         self._disable()
 
-    # 一键升级
+    # 一键收菜
+    @pyqtSlot()
+    def on_btn_auto_harvest_clicked(self):
+        h = AutoHarvestWorker(self)
+        h.trigger.connect(self.on_btn_stop_clicked)
+        h.start()
+
+        self.workers = [h]
+        self._disable()
+
     @pyqtSlot()
     def on_widget_switch_clicked(self):
         self.matric_switch()
