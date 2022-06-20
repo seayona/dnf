@@ -2,7 +2,7 @@ import asyncio
 
 from voyager.control import click, press, keyUp, keyDown
 from voyager.infrastructure import Concurrency, idle, asyncthrows
-from voyager.recognition import capture, match
+from voyager.recognition import capture, match, match_best
 
 
 class Game(Concurrency):
@@ -19,6 +19,19 @@ class Game(Concurrency):
             img = capture()
         # 检测再次挑战的按钮位置
         max_val, img, top_left, right_bottom = match(img, './game/scene/' + target + '.png', debug)
+        print(f'【模板匹配】{target} {max_val} {top_left}')
+        if top_left[0] == 0 and top_left[1] == 0:
+            return False
+        if 1 >= max_val > 0.99:
+            x, y = top_left
+            # 返回按钮位置
+            return x + 10, y + 8
+
+    def _archor_best(self, target, img=None, debug=False):
+        if img is None:
+            img = capture()
+        # 检测再次挑战的按钮位置
+        max_val, img, top_left, right_bottom = match_best(img, './game/scene/' + target + '.png', debug)
         print(f'【模板匹配】{target} {max_val} {top_left}')
         if top_left[0] == 0 and top_left[1] == 0:
             return False
@@ -689,7 +702,7 @@ class Game(Concurrency):
         for item in preciouses:
             if item['collect'] == 2:
                 continue
-            top_left = self._archor(f"preciouses/{item['target']}", img)
+            top_left = self._archor_best(f"preciouses/{item['target']}", img)
             if top_left is not None:
                 x, y = top_left
                 await self._click_xy(640 + x + 15, y + 15, 0.5)
