@@ -6,6 +6,7 @@ from .player_fight_snowmountain import PlayerFightWorker
 from .player_fight_attack import PlayerAttackWorker
 from .player_fight_cooldown import PlayerSkillCooldownWorker
 from .worker_daily import DailyWork
+from .player_fight_goblin import GoblinFightWorker
 
 
 class GoblinWorker(DailyWork):
@@ -15,6 +16,7 @@ class GoblinWorker(DailyWork):
     def __init__(self, voyager):
         # 初始化函数，默认
         super(GoblinWorker, self).__init__(voyager, 'goblin', 1)
+        self.f = GoblinFightWorker(self.voyager)
 
     def _recog_entry(self):
         return self.voyager.recogbot.daily_goblin()
