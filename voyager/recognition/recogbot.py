@@ -306,3 +306,6 @@ class Recogbot(object):
 
     def gang_vault_active(self):
         return self._recog_if('gang_vault_active', 'gang_vault_active_kr')
+
+    def get_one(self):
+        return self._recog_if('get_one','get_one_kr')
