@@ -319,5 +319,11 @@ class Recogbot(object):
     def duel_get_all(self):
         return self._recog_if('duel_get_all', 'duel_get_all_kr')
 
-    def duel_everyday(self):
-        return self._recog_if('duel_everyday', 'duel_everyday_kr')
+    def duel_get_all_grey(self):
+        return self._recog_if('duel_get_all_grey', 'duel_get_all_grey_kr')
+
+    def duel_day_active(self):
+        return self._recog_if('duel_day_active', 'duel_day_active_kr')
+
+    def duel_week_active(self):
+        return self._recog_if('duel_week_active', 'duel_week_active_kr')

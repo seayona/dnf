@@ -762,3 +762,20 @@ class Game(Concurrency):
         await self._click_if('duel_get_all', 'duel_get_all_kr')
         await self._press('esc')
         self._free()
+
+    @idle
+    @asyncthrows
+    async def duel_box_sign(self, box, callback):
+        top_left = self._archor(box['target'])
+        if top_left:
+            x, y = top_left
+            await self._click_xy(x + 5, y - 20)
+            await self._press('esc')
+            callback()
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def duel_week(self):
+        self._click_if('duel_week', 'duel_week_kr')
+        self._free()
