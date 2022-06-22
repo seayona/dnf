@@ -735,3 +735,30 @@ class Game(Concurrency):
         if top_left:
             await self._click('back')
         self._free()
+
+    @idle
+    @asyncthrows
+    async def goto_duel(self):
+        print('【探索者】即将打开角斗场')
+        await self._press('f4')
+        await self._click('duel_ai_fight')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def duel_challenge(self):
+        await self._click_if('duel_challenge', 'duel_challenge_kr')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def duel_reward(self):
+        await self._click('duel_reward')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def duel_get_all(self):
+        await self._click_if('duel_get_all', 'duel_get_all_kr')
+        await self._press('esc')
+        self._free()
