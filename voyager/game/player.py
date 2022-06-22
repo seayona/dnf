@@ -30,6 +30,8 @@ class Player(Concurrency):
         self.awake = None
         # 收菜
         self.collected = False
+        # 决斗
+        self.duel = {'fight': False, 'reward': False}
 
         self.stand_status = False
 
@@ -128,6 +130,15 @@ class Player(Concurrency):
 
     def daily_status(self, work):
         return self.daily[work]
+
+    def over_duel(self, type):
+        self.duel[type] = True
+
+    def duel_status(self, type):
+        return self.duel[type]
+
+    def winner(self):
+        return self.duel['fight'] and self.duel['reward']
 
     def over_welfare(self, scene):
         self.welfare[scene] = True

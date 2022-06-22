@@ -10,5 +10,5 @@ from recognition import match, capture
 
 if __name__ == '__main__':
     while True:
-        result = match(capture(), './game/scene/menu.png', True)
-        print(result[0])
+        result = match(capture(640, 0, 640, 800), './game/scene/empty_cell.PNG', True)
+        print(result[0], result[2])

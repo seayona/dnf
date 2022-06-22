@@ -2,6 +2,7 @@ from .player_fight_snowmountain import *
 from .player_fight_attack import *
 from .player_fight_cooldown import *
 from .player_fight_agency_mission import *
+from .player_fight_goblin import *
 
 from .auto_welfare import *
 from .auto_strive import *
