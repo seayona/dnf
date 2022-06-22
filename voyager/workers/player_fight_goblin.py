@@ -1,4 +1,5 @@
 from PyQt5.QtCore import QThread, pyqtSignal
+import time
 
 
 class GoblinFightWorker(QThread):
