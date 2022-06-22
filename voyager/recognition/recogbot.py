@@ -308,4 +308,16 @@ class Recogbot(object):
         return self._recog_if('gang_vault_active', 'gang_vault_active_kr')
 
     def get_one(self):
-        return self._recog_if('get_one','get_one_kr')
+        return self._recog_if('get_one', 'get_one_kr')
+
+    def duel_chance(self, num):
+        return self._recog(f'duel_chance_{num}')
+
+    def duel_reward(self):
+        return self._recog('duel_reward')
+
+    def duel_get_all(self):
+        return self._recog_if('duel_get_all', 'duel_get_all_kr')
+
+    def duel_everyday(self):
+        return self._recog_if('duel_everyday', 'duel_everyday_kr')
