@@ -109,12 +109,7 @@ class GameWorker(QThread):
         if self.voyager.recogbot.replay_prop():
             self.voyager.game.confirm()
 
-        # 雪山脱困
-        combo_diff = (datetime.datetime.now() - self.voyager.matric.combos.data()[-1][0])
-        out_stuck_diff = datetime.datetime.now() - self.last_out_stuck
-        if combo_diff.seconds > 50 and out_stuck_diff > 20:
-            self.voyager.game.out_stuck('up')
-            self.last_out_stuck = datetime.datetime.now()
+
 
     def run(self):
         self.init()
