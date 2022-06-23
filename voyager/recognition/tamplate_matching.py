@@ -5,18 +5,18 @@ from .error import TemplateInputError
 
 def cal_rgb_confidence(img_src_rgb, img_sch_rgb):
     """同大小彩图计算相似度."""
-    # 减少极限值对hsv角度计算的影响
-    img_src_rgb = np.clip(img_src_rgb, 10, 245)
-    img_sch_rgb = np.clip(img_sch_rgb, 10, 245)
-    # 转HSV强化颜色的影响
-    img_src_rgb = cv2.cvtColor(img_src_rgb, cv2.COLOR_BGR2HSV)
-    img_sch_rgb = cv2.cvtColor(img_sch_rgb, cv2.COLOR_BGR2HSV)
-
-    # 扩展置信度计算区域
-    img_src_rgb = cv2.copyMakeBorder(img_src_rgb, 10,10,10,10,cv2.BORDER_REPLICATE)
-    # 加入取值范围干扰，防止算法过于放大微小差异
-    img_src_rgb[0,0] = 0
-    img_src_rgb[0,1] = 255
+    # # 减少极限值对hsv角度计算的影响
+    # img_src_rgb = np.clip(img_src_rgb, 10, 245)
+    # img_sch_rgb = np.clip(img_sch_rgb, 10, 245)
+    # # 转HSV强化颜色的影响
+    # img_src_rgb = cv2.cvtColor(img_src_rgb, cv2.COLOR_BGR2HSV)
+    # img_sch_rgb = cv2.cvtColor(img_sch_rgb, cv2.COLOR_BGR2HSV)
+    #
+    # # 扩展置信度计算区域
+    # img_src_rgb = cv2.copyMakeBorder(img_src_rgb, 10,10,10,10,cv2.BORDER_REPLICATE)
+    # # 加入取值范围干扰，防止算法过于放大微小差异
+    # img_src_rgb[0,0] = 0
+    # img_src_rgb[0,1] = 255
 
     # 计算BGR三通道的confidence，存入bgr_confidence
     src_bgr, sch_bgr = cv2.split(img_src_rgb), cv2.split(img_sch_rgb)
