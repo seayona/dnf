@@ -750,6 +750,13 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
+    async def duel_ai_fight(self):
+        print('【探索者】即将打开角斗场')
+        await self._click('duel_ai_fight')
+        self._free()
+
+    @idle
+    @asyncthrows
     async def duel_challenge(self):
         await self._click_if('duel_challenge', 'duel_challenge_kr')
         await self._click_if('duel_evolution', 'duel_evolution_kr')
@@ -800,5 +807,5 @@ class Game(Concurrency):
             await self._click_if('duel_skill_use', 'duel_skill_use_kr')
             await self._click_if('confirm', 'confirm_kr', 0.5)
             await self._click_if('confirm2', 'confirm2_kr', 0.5)
-            await self._click('click_close')
+            await self._click('close2')
         self._free()

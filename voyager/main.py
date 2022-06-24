@@ -83,7 +83,8 @@ class Voyager(QMainWindow, VoyagerWindow):
 
     def _disable(self):
         for btn in [self.btn_snowmountain, self.btn_valley, self.btn_welfare, self.btn_demon, self.btn_agency,
-                    self.btn_auto_work, self.btn_auto_daily, self.btn_auto_levelup, self.btn_auto_welfare]:
+                    self.btn_auto_work, self.btn_auto_daily, self.btn_auto_levelup, self.btn_auto_welfare,
+                    self.btn_auto_harvest, self.btn_auto_duel]:
             btn.setEnabled(False)
 
     def _enable(self):
@@ -120,6 +121,8 @@ class Voyager(QMainWindow, VoyagerWindow):
         h = AutoHarvestWorker(self)
         h.trigger.connect(self.on_btn_stop_clicked)
         h.start()
+        self.workers = [h]
+        self._disable()
 
     # 一键决斗
     @pyqtSlot()

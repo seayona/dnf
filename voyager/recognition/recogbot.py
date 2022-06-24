@@ -333,3 +333,6 @@ class Recogbot(object):
 
     def duel_skill_title(self):
         return self._recog_if('duel_skill_title', 'duel_skill_title_kr')
+
+    def duel_ai_fight(self):
+        return self._recog('duel_ai_fight')

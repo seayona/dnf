@@ -53,6 +53,9 @@ class DuelWork(QThread):
         if self.voyager.recogbot.town() and not self.voyager.player.winner():
             self.voyager.game.goto_duel()
 
+        if self.voyager.recogbot.duel_ai_fight():
+            self.voyager.game.duel_ai_fight()
+
         # 赛季结束结算
         if self.voyager.recogbot.duel_season_over():
             self.voyager.game.duel_season_over()
@@ -65,14 +68,14 @@ class DuelWork(QThread):
         if self.voyager.recogbot.duel_skill_title():
             self.voyager.game.duel_skill_set()
 
+        if self.voyager.recogbot.confirm():
+            self.voyager.game.confirm()
+
         if self.init_chance == -1:
             self.init_chance = self._recog_chance()
             return
 
         self.current_chance = self._recog_chance()
-
-        if self.voyager.recogbot.confirm():
-            self.voyager.game.confirm()
 
         if not self.voyager.player.duel_status('fight'):
             # 挑战
@@ -100,7 +103,7 @@ class DuelWork(QThread):
 
             # 全部领取完毕
             if self.reward['day']['signed'] and self.reward['week']['signed']:
-                self.voyager.player.over_duel()
+                self.voyager.player.over_duel('reward')
         # 一路按esc返回
         if self.voyager.player.winner() and not self.voyager.recogbot.town():
             self.voyager.game.esc()
