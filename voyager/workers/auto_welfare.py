@@ -30,7 +30,7 @@ class AutoWelfareWorker(AutoWorker):
         print("【一键福利】一键福利开始执行", int(QThread.currentThreadId()))
         while self.running:
             self.continuous_run()
-            time.sleep(5)
+            time.sleep(1.5)
 
     # 停止线程
     def stop(self):

@@ -109,8 +109,6 @@ class GameWorker(QThread):
         if self.voyager.recogbot.replay_prop():
             self.voyager.game.confirm()
 
-
-
     def run(self):
         self.init()
         print("【雪山】雪山开始执行")

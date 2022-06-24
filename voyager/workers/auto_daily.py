@@ -41,7 +41,7 @@ class AutoDailyWorker(AutoWorker):
         print("【一键每日】自动每日开始执行", int(QThread.currentThreadId()))
         while self.running:
             self.continuous_run()
-            time.sleep(5)
+            time.sleep(1.5)
 
     # 停止线程
     def stop(self):

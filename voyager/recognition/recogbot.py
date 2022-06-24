@@ -183,7 +183,7 @@ class Recogbot(object):
         return self._recog('lion_clear')
 
     def confirm(self):
-        return self._recog_if('confirm', 'confirm_kr')
+        return self._recog_if('confirm', 'confirm_kr') or self._recog_if('confirm2', 'confirm2_kr')
 
     def next_agency(self):
         return self._recog('next_agency')
@@ -327,3 +327,9 @@ class Recogbot(object):
 
     def duel_week_active(self):
         return self._recog_if('duel_week_active', 'duel_week_active_kr')
+
+    def duel_season_over(self):
+        return self._recog_if('duel_season_over', 'duel_season_over_kr')
+
+    def duel_skill_title(self):
+        return self._recog_if('duel_skill_title', 'duel_skill_title_kr')

@@ -160,6 +160,19 @@
      <string>一键收菜</string>
     </property>
    </widget>
+  <widget class="QPushButton" name="btn_auto_duel">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>350</y>
+      <width>141</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>一键决斗</string>
+    </property>
+   </widget>
    <widget class="QPushButton" name="btn_welfare">
     <property name="geometry">
      <rect>

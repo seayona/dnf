@@ -27,6 +27,9 @@ class Game(Concurrency):
             # 返回按钮位置
             return x + 10, y + 8
 
+    def _archor_if(self, target1, target2, img=None, debug=False):
+        return self._archor(target1, img, debug) or self._archor(target2, img, debug)
+
     def _archor_best(self, target, img=None, debug=False):
         if img is None:
             img = capture()
@@ -300,7 +303,8 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def confirm(self):
-        await self._click_if('confirm', 'confirm_kr')
+        await self._click_if('confirm', 'confirm_kr', 0.5)
+        await self._click_if('confirm2', 'confirm2_kr', 0.5)
         print('【探索者】确认！')
         self._free()
 
@@ -748,6 +752,7 @@ class Game(Concurrency):
     @asyncthrows
     async def duel_challenge(self):
         await self._click_if('duel_challenge', 'duel_challenge_kr')
+        await self._click_if('duel_evolution', 'duel_evolution_kr')
         self._free()
 
     @idle
@@ -777,5 +782,23 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def duel_week(self):
-        self._click_if('duel_week', 'duel_week_kr')
+        await self._click_if('duel_week', 'duel_week_kr')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def duel_season_over(self):
+        await self._click_if('duel_season_over', 'duel_season_over_kr')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def duel_skill_set(self):
+        await self._click_if('duel_skill_recommend', 'duel_skill_recommend_kr')
+        top_left = self._archor_if('duel_skill_recommend_active', 'duel_skill_recommend_active_kr')
+        if top_left:
+            await self._click_if('duel_skill_use', 'duel_skill_use_kr')
+            await self._click_if('confirm', 'confirm_kr', 0.5)
+            await self._click_if('confirm2', 'confirm2_kr', 0.5)
+            await self._click('click_close')
         self._free()

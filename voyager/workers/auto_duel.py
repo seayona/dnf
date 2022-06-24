@@ -4,21 +4,21 @@ from PyQt5.QtCore import QThread, pyqtSignal
 
 from .auto_worker import AutoWorker
 
-from .woker_collect_precious import CollectPrecious
+from .woker_duel import DuelWork
 
 
-class AutoHarvestWorker(AutoWorker):
+class AutoDuelWorker(AutoWorker):
     # 定义一个信号
     trigger = pyqtSignal(str)
 
     def __init__(self, voyager):
-        super().__init__(voyager, 'Harvest')
+        super().__init__(voyager, 'Duel')
         self.running = False
         self.voyager = voyager
 
-        self.c = CollectPrecious(self.voyager)
-        self.c.trigger.connect(self.finish)
-        self.workers = [self.c]
+        self.d = DuelWork(self.voyager)
+        self.d.trigger.connect(self.finish)
+        self.workers = [self.d]
 
     def init(self):
         self.running = True
@@ -27,14 +27,14 @@ class AutoHarvestWorker(AutoWorker):
     # 线程入口
     def run(self):
         self.init()
-        print("【一键福利】一键福利开始执行", int(QThread.currentThreadId()))
+        print("【一键决斗】一键决斗开始执行", int(QThread.currentThreadId()))
         while self.running:
             self.continuous_run()
             time.sleep(1.5)
 
     # 停止线程
     def stop(self):
-        print("【一键福利】一键福利停止执行")
+        print("【一键决斗】一键决斗停止执行")
         for s in self.workers:
             s.stop()
         if self.worker is not None:

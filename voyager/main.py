@@ -10,7 +10,7 @@ from voyager.infrastructure import Notification
 from voyager.infrastructure.matric import Matric
 from voyager.recognition import Recogbot
 from voyager.workers import GameWorker, ValleyWorker, AgencyMissionWorker, AutoStriveWorker, AutoLevelUpWorker, \
-    DemonWorker, WelfareWorker, AutoWelfareWorker, AutoDailyWorker, AutoHarvestWorker
+    DemonWorker, WelfareWorker, AutoWelfareWorker, AutoDailyWorker, AutoHarvestWorker, AutoDuelWorker
 from voyager.workers.matric import MatricWorker
 
 print("【探索者】加载UI")
@@ -121,7 +121,14 @@ class Voyager(QMainWindow, VoyagerWindow):
         h.trigger.connect(self.on_btn_stop_clicked)
         h.start()
 
-        self.workers = [h]
+    # 一键决斗
+    @pyqtSlot()
+    def on_btn_auto_duel_clicked(self):
+        d = AutoDuelWorker(self)
+        d.trigger.connect(self.on_btn_stop_clicked)
+        d.start()
+
+        self.workers = [d]
         self._disable()
 
     @pyqtSlot()

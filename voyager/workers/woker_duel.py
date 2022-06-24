@@ -18,8 +18,11 @@ class DuelWork(QThread):
         self.running = False
         self.workers = []
         self.reward = {}
+        self.init_chance = -1
+        self.current_chance = -1
 
     def init(self):
+        self.running = True
         self.reward = {
             'day': {
                 'get_all': False,
@@ -34,11 +37,13 @@ class DuelWork(QThread):
         }
         for i in range(1, 4):
             self.reward['day']['box'].append(
-                {'signed': False, 'target': f'duel_day_box{i}', 'signed_target': f'duel_day_box{i}_signed'})
+                {'signed': False, 'target': f'duel_day_box{i}', 'uncompleted': f'duel_day_box{i}_uncompleted',
+                 'signed_target': f'duel_day_box{i}_signed'})
 
         for i in range(1, 6):
-            self.reward['day']['box'].append(
-                {'signed': False, 'target': f'duel_week_box{i}', 'signed_target': f'duel_week_box{i}_signed'})
+            self.reward['week']['box'].append(
+                {'signed': False, 'target': f'duel_week_box{i}', 'uncompleted': f'duel_week_box{i}_uncompleted',
+                 'signed_target': f'duel_week_box{i}_signed'})
 
     def _box_signed(self, box):
         box['signed'] = True
@@ -48,36 +53,54 @@ class DuelWork(QThread):
         if self.voyager.recogbot.town() and not self.voyager.player.winner():
             self.voyager.game.goto_duel()
 
-        # 挑战
-        if self.voyager.recogbot.duel_chance(0):
-            self.voyager.player.over_duel('fight')
-        else:
-            self.voyager.game.duel_challenge()
+        # 赛季结束结算
+        if self.voyager.recogbot.duel_season_over():
+            self.voyager.game.duel_season_over()
+
+        # 从技能界面返回
+        if self.voyager.recogbot.skill_back():
+            self.voyager.game.skill_back()
+
+        # 设置技能
+        if self.voyager.recogbot.duel_skill_title():
+            self.voyager.game.duel_skill_set()
+
+        if self.init_chance == -1:
+            self.init_chance = self._recog_chance()
+            return
+
+        self.current_chance = self._recog_chance()
 
         if self.voyager.recogbot.confirm():
             self.voyager.game.confirm()
+
+        if not self.voyager.player.duel_status('fight'):
+            # 挑战
+            if self.voyager.recogbot.duel_chance(0) or (
+                    self.current_chance > -1 and self.init_chance - self.current_chance >= 3):
+                self.voyager.player.over_duel('fight')
+            else:
+                self.voyager.game.duel_challenge()
 
         # 领取奖励
         if self.voyager.player.duel_status('fight') and not self.voyager.player.duel_status('reward'):
             if self.voyager.recogbot.duel_reward():
                 self.voyager.game.duel_reward()
+            # 每日领取
+            if self.voyager.recogbot.duel_day_active():
+                self._get_reward('day')
 
-        # 每日领取
-        if self.voyager.recogbot.duel_day_active():
-            self._get_reward('day')
+            # 领取完毕，切换每周
+            if self.voyager.recogbot.duel_day_active() and self.reward['day']['signed']:
+                self.voyager.game.duel_week()
 
-        # 领取完毕，切换每周
-        if self.voyager.recogbot.duel_day_active() and self.reward[type]['signed']:
-            self.voyager.game.duel_week()
+            # 每周领取
+            if self.voyager.recogbot.duel_week_active():
+                self._get_reward('week')
 
-        # 每周领取
-        if self.voyager.recogbot.duel_week_active():
-            self._get_reward('week')
-
-        # 全部领取完毕
-        if self.reward['day']['signed'] and self.reward['week']['signed']:
-            self.voyager.player.over_duel()
-
+            # 全部领取完毕
+            if self.reward['day']['signed'] and self.reward['week']['signed']:
+                self.voyager.player.over_duel()
         # 一路按esc返回
         if self.voyager.player.winner() and not self.voyager.recogbot.town():
             self.voyager.game.esc()
@@ -98,7 +121,8 @@ class DuelWork(QThread):
                 # 领取箱子
                 not_signed = list(filter(lambda i: not i['signed'], self.reward[type]['box']))
                 for item in not_signed:
-                    if self.voyager.recogbot.recog_any(item['signed_target']):
+                    if self.voyager.recogbot.recog_any(item['signed_target']) or self.voyager.recogbot.recog_any(
+                            item['uncompleted']):
                         item['signed'] = True
 
                 not_signed = list(filter(lambda i: not i['signed'], self.reward[type]['box']))
@@ -107,6 +131,12 @@ class DuelWork(QThread):
 
                 if len(not_signed) == 0 and self.reward[type]['get_all']:
                     self.reward[type]['signed'] = True
+
+    def _recog_chance(self):
+        for i in range(7):
+            if self.voyager.recogbot.duel_chance(i):
+                return i
+        return -1
 
     def run(self):
         self.init()
