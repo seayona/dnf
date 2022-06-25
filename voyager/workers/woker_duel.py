@@ -60,6 +60,9 @@ class DuelWork(QThread):
         if self.voyager.recogbot.duel_season_over():
             self.voyager.game.duel_season_over()
 
+        if self.voyager.recogbot.duel_promotion():
+            self.voyager.game.duel_promotion()
+
         # 从技能界面返回
         if self.voyager.recogbot.skill_back():
             self.voyager.game.skill_back()

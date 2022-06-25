@@ -809,3 +809,9 @@ class Game(Concurrency):
             await self._click_if('confirm2', 'confirm2_kr', 0.5)
             await self._click('close2')
         self._free()
+
+    @idle
+    @asyncthrows
+    async def duel_promotion(self):
+        await self._click_if('duel_promotion', 'duel_promotion_kr')
+        self._free()

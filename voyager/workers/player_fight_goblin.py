@@ -17,8 +17,8 @@ class GoblinFightWorker(QThread):
     def _run(self):
         cls = self.voyager.recogbot.detect()
         if cls['boss'][0]:
-            self.voyager.player.cast()
             self._finisher()
+            self.voyager.player.cast()
 
     def _finisher(self):
         if self.voyager.recogbot.skill(self.voyager.player.awake['icon']):

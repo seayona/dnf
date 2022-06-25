@@ -336,3 +336,6 @@ class Recogbot(object):
 
     def duel_ai_fight(self):
         return self._recog('duel_ai_fight')
+
+    def duel_promotion(self):
+        return self._recog('duel_promotion')
