@@ -33,8 +33,8 @@ class GameWorker(QThread):
     def _run(self):
         cls = self.voyager.recogbot.detect()
 
-        # 第一次一定修理
-        if self.count % 4 == 0 and not self.voyager.recogbot.disrepair():
+        # 标记已修理
+        if not self.count % 6 == 0 and not self.voyager.recogbot.disrepair():
             self.voyager.game.repaired = True
 
         # 武器报废
@@ -88,6 +88,9 @@ class GameWorker(QThread):
         if cls['passing'][0] and cls['door'][0]:
             print("【雪山】疲劳值不足")
             self.voyager.game.back_town(cls['setting'])
+
+        if self.voyager.game.repaired and self.voyager.recogbot.back():
+            self.voyager.game.back()
 
         # 疲劳值耗尽，人在城镇
         if self.voyager.player.tired() and self.voyager.recogbot.town():
