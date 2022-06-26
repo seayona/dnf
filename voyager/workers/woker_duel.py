@@ -19,10 +19,10 @@ class DuelWork(QThread):
         self.workers = []
         self.reward = {}
         self.init_chance = -1
-        self.current_chance = -1
 
     def init(self):
         self.running = True
+        self.init_chance = -1
         self.reward = {
             'day': {
                 'get_all': False,
@@ -53,7 +53,7 @@ class DuelWork(QThread):
         if self.voyager.recogbot.town() and not self.voyager.player.winner():
             self.voyager.game.goto_duel()
 
-        if self.voyager.recogbot.duel_ai_fight():
+        if self.voyager.recogbot.duel_ai_fight() and not self.voyager.player.winner():
             self.voyager.game.duel_ai_fight()
 
         # 赛季结束结算
@@ -73,20 +73,19 @@ class DuelWork(QThread):
 
         if self.voyager.recogbot.confirm():
             self.voyager.game.confirm()
-
+        # self.voyager.player.over_duel('fight')
         if self.init_chance == -1:
             self.init_chance = self._recog_chance()
             return
 
-        self.current_chance = self._recog_chance()
-
         if not self.voyager.player.duel_status('fight'):
-            # 挑战
-            if self.voyager.recogbot.duel_chance(0) or (
-                    self.current_chance > -1 and self.init_chance - self.current_chance >= 3):
-                self.voyager.player.over_duel('fight')
-            else:
-                self.voyager.game.duel_challenge()
+            current = self._recog_chance()
+            if not current == -1:
+                # 挑战
+                if self.voyager.recogbot.duel_chance(0) or self.init_chance - current >= 3:
+                    self.voyager.player.over_duel('fight')
+                else:
+                    self.voyager.game.duel_challenge()
 
         # 领取奖励
         if self.voyager.player.duel_status('fight') and not self.voyager.player.duel_status('reward'):
