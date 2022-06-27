@@ -2,9 +2,11 @@ import time
 
 from PyQt5.QtCore import QThread, pyqtSignal
 
+from .worker_welfare_mail_receive import WelfareMailReceive
 from .auto_worker import AutoWorker
 
 from .woker_collect_precious import CollectPrecious
+from .worker_welfare_union import WelfareUnionWorker
 
 
 class AutoHarvestWorker(AutoWorker):
@@ -18,7 +20,14 @@ class AutoHarvestWorker(AutoWorker):
 
         self.c = CollectPrecious(self.voyager)
         self.c.trigger.connect(self.finish)
-        self.workers = [self.c]
+
+        self.m = WelfareMailReceive(self.voyager)
+        self.m.trigger.connect(self.finish)
+
+        self.u = WelfareUnionWorker(self.voyager)
+        self.u.trigger.connect(self.finish)
+
+        self.workers = [self.c, self.m, self.u]
 
     def init(self):
         self.running = True

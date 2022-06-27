@@ -81,7 +81,7 @@ class CollectPrecious(QThread):
         if self.voyager.recogbot.gang_vault_active() and len(not_collect) > 0:
             not_collect_preciouses = list(filter(lambda k: not k['collect'] == 2, not_collect[0]['list']))
             # [入库操作过3次，有空格子] or [入库所有标记True] or [入库操作过5次] ->本项入库完成
-            if ((self.detect_count > 3 and self.voyager.recogbot.has_empty_cell()) or len(
+            if ((self.detect_count > 2 and self.voyager.recogbot.has_empty_cell()) or len(
                     not_collect_preciouses) == 0 or self.detect_count > 5) and not self.busy:
                 not_collect[0]['clear'] = True
                 self.detect_count = 0

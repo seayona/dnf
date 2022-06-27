@@ -54,6 +54,8 @@ class Voyager(QMainWindow, VoyagerWindow):
         conf.set('LevelUp', 'Player', q.text())
         conf.set('Valley', 'Player', q.text())
         conf.set('Welfare', 'Player', q.text())
+        conf.set('Harvest', 'Player', q.text())
+        conf.set('Duel', 'Player', q.text())
         conf.write(open('./conf/auto.ini', "w"))
         self.show_message(f"角色【{q.text()}】配置已加载")
 
@@ -89,7 +91,8 @@ class Voyager(QMainWindow, VoyagerWindow):
 
     def _enable(self):
         for btn in [self.btn_snowmountain, self.btn_valley, self.btn_welfare, self.btn_demon, self.btn_agency,
-                    self.btn_auto_work, self.btn_auto_daily, self.btn_auto_levelup, self.btn_auto_welfare]:
+                    self.btn_auto_work, self.btn_auto_daily, self.btn_auto_levelup, self.btn_auto_welfare,
+                    self.btn_auto_harvest, self.btn_auto_duel]:
             btn.setEnabled(True)
 
     def show_message(self, message):

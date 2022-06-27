@@ -89,6 +89,9 @@ class GameWorker(QThread):
             print("【雪山】疲劳值不足")
             self.voyager.game.back_town(cls['setting'])
 
+        if self.voyager.recogbot.home():
+            self.voyager.game.back_home()
+
         if self.voyager.game.repaired and self.voyager.recogbot.back():
             self.voyager.game.back()
 

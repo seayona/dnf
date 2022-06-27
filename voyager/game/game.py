@@ -215,7 +215,7 @@ class Game(Concurrency):
 
         await self._sale()
         # 标记修理状态
-        self.repaired = True
+
         print('【探索者】装备修理完成')
         self._free()
 
@@ -243,6 +243,7 @@ class Game(Concurrency):
         await self._click('close')
         # 返回！
         await self._click('back')
+        self.repaired = True
         print('【探索者】装备分解完成')
 
     @idle
@@ -674,14 +675,15 @@ class Game(Concurrency):
     @asyncthrows
     async def goto_mail(self):
         print('【福利】正在打开邮件')
-        self._click('mail')
+        await self._click('mail')
         self._free()
 
     @idle
     @asyncthrows
     async def mail_receive(self):
-        self._click_if('mail_receive', 'mail_receive_kr')
-        self._click('confirm', 'confirm_kr')
+        await self._click_if('mail_receive', 'mail_receive_kr')
+        await self._click_if('confirm', 'confirm_kr')
+        await self._click_if('mail_del', 'mail_del_kr')
         self._free()
 
     @idle
@@ -814,4 +816,12 @@ class Game(Concurrency):
     @asyncthrows
     async def duel_promotion(self):
         await self._click_if('duel_promotion', 'duel_promotion_kr')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def back_home(self):
+        await self._click('home')
+        await self._click_if('confirm', 'confirm_kr')
+        await asyncio.sleep(5)
         self._free()
