@@ -2,6 +2,7 @@ from detect_dnf import detect
 
 from .capture import capture
 from .match import match
+import math
 
 
 class Recogbot(object):
@@ -14,6 +15,7 @@ class Recogbot(object):
         img = img if img is not None else capture()
         # 检测目标位置
         max_val, img, top_left, right_bottom = match(img, f'./game/scene/{target}.png')
+        max_val = 1 if max_val > 1 and not math.isinf(max_val) else max_val
         print(f'【模板匹配】 {target} {max_val} {top_left}')
         return max_val
 

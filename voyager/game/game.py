@@ -1,5 +1,5 @@
 import asyncio
-
+import math
 from voyager.control import click, press, keyUp, keyDown
 from voyager.infrastructure import Concurrency, idle, asyncthrows
 from voyager.recognition import capture, match, match_best
@@ -19,6 +19,7 @@ class Game(Concurrency):
             img = capture()
         # 检测再次挑战的按钮位置
         max_val, img, top_left, right_bottom = match(img, './game/scene/' + target + '.png', debug)
+        max_val = 1 if max_val > 1 and not math.isinf(max_val) else max_val
         print(f'【模板匹配】{target} {max_val} {top_left}')
         if top_left[0] == 0 and top_left[1] == 0:
             return False

@@ -86,7 +86,7 @@ class AutoWorker(QThread):
         if current in self.players:
             i = self.players.index(current)
             if i + 1 == len(self.players):
-                self.send("【自动任务】所有角色工作完成")
+                self.send("【Auto Work】All Jobs completed")
                 # 重置配置
                 self._current_player_update(self.players[0])
                 self.trigger.emit(self.__class__.__name__)

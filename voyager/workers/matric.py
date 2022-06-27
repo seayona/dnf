@@ -23,7 +23,7 @@ class MatricWorker(QThread):
             return
         diff = (datetime.datetime.now() - self.voyager.matric.combos.data()[-1][0])
         if diff.seconds > 60 * 3:
-            self.voyager.notification.send(f"【{self.voyager.player.name}】3分钟没打小怪兽了")
+            self.voyager.notification.send(f"【{self.voyager.player.name}】Must return to work,Now!")
 
     def run(self):
         self.init()
