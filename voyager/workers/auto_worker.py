@@ -25,9 +25,11 @@ class AutoWorker(QThread):
         self.worker = None
         self.working = False
         self.workers_queue = []
+        self.player_is_loading = False
 
     def reset(self):
         self.worker = None
+        self.badge = False
         self.working = False
         self.workers_queue = self.workers.copy()
 
@@ -118,7 +120,7 @@ class AutoWorker(QThread):
             self.voyager.game.switch_player(cls['switch'])
 
         # 选择角色页面
-        if self.voyager.recogbot.start_game():
+        if self.voyager.recogbot.start_game() and self.voyager.recogbot.level():
             next_player = self.next_player()
 
             if next_player is None:
