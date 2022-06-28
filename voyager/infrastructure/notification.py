@@ -32,7 +32,7 @@ class Notification(object):
         self.mail['receive'] = self.conf.get('SSLMail', 'Receive')
 
     def send(self, content):
-        # self._send_wechat(content)
+        self._send_wechat(content)
         self._send_mail(content)
 
     def _send_wechat(self, content):
@@ -53,9 +53,9 @@ class Notification(object):
         ret = True
         try:
             msg = MIMEText(content, 'plain', 'utf-8')
-            msg['From'] = formataddr(["私人秘书", self.mail['user']])  # 括号里的对应发件人邮箱昵称、发件人邮箱账号
+            msg['From'] = formataddr(["Private Secretary", self.mail['user']])  # 括号里的对应发件人邮箱昵称、发件人邮箱账号
             msg['To'] = formataddr(["FK", self.mail['receive']])  # 括号里的对应收件人邮箱昵称、收件人邮箱账号
-            msg['Subject'] = "游艇到货"  # 邮件的主题，也可以说是标题
+            msg['Subject'] = "Notification"  # 邮件的主题，也可以说是标题
 
             server = smtplib.SMTP_SSL(self.mail['host'], self.mail['port'])  # 发件人邮箱中的SMTP服务器，端口是25
             server.login(self.mail['user'], self.mail['pwd'])  # 括号中对应的是发件人邮箱账号、邮箱密码

@@ -218,7 +218,7 @@ class Recogbot(object):
         return self._recog_low_precision('skills/' + target)
 
     def close(self):
-        return self._recog('close')
+        return self._recog('close') or self._recog('close2') or self._recog('close3')
 
     def heaven_mission_receive(self):
         return self._recog_if('heaven_mission_receive', 'heaven_mission_receive_kr')
@@ -353,3 +353,6 @@ class Recogbot(object):
 
     def home(self):
         return self._recog('home')
+
+    def overweight(self):
+        return self._recog('overweight')

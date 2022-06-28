@@ -30,6 +30,9 @@ class WelfareRevivalCoinWorker(QThread):
         if self.voyager.recogbot.revival_coin_status():
             self.voyager.game.mall_purchase()
 
+        if self.voyager.recogbot.close():
+            self.voyager.game.close()
+
         # 领取后在城镇stop
         if self.voyager.recogbot.town() and self.voyager.player.welfare['revival_coin']:
             self.trigger.emit(self.__class__.__name__)

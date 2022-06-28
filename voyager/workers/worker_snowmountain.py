@@ -42,6 +42,9 @@ class GameWorker(QThread):
             self.voyager.player.stand()
             self.voyager.game.repair()
 
+        if self.voyager.recogbot.overweight():
+            self.voyager.game.repair_and_sale(cls['bag'])
+
         # 疲劳值未耗尽，人在城镇中，去搬砖
         if not self.voyager.player.tired() and self.voyager.recogbot.town():
             print("【一键搬砖】5秒后前往雪山")

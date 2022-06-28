@@ -365,8 +365,10 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def click_close(self):
-        await self._click('click_close')
+    async def close(self):
+        await self._click('close')
+        await self._click('close2')
+        await self._click('close3')
         print('【探索者】点击关闭')
         self._free()
 
