@@ -85,6 +85,7 @@ class DuelWork(QThread):
                 if self.voyager.recogbot.duel_chance(0) or self.init_chance - current >= 3:
                     self.voyager.player.over_duel('fight')
                 else:
+                    self.voyager.matric.heartbeat()
                     self.voyager.game.duel_challenge()
 
         # 领取奖励

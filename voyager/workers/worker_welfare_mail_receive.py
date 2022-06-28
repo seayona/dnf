@@ -26,6 +26,7 @@ class WelfareMailReceive(QThread):
             self.voyager.game.mail_receive()
 
         if self.voyager.recogbot.mail_received() and self.voyager.recogbot.mail_self_active():
+            self.voyager.matric.heartbeat()
             self.voyager.player.over_welfare('mail')
             self.voyager.game.back()
 

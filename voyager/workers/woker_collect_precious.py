@@ -68,6 +68,7 @@ class CollectPrecious(QThread):
 
         # 还没入库，在城镇去金库
         if self.voyager.recogbot.town() and not self.voyager.player.collected and cls['bag'][0]:
+            self.voyager.matric.heartbeat()
             self.voyager.game.goto_vault(cls['bag'])
             return
 

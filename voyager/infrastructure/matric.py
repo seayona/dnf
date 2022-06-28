@@ -38,4 +38,9 @@ class Matric(object):
     def combo(self, cls):
         message = f"【实时检测】 连击数 {(cls[1], cls[2])}"
         self.combos.append((datetime.datetime.now(), message))
-        print("【Matric】",message)
+        print("【Matric】", message)
+
+    def heartbeat(self):
+        msg = "心跳"
+        self.combos.append((datetime.datetime.now(), msg))
+        print("【Matric】", msg)
