@@ -188,6 +188,7 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def reward(self):
+        self.reset()
         await self._click('gold')
         await self._click('gold2')
         print('【探索者】战斗结束，领取奖励完成')
@@ -297,6 +298,7 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def snow_mountain_fight(self):
+        self.reset()
         await self._click('adventure_snow_mountain_hard')
         await self._click('adventure_snow_mountain_entry')
         await self._click('adventure_snow_mountain_confirm')
@@ -450,6 +452,7 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def back_town_mission(self):
+        self.reset()
         top_left = self._archor('close')
         if top_left:
             await self._click('close')
@@ -522,6 +525,7 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def back_town(self, setting):
+        self.reset()
         await self._click_xy(setting[1], setting[2])
         await self._click('home')
         await self._click_if('confirm', 'confirm_kr')
