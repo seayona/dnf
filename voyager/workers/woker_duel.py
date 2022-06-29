@@ -209,7 +209,7 @@ class DuelWork(QThread):
         self.init()
         print(f"【角斗场】开始执行")
         while self.running:
-            self._run2()
+            self._run()
             time.sleep(0.5)
 
     def stop(self):
