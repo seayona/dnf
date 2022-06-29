@@ -34,7 +34,7 @@ class GameWorker(QThread):
         cls = self.voyager.recogbot.detect()
 
         # 标记已修理
-        if not self.count % 6 == 0 and not self.voyager.recogbot.disrepair():
+        if not self.count % 6 == 0 and not self.voyager.recogbot.disrepair() and not self.voyager.recogbot.overweight():
             self.voyager.game.repaired = True
 
         # 武器报废
@@ -42,7 +42,7 @@ class GameWorker(QThread):
             self.voyager.player.stand()
             self.voyager.game.repair()
 
-        if self.voyager.recogbot.overweight():
+        if self.voyager.recogbot.overweight() and not self.voyager.game.repaired:
             self.voyager.game.repair_and_sale(cls['bag'])
 
         # 疲劳值未耗尽，人在城镇中，去搬砖
