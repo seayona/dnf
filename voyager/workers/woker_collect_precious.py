@@ -21,7 +21,7 @@ class CollectPrecious(QThread):
         self.preciouses = [
             {
                 'list': [
-                    {'name': '碳', 'target': 'carbon', 'collect': 0},
+                    {'name': '碳', 'target': 'carbon','target_binding': 'carbon_bind', 'collect': 0},
                     {'name': '深渊票', 'target': 'abyss', 'target_binding': 'abyss_bind', 'collect': 0},
                     {'name': '洗练石', 'target': 'stone_wash', 'target_binding': 'stone_wash_bind', 'collect': 0},
                     {'name': '红宝石', 'target': 'stone_red', 'target_binding': 'stone_red_bind', 'collect': 0},
