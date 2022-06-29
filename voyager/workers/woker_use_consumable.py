@@ -65,7 +65,6 @@ class UseConsumable(QThread):
         not_use = list(filter(lambda item: not item['use'], self.consumable))
 
         if self.voyager.recogbot.confirm() and self.voyager.game.repaired:
-            print('确认mmmmmmmmmmmmmmmmmmmmmmmmmmmm')
             self.voyager.game.confirm()
             self._over_current()
             return
@@ -94,7 +93,7 @@ class UseConsumable(QThread):
             else:
                 self.detect_add()
 
-            if self.detect_count >= 1:
+            if self.detect_count >= 2:
                 self._over_current()
 
     def _over_current(self):
