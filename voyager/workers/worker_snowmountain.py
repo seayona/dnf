@@ -34,7 +34,7 @@ class GameWorker(QThread):
         cls = self.voyager.recogbot.detect()
 
         # 标记已修理
-        if not self.count % 6 == 0 and not self.voyager.recogbot.disrepair() and not self.voyager.recogbot.overweight():
+        if not self.count % 6 == 0 and not self.voyager.recogbot.disrepair() and not self.voyager.recogbot.overweight() and not self.voyager.recogbot.town():
             self.voyager.game.repaired = True
 
         # 武器报废

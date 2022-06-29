@@ -376,7 +376,6 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def back(self):
-        self.reset()
         await self._click('back')
         print('【探索者】返回界面')
         self._free()
@@ -463,6 +462,7 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def back_town_dungeon(self):
+        self.reset()
         top_left = self._archor_low_precision_if('adventure_dungeon_town', 'adventure_dungeon_town_kr')
         if top_left:
             await self._click_if_low_precision('adventure_dungeon_town', 'adventure_dungeon_town_kr')
