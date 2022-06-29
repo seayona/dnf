@@ -565,7 +565,6 @@ class Game(Concurrency):
     @asyncthrows
     async def union_sign_start(self):
         print('【探索者】5s后打开公会界面')
-        await asyncio.sleep(5)
         await self._press("F7")
         # await self.union_box()
         self._free()
@@ -685,6 +684,12 @@ class Game(Concurrency):
     async def goto_mail(self):
         print('【福利】正在打开邮件')
         await self._click('mail')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def mail_self(self):
+        await self._click_if('mail_self', 'mail_self_kr')
         self._free()
 
     @idle

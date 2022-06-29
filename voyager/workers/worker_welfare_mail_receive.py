@@ -22,6 +22,9 @@ class WelfareMailReceive(QThread):
         if self.voyager.recogbot.town() and not self.voyager.player.welfare['mail']:
             self.voyager.game.goto_mail()
 
+        if self.voyager.recogbot.mail_self():
+            self.voyager.game.mail_self()
+
         if self.voyager.recogbot.mail_receive() and self.voyager.recogbot.mail_self_active():
             self.voyager.game.mail_receive()
 

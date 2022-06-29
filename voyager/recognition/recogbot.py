@@ -349,6 +349,9 @@ class Recogbot(object):
         return self._recog_low_precision_if('level', 'level_kr')
 
     def mail_self_active(self):
+        return self._recog_if('mail_self_active', 'mail_self_active_kr')
+
+    def mail_self(self):
         return self._recog_if('mail_self', 'mail_self_kr')
 
     def home(self):

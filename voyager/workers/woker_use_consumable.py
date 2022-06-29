@@ -20,11 +20,13 @@ class UseConsumable(QThread):
     def init(self):
         self.running = True
         self.in_consumable = False
+        self.busy = False
         self.current = {}
         self.detect_count = 0
         self.consumable = [{'name': '徽章', 'target': 'preciouses/badge', 'use': False},
                            {'name': '催化剂', 'target': 'preciouses/catalyzer', 'use': False},
                            {'name': '狗眼', 'target': 'preciouses/eye', 'use': False},
+                           {'name': '狗眼2', 'target': 'preciouses/eye2', 'use': False},
                            {'name': '钥匙', 'target': 'preciouses/key', 'use': False},
                            {'name': '防具材料', 'target': 'preciouses/material', 'use': False},
                            {'name': '宝石材料', 'target': 'preciouses/stone', 'use': False},
@@ -37,7 +39,6 @@ class UseConsumable(QThread):
 
     def detect_add(self):
         self.detect_count += 1
-        self.busy = False
 
     def _run(self):
         cls = self.voyager.recogbot.detect()
@@ -70,35 +71,41 @@ class UseConsumable(QThread):
             return
 
         if self.voyager.recogbot.csb_onekey():
+            self.busy = True
             self.voyager.game.csb_onekey()
             return
 
         if self.voyager.recogbot.csb_use_large():
+            self.busy = True
             self.voyager.game.csb_use_large()
             return
 
         if self.voyager.recogbot.csb_use() and not self.voyager.recogbot.csb_onekey():
             self.voyager.game.csb_use()
+            self.busy = True
             return
 
         if self.voyager.recogbot.consumable_active():
             self.in_consumable = True
-            if len(not_use) == 0:
+            if len(not_use) == 0 or self.detect_count >= 3:
                 self.voyager.player.over_consumable()
                 return
-            self.current = not_use[0]
-            if self.voyager.recogbot.recog_any(self.current['target']) and not self.busy:
-                self.busy = True
-                self.voyager.game.click_any(self.current['target'])
-            else:
-                self.detect_add()
+            if not self.busy:
+                self._detect_csb(not_use)
 
-            if self.detect_count >= 2:
-                self._over_current()
+    def _detect_csb(self, not_use):
+        for c in not_use:
+            if self.voyager.recogbot.recog_any(c['target']) and not self.busy:
+                self.current = c
+                self.detect_count = 0
+                self.voyager.game.click_any(c['target'])
+                return
+        self.detect_add()
 
     def _over_current(self):
         self.current['use'] = True
         self.detect_count = 0
+        self.busy = False
 
     def run(self):
         self.init()
