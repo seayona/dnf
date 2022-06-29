@@ -356,3 +356,15 @@ class Recogbot(object):
 
     def overweight(self):
         return self._recog('overweight')
+
+    def consumable_active(self):
+        return self._recog('consumable_active')
+
+    def csb_onekey(self):
+        return self._recog_if('csb_onekey', 'csb_onekey_kr')
+
+    def csb_use(self):
+        return self._recog_if('csb_use', 'csb_use_kr')
+
+    def csb_use_large(self):
+        return self._recog_if('csb_use_large', 'csb_use_large_kr')

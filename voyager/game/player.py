@@ -33,6 +33,8 @@ class Player(Concurrency):
         # 决斗
         self.duel = {'fight': False, 'reward': False}
 
+        self.consumable = False
+
         self.stand_status = False
 
         self._init_skills(name)
@@ -127,6 +129,9 @@ class Player(Concurrency):
 
     def over_daily(self, work):
         self.daily[work] = True
+
+    def over_consumable(self):
+        self.consumable = True
 
     def daily_status(self, work):
         return self.daily[work]

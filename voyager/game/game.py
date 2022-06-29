@@ -195,7 +195,7 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def repair_and_sale(self, bag=(False, 0, 0)):
+    async def repair_and_sale(self, bag=(False, 0, 0), auto_back=True):
         if self.repaired:
             print("【探索者】已修理，无需修理")
             self._free()
@@ -214,14 +214,14 @@ class Game(Concurrency):
         # 返回！
         await self._click('close')
 
-        await self._sale()
+        await self._sale(auto_back)
         # 标记修理状态
 
         print('【探索者】装备修理完成')
         self._free()
 
     @asyncthrows
-    async def _sale(self):
+    async def _sale(self, auto_back):
         # 点击分解按钮
         await self._click('sale')
         # 确认分解
@@ -243,7 +243,8 @@ class Game(Concurrency):
         # 返回！
         await self._click('close')
         # 返回！
-        await self._click('back')
+        if auto_back:
+            await self._click('back')
         self.repaired = True
         print('【探索者】装备分解完成')
 
@@ -375,6 +376,7 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def back(self):
+        self.reset()
         await self._click('back')
         print('【探索者】返回界面')
         self._free()
@@ -824,7 +826,32 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def back_home(self):
+        self.reset()
         await self._click('home')
         await self._click_if('confirm', 'confirm_kr')
         await asyncio.sleep(5)
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def goto_consumable(self):
+        await self._click('consumable')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def csb_use(self):
+        await self._click_if('csb_use', 'csb_use_kr')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def csb_onekey(self):
+        await self._click_if('csb_onekey', 'csb_onekey_kr')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def csb_use_large(self):
+        await self._click_if('csb_use_large_kr', 'csb_use_large_kr')
         self._free()

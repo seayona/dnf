@@ -25,3 +25,4 @@ from .woker_collect_precious import *
 from .worker_welfare_mail_receive import *
 from .worker_welfare_achievement import *
 from .woker_duel import *
+from .woker_use_consumable import *
