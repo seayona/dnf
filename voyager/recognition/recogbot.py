@@ -145,6 +145,9 @@ class Recogbot(object):
     def daily_confirm_grey(self):
         return self._recog_if("valley_confirm_grey", "valley_confirm_grey_kr")
 
+    def daily_confirm(self):
+        return self._recog_if("valley_confirm", "valley_confirm_kr")
+
     def daily_valley(self):
         return self._recog('valley')
 
@@ -371,3 +374,21 @@ class Recogbot(object):
 
     def csb_use_large(self):
         return self._recog_if('csb_use_large', 'csb_use_large_kr')
+
+    def back_share(self):
+        return self._recog_if('back_share', 'back_share_kr')
+
+    def daily_stage_active(self, stage):
+        return self._recog_if(f'daily_stage_active_{stage}', f'daily_stage_active_{stage}_kr')
+
+    def duel_no_target(self):
+        return self._recog_if('duel_no_target', 'duel_no_target_kr')
+
+    def daily_map_entry(self):
+        return self._recog('daily_right')
+
+    def daily_resistance(self):
+        return self._recog('daily_carbon_resistance') or self._recog('daily_goblin_resistance')
+
+    def in_daily(self):
+        return self._recog_if('daily_back', 'daily_back_kr')

@@ -11,9 +11,6 @@ class Game(Concurrency):
         super().__init__()
         self.freezy = True
 
-        self.repaired = False
-        self.lionAlive = True
-
     def _archor(self, target, img=None, debug=False):
         if img is None:
             img = capture()
@@ -59,45 +56,51 @@ class Game(Concurrency):
     def _archor_low_precision_if(self, target, target2, img=None):
         return self._archor_low_precision(target, img) or self._archor_low_precision(target2, img)
 
-    async def _click(self, target, sleep=1, img=None):
+    async def _click(self, target, sleep=1, img=None, max_try=False):
         top_left = self._archor(target, img)
+        max_try = 900 if max_try > 900 or (isinstance(max_try, bool) and max_try) else max_try
+        if max_try and not top_left:
+            print(f'【任务调度】{target}这个按钮很重要，必须点击，继续尝试')
+            max_try -= 1
+            return await self._click(target, sleep, img, max_try)
+
         if top_left:
             x, y = top_left
             # 移动鼠标到按钮位置,点击按钮
             click(x, y)
             await asyncio.sleep(sleep)
+            return True
+        return False
 
     async def _click_xy(self, x, y, sleep=1):
         # 移动鼠标到按钮位置,点击按钮
         click(x + 10, y + 8)
         await asyncio.sleep(sleep)
 
-    async def _click_if(self, target1, target2, sleep=1, img=None):
-        top_left = self._archor(target1, img)
-        if top_left:
-            x, y = top_left
-            # 移动鼠标到按钮位置,点击按钮
-            click(x, y)
-            await asyncio.sleep(sleep)
-            return
-        top_left = self._archor(target2, img)
-        if top_left:
-            x, y = top_left
-            # 移动鼠标到按钮位置,点击按钮
-            click(x, y)
-            await asyncio.sleep(sleep)
+    async def _click_if(self, target1, target2, sleep=1, img=None, max_try=False):
+        result1 = await self._click(target1, sleep, img, max_try)
+        if not result1:
+            await self._click(target2, sleep, img, max_try)
 
-    async def _click_low_precision(self, target, sleep=1, img=None):
+    async def _click_low_precision(self, target, sleep=1, img=None, max_try=False):
         top_left = self._archor_low_precision(target, img)
+        max_try = 900 if max_try > 900 or (isinstance(max_try, bool) and max_try) else max_try
+        if max_try and not top_left:
+            print(f'【任务调度】{target}这个按钮很重要，必须点击，继续尝试')
+            max_try -= 1
+            return await self._click_low_precision(target, sleep, img, max_try)
         if top_left:
             x, y = top_left
             # 移动鼠标到按钮位置,点击按钮
             click(x, y)
             await asyncio.sleep(sleep)
+            return True
+        return False
 
-    async def _click_if_low_precision(self, target1, target2, sleep=1, img=None):
-        await self._click_low_precision(target1, sleep, img)
-        await self._click_low_precision(target2, sleep, img)
+    async def _click_if_low_precision(self, target1, target2, sleep=1, img=None, max_try=False):
+        result1 = await self._click_low_precision(target1, sleep, img, max_try)
+        if not result1:
+            await self._click_low_precision(target2, sleep, img, max_try)
 
     async def _double_click_low_precision(self, target, sleep=1, img=None):
         top_left = self._archor_low_precision(target, img)
@@ -150,13 +153,6 @@ class Game(Concurrency):
             x, y = top_left
             click(x - 10, y - 48)
 
-    def reset(self):
-        self.repaired = False
-        self.lionAlive = True
-
-    def lion_clear(self):
-        self.lionAlive = False
-
     @idle
     @asyncthrows
     async def printf(self):
@@ -167,8 +163,8 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def replay(self):
-        self.reset()
+    async def replay(self, reset):
+        reset()
         await asyncio.sleep(4)
         await self._click_if_low_precision('replay', 'replay_kr')
         await self._click_if('confirm', 'confirm_kr')
@@ -178,7 +174,6 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def daily_replay(self):
-        self.reset()
         await asyncio.sleep(3)
         await self._click_if_low_precision('replay', 'replay_kr')
         await self._click_if('confirm', 'confirm_kr')
@@ -188,7 +183,6 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def reward(self):
-        self.reset()
         await self._click('gold')
         await self._click('gold2')
         print('【探索者】战斗结束，领取奖励完成')
@@ -196,57 +190,54 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def repair_and_sale(self, bag=(False, 0, 0), auto_back=True):
-        if self.repaired:
-            print("【探索者】已修理，无需修理")
-            self._free()
-            return
+    async def repair_and_sale(self, bag=(False, 0, 0), auto_back=True, callback=False):
 
         # 打开背包，防止识别到城镇中下面的那个背包
         if bag[0]:
-            await self._click_xy(bag[1] + 10, bag[2] + 8)
+            await self._click_xy(bag[1] + 10, bag[2] + 8, 2)
         else:
-            await self._click('bag')
+            await self._click('bag', 2)
 
         # 点击修理按钮
-        await self._click('repair')
+        await self._click('repair', 2, max_try=True)
         # 确认修理
-        await self._click_if('repair_confirm', 'repair_confirm_kr')
+        await self._click_if('repair_confirm', 'repair_confirm_kr', 2)
         # 返回！
-        await self._click('close')
+        await self._click('close', 2, max_try=True)
 
         await self._sale(auto_back)
         # 标记修理状态
-
         print('【探索者】装备修理完成')
+        if callback:
+            callback()
         self._free()
 
     @asyncthrows
     async def _sale(self, auto_back):
         # 点击分解按钮
-        await self._click('sale')
+        await self._click('sale', 2, max_try=True)
         # 确认分解
-        await self._click_if('sale_select', 'sale_select_kr')
+        await self._click_if('sale_select', 'sale_select_kr', 2)
         # 确认分解
-        await self._click('sale_confirm')
+        await self._click('sale_confirm', 2)
         # 确认
-        await self._click_if('confirm', 'confirm_kr')
+        await self._click_if('confirm', 'confirm_kr', 2)
         # 返回！
-        await self._click('close')
+        await self._click('close', 2, max_try=True)
         # 执行售卖
-        await self._click('sell')
+        await self._click('sell', 2, max_try=True)
         # 确认售卖
-        await self._click_if('sell_select', 'sell_select_kr')
+        await self._click_if('sell_select', 'sell_select_kr', 2)
         # 确认分解,按钮与分解一毛一样
-        await self._click('sale_confirm')
+        await self._click('sale_confirm', 2)
         # 确认
-        await self._click_if('confirm', 'confirm_kr')
+        await self._click_if('confirm', 'confirm_kr', 2)
         # 返回！
-        await self._click('close')
+        await self._click('close', 2, max_try=True)
         # 返回！
         if auto_back:
-            await self._click('back')
-        self.repaired = True
+            await self._click('back', max_try=True)
+
         print('【探索者】装备分解完成')
 
     @idle
@@ -269,16 +260,24 @@ class Game(Concurrency):
     @asyncthrows
     async def daily_fight(self, daily_type):
         await self._click(daily_type)
-        await self._click_if('valley_confirm', 'valley_confirm_kr')
         print(f'【探索者】开始挑战每日任务：{daily_type}')
         self._free()
 
     @idle
     @asyncthrows
-    async def daily_town(self, wait=3):
+    async def daily_confirm(self):
+        await self._click_if('valley_confirm', 'valley_confirm_kr')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def daily_town(self, wait=3, daily_next=False):
         # 等待碎片捡完
         await asyncio.sleep(wait)
-        await self._click_if('valley_town', 'valley_town_kr')
+        if daily_next:
+            await self._press('F7')
+        else:
+            await self._press('F8')
         print('【探索者】日常结束，回到城镇')
         self._free()
 
@@ -298,7 +297,6 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def snow_mountain_fight(self):
-        self.reset()
         await self._click('adventure_snow_mountain_hard')
         await self._click('adventure_snow_mountain_entry')
         await self._click('adventure_snow_mountain_confirm')
@@ -320,7 +318,8 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def agency_mission_finish(self):
+    async def agency_mission_finish(self, reset):
+        reset()
         await self._click('close')
         await self._click('back')
         print('【探索者】结束任务，返回城镇！')
@@ -329,7 +328,8 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def next(self, next):
+    async def next(self, next, reset):
+        reset()
         if next[0]:
             click(next[1] + 10, next[2] + 8)
             print('【探索者】剧情下个主线任务')
@@ -354,7 +354,6 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def next_agency_confirm(self):
-        self.reset()
         await self._click('next_agency_confirm')
         print('【探索者】下个主线任务')
         self._free()
@@ -451,8 +450,8 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def back_town_mission(self):
-        self.reset()
+    async def back_town_mission(self, reset):
+        reset()
         top_left = self._archor('close')
         if top_left:
             await self._click('close')
@@ -464,8 +463,8 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def back_town_dungeon(self):
-        self.reset()
+    async def back_town_dungeon(self, reset):
+        reset()
         top_left = self._archor_low_precision_if('adventure_dungeon_town', 'adventure_dungeon_town_kr')
         if top_left:
             await self._click_if_low_precision('adventure_dungeon_town', 'adventure_dungeon_town_kr')
@@ -475,16 +474,10 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def back_town_daily(self):
-        top_left = self._archor('close')
-        if top_left:
-            await self._click('close')
-
-        top_left = self._archor('back')
-        if top_left:
+    async def back_town_daily(self, back=True):
+        await self._click('close')
+        if back:
             await self._click('back')
-        # 等待线程检测到溪谷已打完
-        await asyncio.sleep(5)
         self._free()
 
     @idle
@@ -524,8 +517,8 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def back_town(self, setting):
-        self.reset()
+    async def back_town(self, setting, reset):
+        reset()
         await self._click_xy(setting[1], setting[2])
         await self._click('home')
         await self._click_if('confirm', 'confirm_kr')
@@ -723,7 +716,7 @@ class Game(Concurrency):
             if item['collect'] == 2:
                 continue
             top_left = self._archor_best(f"preciouses/{item['target']}", img)
-            if top_left is not None:
+            if top_left:
                 x, y = top_left
                 await self._click_xy(640 + x + 15, y + 15, 0.5)
                 item['collect'] = 2 if 'target_binding' not in item else 1
@@ -731,7 +724,7 @@ class Game(Concurrency):
 
             if 'target_binding' in item:
                 top_left = self._archor(f"preciouses/{item['target_binding']}", img)
-                if top_left is not None:
+                if top_left:
                     x, y = top_left
                     await self._click_xy(640 + x + 15, y + 15, 0.5)
                     item['collect'] = 2 if item['collect'] == 1 else 1
@@ -834,8 +827,8 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def back_home(self):
-        self.reset()
+    async def back_home(self, reset):
+        reset()
         await self._click('home')
         await self._click_if('confirm', 'confirm_kr')
         await asyncio.sleep(5)
@@ -863,4 +856,22 @@ class Game(Concurrency):
     @asyncthrows
     async def csb_use_large(self):
         await self._click_if('csb_use_large_kr', 'csb_use_large_kr')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def back_share(self):
+        await self._click_if('back_share', 'back_share_kr')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def daily_stage_change(self, stage):
+        await self._click_if(f'daily_stage_{stage}', f'daily_stage_{stage}_kr')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def duel_refresh(self):
+        await self._click('duel_refresh')
         self._free()

@@ -21,22 +21,22 @@ class AutoStriveWorker(AutoWorker):
         super().__init__(voyager, 'Strive')
         self.running = False
 
-        self.v = ValleyWorker(self.voyager)
-        self.v.trigger.connect(self.finish)
-
         self.w = WelfareWorker(self.voyager)
         self.w.trigger.connect(self.finish)
 
         self.a = GameWorker(self.voyager)
         self.a.trigger.connect(self.finish)
 
-        self.g = GoblinWorker(self.voyager)
+        self.v = ValleyWorker(self.voyager, daily_next=True)
+        self.v.trigger.connect(self.finish)
+
+        self.g = GoblinWorker(self.voyager, daily_next=True if datetime.datetime.now().weekday() < 3 or True else False)
         self.g.trigger.connect(self.finish)
 
         self.workers = [self.g, self.v, self.w, self.a]
 
-        if datetime.datetime.now().weekday() < 3:
-            self.s = SouthWorker(self.voyager)
+        if datetime.datetime.now().weekday() < 3 or True:
+            self.s = SouthWorker(self.voyager, daily_next=True)
             self.s.trigger.connect(self.finish)
 
             self.c = CarbonWorker(self.voyager)
