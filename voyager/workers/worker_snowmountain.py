@@ -38,8 +38,10 @@ class GameWorker(QThread):
             self.voyager.player.stand()
             self.voyager.game.repair()
 
-        if self.voyager.recogbot.overweight() and not self.voyager.player.repair:
+        if cls['result'][0] and self.voyager.recogbot.overweight() and not self.voyager.player.repair:
             self.voyager.game.repair_and_sale(cls['bag'], callback=lambda: self.voyager.player.repaired())
+        else:
+            self.voyager.player.repaired()
 
         # 疲劳值未耗尽，人在城镇中，去搬砖
         if not self.voyager.player.tired() and self.voyager.recogbot.town():
