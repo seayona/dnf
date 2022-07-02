@@ -39,6 +39,10 @@ class Player(Concurrency):
 
         self._init_skills(name)
 
+        self.repair = False
+
+        self.lion_alive = True
+
     def _init_skills(self, name):
         conf = ConfigParser()
         conf.read('./conf/player.ini', encoding='UTF-8')
@@ -52,6 +56,16 @@ class Player(Concurrency):
             buffs = eval(conf.get(name, 'Buffs'))
             for b in buffs:
                 self.buff[b[1]] = Skill(str(b[0]), 0)
+
+    def repaired(self):
+        self.repair = True
+
+    def lion_clear(self):
+        self.lion_alive = False
+
+    def new_game(self):
+        self.repair = False
+        self.lion_alive = True
 
     def _attack(self):
         if not self.stand_status:

@@ -13,10 +13,11 @@ class GoblinWorker(DailyWork):
     # 定义一个信号
     trigger = pyqtSignal(str)
 
-    def __init__(self, voyager):
+    def __init__(self, voyager,daily_next=False):
         # 初始化函数，默认
-        super(GoblinWorker, self).__init__(voyager, 'goblin', 1)
+        super(GoblinWorker, self).__init__(voyager, 'goblin', 1,daily_next=daily_next)
         self.f = GoblinFightWorker(self.voyager)
+        self.stage = 5
 
     def _recog_entry(self):
         return self.voyager.recogbot.daily_goblin()

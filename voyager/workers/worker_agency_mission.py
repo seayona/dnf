@@ -37,17 +37,20 @@ class AgencyMissionWorker(QThread):
             self.trigger.emit(self.__class__.__name__)
             return
 
-            # 在图里，没pl
+        # 在图里，没pl
         if self.voyager.player.tired() and cls['result'][0]:
-            self.voyager.game.back_town_dungeon()
+            self.voyager.game.back_town_dungeon(reset=lambda: self.voyager.player.new_game())
             return
 
-        if self.count % 3 == 0:
+        if self.count % 6 == 0:
             # 装备修理
-            if not self.voyager.game.repaired and cls['bag'][0] and cls['bag'][2] < 200:
-                self.voyager.game.repair_and_sale(cls['bag'])
+            if not self.voyager.player.repair and cls['bag'][0] and cls['bag'][2] < 200:
+                self.voyager.game.repair_and_sale(cls['bag'], callback=lambda: self.voyager.player.repaired())
         else:
-            self.voyager.game.repaired = True
+            self.voyager.player.repaired()
+
+        if self.voyager.recogbot.overweight() and not self.voyager.player.repair:
+            self.voyager.game.repair_and_sale(cls['bag'], callback=lambda: self.voyager.player.repaired())
 
         # 出现技能面板，返回
         if self.voyager.recogbot.skill_back():
@@ -58,9 +61,9 @@ class AgencyMissionWorker(QThread):
             self.voyager.game.esc()
 
         # 地下城里面点击下个任务
-        if self.voyager.game.repaired and cls['next'][0]:
+        if self.voyager.player.repair and cls['next'][0]:
             self.count += 1
-            self.voyager.game.next(cls['next'])
+            self.voyager.game.next(cls['next'], reset=lambda: self.voyager.player.new_game())
 
         # 自动装备
         if self.voyager.recogbot.equip():
@@ -81,7 +84,7 @@ class AgencyMissionWorker(QThread):
         # 疲劳值不足
         if self.voyager.recogbot.insufficient_balance_entry():
             self.voyager.player.over_fatigued()
-            self.voyager.game.agency_mission_finish()
+            self.voyager.game.agency_mission_finish(reset=lambda: self.voyager.player.new_game())
 
         if self.voyager.recogbot.next_agency():
             self.voyager.game.next_agency()

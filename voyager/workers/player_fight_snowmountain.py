@@ -24,8 +24,8 @@ class PlayerFightWorker(QThread):
         cls = self.voyager.recogbot.detect()
 
         # 发现狮子头入口
-        if self.voyager.game.lionAlive and cls['door'][0] and cls['lion_entry'][0]:
-            print("【雪山战斗】发现狮子头入口!", self.voyager.game.lionAlive)
+        if self.voyager.player.lion_alive and cls['door'][0] and cls['lion_entry'][0]:
+            print("【雪山战斗】发现狮子头入口!", self.voyager.player.lion_alive)
             self.is_meeting_lion = False
             if self.lion_entry_stand_count < 1:
                 self.voyager.player.stand()
@@ -39,7 +39,7 @@ class PlayerFightWorker(QThread):
             self.voyager.player.right()
 
         # 狮子头入口，门没开，修改战斗方式
-        if self.voyager.game.lionAlive and not cls['door'][0] and cls['lion_entry'][0]:
+        if self.voyager.player.lion_alive and not cls['door'][0] and cls['lion_entry'][0]:
             # 已接触敌人，停止原战斗方式
             if cls['combo'][0]:
                 self.voyager.player.stand()
@@ -50,9 +50,7 @@ class PlayerFightWorker(QThread):
         if not cls['lion_entry'][0]:
             self.voyager.player.attack_active()
 
-        # 出现对话时按Esc跳过
-        if cls['skip'][0] or self.voyager.recogbot.talk_skip():
-            self.voyager.game.esc()
+
 
         # 释放技能
         if (cls['combo'][0] and cls['avatar'][0]) or (cls['combo'][0] and cls['boss'][0]):
@@ -77,7 +75,7 @@ class PlayerFightWorker(QThread):
                 self.voyager.player.stop_right()
                 self.meeting_lion()
 
-            self.voyager.game.lion_clear()
+            self.voyager.player.lion_clear()
             self.voyager.player.attack()
             self._finisher()
 

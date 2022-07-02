@@ -51,21 +51,22 @@ class UseConsumable(QThread):
 
         # 还没使用
         if self.voyager.recogbot.town() and not self.voyager.player.consumable and cls['bag'][
-            0] and not self.voyager.game.repaired:
-            self.voyager.game.repair_and_sale(cls['bag'], False)
+            0] and not self.voyager.player.repair:
+            self.voyager.game.repair_and_sale(cls['bag'], auto_back=False,
+                                              callback=lambda: self.voyager.player.repaired())
             return
 
         # 使用完毕
-        if not self.voyager.recogbot.town() and self.voyager.player.consumable and self.voyager.game.repaired:
+        if not self.voyager.recogbot.town() and self.voyager.player.consumable and self.voyager.player.repair:
             self.voyager.game.back_town_vault()
             return
 
-        if not self.voyager.recogbot.consumable_active() and self.voyager.game.repaired and not self.in_consumable:
+        if not self.voyager.recogbot.consumable_active() and self.voyager.player.repair and not self.in_consumable:
             self.voyager.game.goto_consumable()
 
         not_use = list(filter(lambda item: not item['use'], self.consumable))
 
-        if self.voyager.recogbot.confirm() and self.voyager.game.repaired:
+        if self.voyager.recogbot.confirm() and self.voyager.player.repair:
             self.voyager.game.confirm()
             self._over_current()
             return
@@ -112,7 +113,6 @@ class UseConsumable(QThread):
         print("【自动使用消耗品】开始执行")
         while self.running:
             self._run()
-            self.sleep(1)
 
     def stop(self):
         print("【自动使用消耗品】利执行结束")

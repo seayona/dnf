@@ -12,9 +12,10 @@ class CarbonWorker(DailyWork):
     # 定义一个信号
     trigger = pyqtSignal(str)
 
-    def __init__(self, voyager):
+    def __init__(self, voyager, daily_next=False):
         # 初始化函数，默认
-        super(CarbonWorker, self).__init__(voyager, 'carbon', 10)
+        super(CarbonWorker, self).__init__(voyager, 'carbon', 10, daily_next=daily_next)
+        self.stage = 4
 
     def _recog_entry(self):
         return self.voyager.recogbot.daily_carbon()

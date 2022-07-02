@@ -109,7 +109,7 @@ class AutoWorker(QThread):
 
         # 所有任务执行结束，人在地下城
         if len(self.workers_queue) == 0 and (cls['skill'][0] or cls['result'][0]):
-            self.voyager.game.back_town(cls['setting'])
+            self.voyager.game.back_town(cls['setting'], reset=lambda: self.voyager.player.new_game())
 
         # 所有任务执行结束，人在城镇，打开菜单
         if len(self.workers_queue) == 0 and self.voyager.recogbot.town() and not cls['switch'][0]:
