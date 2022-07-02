@@ -286,8 +286,9 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def snow_mountain_start(self):
+    async def snow_mountain_start(self,reset):
         await asyncio.sleep(2)
+        reset()
         print("【探索者】前往雪山")
         await self._click('active', 2)
         await self._click('adventure_box')

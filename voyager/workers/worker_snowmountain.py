@@ -22,13 +22,18 @@ class GameWorker(QThread):
         self.c = PlayerSkillCooldownWorker(self.voyager)
         self.count = 0
         self.last_out_stuck = None
+        self.finale = False
 
     def init(self):
         self.last_out_stuck = datetime.datetime.now()
         self.running = True
+        self.finale = False
         self.workers = [self.f, self.a, self.c]
         for s in self.workers:
             s.start()
+
+    def over_finale(self):
+        self.finale = True
 
     def _run(self):
         cls = self.voyager.recogbot.detect()
@@ -46,12 +51,15 @@ class GameWorker(QThread):
         # 疲劳值未耗尽，人在城镇中，去搬砖
         if not self.voyager.player.tired() and self.voyager.recogbot.town():
             print("【一键搬砖】5秒后前往雪山")
-            self.voyager.game.snow_mountain_start()
+            self.voyager.game.snow_mountain_start(reset=lambda: self.voyager.player.new_game())
 
         # 疲劳值不足，人在地下城，战斗已结束
         if self.voyager.player.tired() and cls['result'][0]:
             print("【雪山】疲劳值不足")
             self.voyager.game.back_town_dungeon(reset=lambda: self.voyager.player.new_game())
+
+        if self.voyager.player.tired() and self.voyager.recogbot.town() and not self.finale:
+            self.voyager.game.repair_and_sale(cls['bag'], callback=lambda: self.over_finale())
 
         #  已进入狮子头房间
         if self.voyager.recogbot.lion_clear():
@@ -85,7 +93,6 @@ class GameWorker(QThread):
             self.voyager.player.over_fatigued()
             self.voyager.game.back_town_mission(reset=lambda: self.voyager.player.new_game())
 
-        # 深渊已刷完&开门
         if cls['passing'][0] and cls['door'][0]:
             print("【雪山】疲劳值不足")
             self.voyager.game.back_town(cls['setting'], reset=lambda: self.voyager.player.new_game())
@@ -104,7 +111,7 @@ class GameWorker(QThread):
             self.voyager.game.repair_and_sale(cls['bag'], callback=lambda: self.voyager.player.repaired())
 
         # 疲劳值耗尽，人在城镇
-        if self.voyager.player.tired() and self.voyager.recogbot.town() and self.voyager.player.repair:
+        if self.voyager.player.tired() and self.voyager.recogbot.town() and self.finale:
             self.trigger.emit(self.__class__.__name__)
 
         # 战斗已结束，再次挑战
