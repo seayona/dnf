@@ -105,11 +105,6 @@ class GameWorker(QThread):
         if self.voyager.player.tired() and self.voyager.recogbot.town() and self.voyager.player.repair:
             self.trigger.emit(self.__class__.__name__)
 
-        # 战斗已结束，还没有修理
-        if not self.voyager.player.repair and cls['result'][0] and cls['bag'][0] and cls['bag'][2] < 200:
-            print("【雪山】装备与分解修理", cls['bag'])
-            self.voyager.game.repair_and_sale(cls['bag'], callback=lambda: self.voyager.player.repaired())
-
         # 战斗已结束，再次挑战
         if cls['result'][
             0] and self.voyager.player.repair and not self.voyager.player.tired():
