@@ -13,9 +13,9 @@ class GoblinWorker(DailyWork):
     # 定义一个信号
     trigger = pyqtSignal(str)
 
-    def __init__(self, voyager,daily_next=False):
+    def __init__(self, voyager, daily_next=False):
         # 初始化函数，默认
-        super(GoblinWorker, self).__init__(voyager, 'goblin', 1,daily_next=daily_next)
+        super(GoblinWorker, self).__init__(voyager, 'goblin', 1, daily_next=daily_next)
         self.f = GoblinFightWorker(self.voyager)
         self.stage = 5
 

@@ -33,10 +33,6 @@ class GameWorker(QThread):
     def _run(self):
         cls = self.voyager.recogbot.detect()
 
-        # 标记已修理
-        if not self.count % 6 == 0 and not self.voyager.recogbot.disrepair() and not self.voyager.recogbot.overweight() and not self.voyager.recogbot.town() and not self.voyager.player.repair:
-            self.voyager.player.repaired()
-
         # 武器报废
         if cls['door'][0] and self.voyager.recogbot.disrepair():
             self.voyager.player.stand()
@@ -116,7 +112,7 @@ class GameWorker(QThread):
 
         # 战斗已结束，再次挑战
         if cls['result'][
-            0] and self.voyager.recogbot.replay() and self.voyager.player.repair and not self.voyager.player.tired():
+            0] and self.voyager.player.repair and not self.voyager.player.tired():
             print("【雪山】再次挑战")
             self.voyager.game.replay(reset=lambda: self.voyager.player.new_game())
             self.count += 1

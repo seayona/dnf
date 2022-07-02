@@ -66,6 +66,7 @@ class Player(Concurrency):
     def new_game(self):
         self.repair = False
         self.lion_alive = True
+        print("【player】狀態重置")
 
     def _attack(self):
         if not self.stand_status:

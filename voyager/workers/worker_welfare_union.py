@@ -59,6 +59,7 @@ class WelfareUnionWorker(QThread):
 
         if self.voyager.recogbot.get_one():
             self.voyager.game.esc()
+            self.voyager.player.over_welfare('union')
 
     def run(self):
         self.init()
