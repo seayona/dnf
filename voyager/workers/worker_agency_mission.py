@@ -20,7 +20,7 @@ class AgencyMissionWorker(QThread):
         self.a = PlayerAttackWorker(self.voyager)
 
         self.count = 0
-
+        self.finale = False
         self.workers = []
 
     def init(self):
@@ -29,11 +29,14 @@ class AgencyMissionWorker(QThread):
         for s in self.workers:
             s.start()
 
+    def over_finale(self):
+        self.finale = True
+
     def _run(self):
 
         cls = self.voyager.recogbot.detect()
 
-        if self.voyager.recogbot.town() and self.voyager.player.tired():
+        if self.voyager.recogbot.town() and self.voyager.player.tired() and self.finale:
             self.trigger.emit(self.__class__.__name__)
             return
 
@@ -42,15 +45,13 @@ class AgencyMissionWorker(QThread):
             self.voyager.game.back_town_dungeon(reset=lambda: self.voyager.player.new_game())
             return
 
-        if self.count % 6 == 0:
-            # 装备修理
-            if not self.voyager.player.repair and cls['bag'][0] and cls['bag'][2] < 200:
-                self.voyager.game.repair_and_sale(cls['bag'], callback=lambda: self.voyager.player.repaired())
-        else:
-            self.voyager.player.repaired()
+        if self.voyager.recogbot.town() and self.voyager.player.tired() and not self.finale:
+            self.voyager.game.repair_and_sale(cls['bag'], callback=lambda: self.voyager.player.repaired())
 
         if self.voyager.recogbot.overweight() and not self.voyager.player.repair:
             self.voyager.game.repair_and_sale(cls['bag'], callback=lambda: self.voyager.player.repaired())
+        else:
+            self.voyager.player.repaired()
 
         # 出现技能面板，返回
         if self.voyager.recogbot.skill_back():
