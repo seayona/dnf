@@ -44,7 +44,7 @@ class UseConsumable(QThread):
         cls = self.voyager.recogbot.detect()
         # 入库完毕，在城镇
         if self.voyager.recogbot.town() and self.voyager.player.consumable:
-            self.voyager.game.reset()
+            self.voyager.player.new_game()
             self.voyager.matric.heartbeat()
             self.trigger.emit(self.__class__.__name__)
             return

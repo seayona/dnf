@@ -185,7 +185,8 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def reward(self):
+    async def reward(self, reset):
+        reset()
         await self._click('gold')
         await self._click('gold2')
         print('【探索者】战斗结束，领取奖励完成')
@@ -236,7 +237,7 @@ class Game(Concurrency):
         # 确认
         await self._click_diy_precision_if('confirm', 'confirm_kr', 0.955, 2)
         # 返回！
-        await self._click_diy_precision('close', 0.955, 2, max_try=True)
+        await self._click_diy_precision('close', 0.955, 2)
         # 返回！
         if auto_back:
             await self._click('back', max_try=True)
@@ -395,11 +396,9 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def open_menu(self):
-        self._open_menu()
+        await self._open_menu()
         self._free()
 
-    @idle
-    @asyncthrows
     async def _open_menu(self):
         # 点击菜单
         top_left = self._archor_low_precision('activity')
@@ -564,6 +563,7 @@ class Game(Concurrency):
     @asyncthrows
     async def union_sign_start(self):
         print('【探索者】5s后打开公会界面')
+        self._active_window()
         await self._press("F7")
         # await self.union_box()
         self._free()
@@ -594,8 +594,9 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def goto_mall_recovered_product(self):
-        print('【探索者】5s后打开商城界面')
-        await asyncio.sleep(5)
+        print('【探索者】打开商城界面')
+        await self._active_window()
+        await asyncio.sleep(2)
         await self._press("F3")
         await self._click_if("mall_prop", "mall_prop_kr")
         await self._click_if("mall_recovered_product", "mall_recovered_product_kr")
@@ -719,8 +720,7 @@ class Game(Concurrency):
         img = capture(640, 0, 640, 800)
         click_count = 0
         for item in preciouses:
-            if item['collect'] == 2:
-                continue
+
             top_left = self._archor_best(f"preciouses/{item['target']}", img)
             if top_left:
                 x, y = top_left
@@ -759,9 +759,16 @@ class Game(Concurrency):
     @asyncthrows
     async def goto_duel(self):
         print('【探索者】即将打开角斗场')
+        await self._active_window()
         await self._press('f4')
         await self._click('duel_ai_fight')
         self._free()
+
+    async def _active_window(self):
+        top_left = self._archor('mail')
+        if top_left:
+            x, y = top_left
+            self._click_xy(x - 200, y)
 
     @idle
     @asyncthrows
@@ -908,3 +915,24 @@ class Game(Concurrency):
         await self._click_if('pet_decompose_btn', 'pet_decompose_btn_kr')
         self._free()
 
+    @idle
+    @asyncthrows
+    async def goto_ms(self):
+        await self._open_menu()
+        await asyncio.sleep(1)
+        await self._click('mystery_store')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def ms_check_commodity(self, result, callback):
+        for x, y in result:
+            await self._click_xy(x, y, 0.8)
+        callback()
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def purchase(self):
+        await self._click_if("mall_purchase", "mall_purchase_kr", 2)
+        self._free()

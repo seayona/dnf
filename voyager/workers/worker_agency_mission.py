@@ -76,7 +76,7 @@ class AgencyMissionWorker(QThread):
         # 战斗奖励
         if self.voyager.recogbot.reward():
             print("【目标检测】战斗奖励，战斗结束!")
-            self.voyager.game.reward()
+            self.voyager.game.reward(reset=lambda: self.voyager.player.new_game())
 
         # 死亡
         if self.voyager.recogbot.dead():

@@ -37,6 +37,8 @@ class Player(Concurrency):
 
         self.stand_status = False
 
+        self.mystery_store = False
+
         self._init_skills(name)
 
         self.repair = False
@@ -72,6 +74,9 @@ class Player(Concurrency):
         if not self.stand_status:
             keyUp('x')
             keyDown('x')
+
+    def over_shopping(self):
+        self.mystery_store = True
 
     def attack(self):
         self._attack()

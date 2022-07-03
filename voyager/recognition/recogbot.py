@@ -1,7 +1,7 @@
 from detect_dnf import detect
 
 from .capture import capture
-from .match import match
+from .match import match, match_all_best
 import math
 
 
@@ -10,7 +10,7 @@ class Recogbot(object):
     def __init__(self):
         pass
 
-    def _match_max_val(self, target, img):
+    def _match_max_val(self, target, img=None):
         # 获取屏幕截图
         img = img if img is not None else capture()
         # 检测目标位置
@@ -18,6 +18,20 @@ class Recogbot(object):
         max_val = 1 if max_val > 1 and not math.isinf(max_val) else max_val
         print(f'【模板匹配】 {target} {max_val} {top_left}')
         return max_val
+
+    def _max_all_best(self, target, img=None):
+        img = img if img is not None else capture()
+        result = match_all_best(img, f'./game/scene/{target}.png')
+        if result is None:
+            return None
+        res = []
+        for item in result:
+            if item['confidence'] > 0.99:
+                res.append(item['result'])
+        if len(res) > 0:
+            return res
+        else:
+            return None
 
     def _recog(self, target, img=None):
         return 0.99 < self._match_max_val(target, img) <= 1
@@ -119,7 +133,7 @@ class Recogbot(object):
                 if names[int(cls)] == 'result' and float(f'{conf:.2f}') > 0.5:
                     print("【实时检测】检测到战斗结果", (x, y))
                     result['result'] = (True, x, y)
-                if names[int(cls)] == 'skill' and float(f'{conf:.2f}') > 0.5:
+                if names[int(cls)] == 'skill' and float(f'{conf:.2f}') > 0.86:
                     print("【实时检测】检测到技能按钮", (x, y))
                     result['skill'] = (True, x, y)
         return result
@@ -262,7 +276,7 @@ class Recogbot(object):
         return self._recog_if('mall_coin_received', "mall_coin_received_kr")
 
     def revival_coin_status(self):
-        return self._recog("mall_price") and self._recog_if("mall_purchase", "mall_purchase_kr")
+        return self._recog("mall_price") and self.purchase()
 
     def disrepair(self):
         return self._recog('disrepair')
@@ -419,3 +433,15 @@ class Recogbot(object):
             if self._recog(f'pet_gear_{i}'):
                 return True
         return False
+
+    def back_bg(self):
+        return self._recog_if('back_bag', 'back_bag_kr')
+
+    def detect_commodity(self, target):
+        return self._max_all_best(target=target)
+
+    def in_mystery_store(self):
+        return self._recog('ms_refresh')
+
+    def purchase(self):
+        return self._recog_if('mall_purchase', 'mall_purchase_kr')

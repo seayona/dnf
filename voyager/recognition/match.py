@@ -51,3 +51,22 @@ def match_best(image, target, imshow=False, rgb=True):
         cv2.imshow('Match Template', image)
         cv2.waitKey(1)
     return result['confidence'], image, result['rectangle'][0], result['rectangle'][2]
+
+
+def match_all_best(image, target, imshow=False, rgb=True):
+    # 识别目标区域: 点序:左上->左下->右下->右上, 左上(min,min)右x下(max,max)
+    # rectangle = (left_top_pos, left_bottom_pos, right_bottom_pos, right_top_pos)
+    result = TemplateMatching(
+        cv2.imdecode(np.fromfile(target, dtype=np.uint8), cv2.IMREAD_COLOR),
+        image,
+        threshold=0.8,
+        rgb=rgb
+    ).find_all_results()
+
+    if imshow and result is not None:
+        # 在窗口截图中匹配位置画红色方框
+        for item in result:
+            cv2.rectangle(image, item['rectangle'][0], item['rectangle'][2], (0, 0, 255), 2)
+            cv2.imshow('Match Template', image)
+            cv2.waitKey(1)
+    return result

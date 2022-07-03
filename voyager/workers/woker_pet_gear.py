@@ -8,7 +8,7 @@ class PetGear(QThread):
     trigger = pyqtSignal(str)
 
     def __init__(self, voyager):
-        super(WelfareMailReceive, self).__init__()
+        super(PetGear, self).__init__()
         self.voyager = voyager
         self.running = False
         self.clear = False

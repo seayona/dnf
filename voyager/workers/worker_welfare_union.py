@@ -35,6 +35,10 @@ class WelfareUnionWorker(QThread):
         if self.voyager.player.welfare['union'] and self.voyager.recogbot.town():
             self.trigger.emit(self.__class__.__name__)
 
+        if self.voyager.recogbot.get_one():
+            self.voyager.game.esc()
+            self.voyager.player.over_welfare('union')
+
         # 发现签到按钮
         if (not self.voyager.recogbot.town()) and self.voyager.recogbot.union_sign() and not \
                 self.voyager.player.welfare['union']:
@@ -56,10 +60,6 @@ class WelfareUnionWorker(QThread):
 
         if self.voyager.recogbot.confirm():
             self.voyager.game.confirm()
-
-        if self.voyager.recogbot.get_one():
-            self.voyager.game.esc()
-            self.voyager.player.over_welfare('union')
 
     def run(self):
         self.init()

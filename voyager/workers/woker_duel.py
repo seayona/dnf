@@ -123,6 +123,7 @@ class DuelWork(QThread):
             self.voyager.game.esc()
 
         if self.voyager.recogbot.town() and self.voyager.player.winner():
+            self.voyager.matric.heartbeat()
             self.trigger.emit(self.__class__.__name__)
 
     # 奖励领取

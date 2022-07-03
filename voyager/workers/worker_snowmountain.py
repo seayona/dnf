@@ -75,7 +75,7 @@ class GameWorker(QThread):
         # 战斗奖励
         if self.voyager.recogbot.reward():
             print("【雪山】战斗奖励，战斗结束!")
-            self.voyager.game.reward()
+            self.voyager.game.reward(reset=lambda: self.voyager.player.new_game())
 
         # 死亡
         if self.voyager.recogbot.dead():
@@ -101,7 +101,7 @@ class GameWorker(QThread):
         if self.voyager.recogbot.home():
             self.voyager.game.back_home(reset=lambda: self.voyager.player.new_game())
 
-        if self.voyager.player.repair and self.voyager.recogbot.back():
+        if self.voyager.player.repair and self.voyager.recogbot.back_bg():
             self.voyager.player.new_game()
             self.voyager.game.back()
 

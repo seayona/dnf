@@ -8,6 +8,7 @@ from .auto_worker import AutoWorker
 from .woker_collect_precious import CollectPrecious
 from .worker_welfare_union import WelfareUnionWorker
 from .woker_use_consumable import UseConsumable
+from .woker_mystery_store import MysteryStore
 
 
 class AutoHarvestWorker(AutoWorker):
@@ -31,7 +32,10 @@ class AutoHarvestWorker(AutoWorker):
         self.a = UseConsumable(self.voyager)
         self.a.trigger.connect(self.finish)
 
-        self.workers = [self.c, self.a, self.m, self.u]
+        self.ms = MysteryStore(self.voyager)
+        self.ms.trigger.connect(self.finish)
+
+        self.workers = [self.c, self.a, self.m, self.ms, self.u]
 
     def init(self):
         self.running = True
