@@ -10,6 +10,7 @@ from .worker_snowmountain import GameWorker
 from .worker_daily_south import SouthWorker
 from .worker_daily_goblin import GoblinWorker
 from .worker_daily_carbon import CarbonWorker
+from .woker_mystery_store import MysteryStore
 import datetime
 
 
@@ -27,13 +28,16 @@ class AutoStriveWorker(AutoWorker):
         self.a = GameWorker(self.voyager)
         self.a.trigger.connect(self.finish)
 
+        self.m = MysteryStore(self.voyager)
+        self.m.trigger.connect(self.finish)
+
         self.v = ValleyWorker(self.voyager, daily_next=True)
         self.v.trigger.connect(self.finish)
 
         self.g = GoblinWorker(self.voyager, daily_next=True if datetime.datetime.now().weekday() < 3 or True else False)
         self.g.trigger.connect(self.finish)
 
-        self.workers = [self.g, self.v, self.w, self.a]
+        self.workers = [self.g, self.v, self.w, self.a, self.m]
 
         if datetime.datetime.now().weekday() < 3 or True:
             self.s = SouthWorker(self.voyager, daily_next=True)
