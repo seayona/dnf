@@ -40,6 +40,7 @@ class DailyWork(QThread):
         pass
 
     def _run(self):
+        cls = self.voyager.recogbot.detect()
         # 人在城镇，去打每日
         if self.voyager.recogbot.town() and not self.voyager.player.daily_status(self.current_work):
             self.voyager.game.daily_start()
@@ -75,7 +76,7 @@ class DailyWork(QThread):
             self.voyager.game.revival()
 
         # 返回日常界面
-        if self.voyager.recogbot.daily_town() and not self.voyager.recogbot.replay():
+        if cls['skill'][0] and not self.voyager.recogbot.replay():
             self.voyager.game.daily_town(self.back_town_wait, self.daily_next)
 
         if self._recog_work_completed():

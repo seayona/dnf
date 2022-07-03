@@ -286,7 +286,7 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def snow_mountain_start(self,reset):
+    async def snow_mountain_start(self, reset):
         await asyncio.sleep(2)
         reset()
         print("【探索者】前往雪山")
@@ -395,12 +395,17 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def open_menu(self):
+        self._open_menu()
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def _open_menu(self):
         # 点击菜单
         top_left = self._archor_low_precision('activity')
         if top_left:
             x, y = top_left
             await self._click_xy(x + 120, y)
-        self._free()
 
     @idle
     @asyncthrows
@@ -469,12 +474,9 @@ class Game(Concurrency):
     @asyncthrows
     async def back_town_dungeon(self, reset):
         reset()
-        top_left = self._archor_low_precision_if('adventure_dungeon_town', 'adventure_dungeon_town_kr')
-        if top_left:
-            await self._click_if_low_precision('adventure_dungeon_town', 'adventure_dungeon_town_kr')
-            await self._click_if('confirm', 'confirm_kr')
-            await asyncio.sleep(5)
-            self._free()
+        await self._press('F8')
+        await asyncio.sleep(5)
+        self._free()
 
     @idle
     @asyncthrows
@@ -633,7 +635,7 @@ class Game(Concurrency):
         if top_left:
             x, y = top_left
             await self._click_xy(x, y - 100, 2)
-            self._press('esc')
+            await self._press('esc')
 
     @idle
     @asyncthrows
@@ -647,24 +649,24 @@ class Game(Concurrency):
     @asyncthrows
     async def achievement_get_all(self):
         print('【成就】一键领取')
-        self._click_if('get_all', 'get_all_kr', 3)
-        self._press('esc')
+        await self._click_if('get_all', 'get_all_kr', 3)
+        await self._press('esc')
         self._free()
 
     @idle
     @asyncthrows
     async def achievement_daily_sella(self):
         print('【成就】领取泰拉箱子')
-        self._click('achievement_daily_sella')
-        self._click_if("achievement_sella_box_use", "achievement_sella_box_use_kr", 2)
-        self._press('esc')
+        await self._click('achievement_daily_sella')
+        await self._click_if("achievement_sella_box_use", "achievement_sella_box_use_kr", 2)
+        await self._press('esc')
         self._free()
 
     @idle
     @asyncthrows
     async def goto_achievement_weekly(self):
         print('【成就】转到每周福利')
-        self._click_if('achievement_daily_dis', 'achievement_daily_dis_kr')
+        await self._click_if('achievement_daily_dis', 'achievement_daily_dis_kr')
         self._free()
 
     @idle
@@ -673,7 +675,7 @@ class Game(Concurrency):
         print('【成就】领取每周箱子')
         targets = ['achievement_weekly_2', 'achievement_weekly_4', 'achievement_weekly_6', 'achievement_weekly_8',
                    'achievement_weekly_10']
-        self._achievement_box(targets)
+        await self._achievement_box(targets)
         self._free()
 
     @idle
@@ -879,3 +881,30 @@ class Game(Concurrency):
     async def duel_refresh(self):
         await self._click('duel_refresh')
         self._free()
+
+    @idle
+    @asyncthrows
+    async def goto_pet(self):
+        await self._open_menu()
+        await asyncio.sleep(1)
+        await self._click('pet')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def goto_pet_gear(self):
+        await self._click_if('pet_gear', 'pet_gear_kr')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def pet_decompose(self):
+        await self._click('pet_decompose')
+        self._free()
+
+    @idle
+    @asyncthrows
+    async def pet_decompose_btn(self):
+        await self._click_if('pet_decompose_btn', 'pet_decompose_btn_kr')
+        self._free()
+

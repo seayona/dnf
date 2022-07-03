@@ -392,3 +392,30 @@ class Recogbot(object):
 
     def in_daily(self):
         return self._recog_if('daily_back', 'daily_back_kr')
+
+    def pet(self):
+        return self._recog('pet')
+
+    def pet_decompose_btn(self):
+        return self._recog_if('pet_decompose_btn', 'pet_decompose_btn_kr')
+
+    def pet_decompose(self):
+        return self._recog('pet_decompose')
+
+    def pet_gear(self):
+        return self._recog_if('pet_gear', 'pet_gear_kr')
+
+    def pet_gear_active(self):
+        return self._recog_if('pet_gear_active', 'pet_gear_active_kr')
+
+    def pet_in_decompose(self):
+        return self._recog('pet_in_decompose')
+
+    def pet_lot_empty(self):
+        return self._recog('pet_lot_empty')
+
+    def mail_overflow_pet_gear(self):
+        for i in range(6):
+            if self._recog(f'pet_gear_{i}'):
+                return True
+        return False

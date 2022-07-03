@@ -29,7 +29,6 @@ class AutoWorker(QThread):
 
     def reset(self):
         self.worker = None
-        self.badge = False
         self.working = False
         self.workers_queue = self.workers.copy()
 

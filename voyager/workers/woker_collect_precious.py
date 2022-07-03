@@ -21,7 +21,7 @@ class CollectPrecious(QThread):
         self.preciouses = [
             {
                 'list': [
-                    {'name': '碳', 'target': 'carbon','target_binding': 'carbon_bind', 'collect': 0},
+                    {'name': '碳', 'target': 'carbon', 'target_binding': 'carbon_bind', 'collect': 0},
                     {'name': '深渊票', 'target': 'abyss', 'target_binding': 'abyss_bind', 'collect': 0},
                     {'name': '洗练石', 'target': 'stone_wash', 'target_binding': 'stone_wash_bind', 'collect': 0},
                     {'name': '红宝石', 'target': 'stone_red', 'target_binding': 'stone_red_bind', 'collect': 0},
@@ -29,7 +29,7 @@ class CollectPrecious(QThread):
                     {'name': '绿宝石', 'target': 'stone_green', 'target_binding': 'stone_green_bind', 'collect': 0},
                     {'name': '紫宝石', 'target': 'stone_purple', 'target_binding': 'stone_purple_bind', 'collect': 0},
                     {'name': '钻石', 'target': 'crystal', 'target_binding': 'crystal_bind', 'collect': 0},
-                    {'name': '布片', 'target': 'cloth', 'collect': 0},
+                    {'name': '布片', 'target': 'cloth', 'target_binding': 'cloth_bind', 'collect': 0},
                     {'name': '碎骨', 'target': 'bone', 'target_binding': 'bone_bind', 'collect': 0},
                     {'name': '砥石', 'target': 'whetstone', 'target_binding': 'whetstone_bind', 'collect': 0},
                     {'name': '铁片', 'target': 'iron', 'target_binding': 'iron_bind', 'collect': 0},
