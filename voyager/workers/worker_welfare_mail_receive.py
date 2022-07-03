@@ -12,18 +12,18 @@ class WelfareMailReceive(QThread):
         super(WelfareMailReceive, self).__init__()
         self.voyager = voyager
         self.running = False
-        self.in_pet_clear = False
-        self.pet_cleared = False
+        self.in_pet_gear_clear = False
+        self.pet_gear_cleared = False
         self.p = None
 
     def init(self):
         self.p = None
         self.running = True
-        self.pet_cleared = False
-        self.in_pet_clear = False
+        self.pet_gear_cleared = False
+        self.in_pet_gear_clear = False
 
     def _run(self):
-        if self.in_pet_clear:
+        if self.in_pet_gear_clear:
             return
         if self.voyager.recogbot.town() and self.voyager.player.welfare['mail']:
             self.voyager.matric.heartbeat()
@@ -44,19 +44,20 @@ class WelfareMailReceive(QThread):
             self.voyager.game.back()
 
         # 宠物装备溢出，开启宠物装备分解线程
-        if self.voyager.recogbot.mail_self_active() and self.voyager.recogbot.mail_overflow_pet_gear() and not self.pet_cleared:
-            self.in_pet_clear = True
+        if self.voyager.recogbot.mail_self_active() and self.voyager.recogbot.mail_overflow_pet_gear() and not self.pet_gear_cleared:
+            self.in_pet_gear_clear = True
             self._open_pet_thread()
 
-    def _open_pet_thead(self):
+    def _open_pet_thread(self):
         if self.p is not None:
             return
         self.p = PetGear(self.voyager)
         self.p.trigger.connect(self.pet_finish)
+        self.p.start()
 
     def pet_finish(self):
-        self.in_pet_clear = True
-        self.pet_cleared = True
+        self.in_pet_gear_clear = False
+        self.pet_gear_cleared = True
         self.p.stop()
         self.p = None
 

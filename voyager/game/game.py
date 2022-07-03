@@ -768,7 +768,7 @@ class Game(Concurrency):
         top_left = self._archor('mail')
         if top_left:
             x, y = top_left
-            self._click_xy(x - 200, y)
+            await self._click_xy(x - 200, y)
 
     @idle
     @asyncthrows

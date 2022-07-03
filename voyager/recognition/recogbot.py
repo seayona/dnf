@@ -428,6 +428,9 @@ class Recogbot(object):
     def pet_lot_empty(self):
         return self._recog('pet_lot_empty')
 
+    def pet_empty_gear(self):
+        return self._recog_if('pet_empty_gear', 'pet_empty_gear_kr')
+
     def mail_overflow_pet_gear(self):
         for i in range(6):
             if self._recog(f'pet_gear_{i}'):
@@ -445,3 +448,6 @@ class Recogbot(object):
 
     def purchase(self):
         return self._recog_if('mall_purchase', 'mall_purchase_kr')
+
+    def mail_back(self):
+        return self._recog_if('back_mail', 'back_mail_kr')

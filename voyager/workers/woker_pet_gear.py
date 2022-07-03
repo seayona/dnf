@@ -29,6 +29,9 @@ class PetGear(QThread):
             self.voyager.matric.heartbeat()
             self.trigger.emit(self.__class__.__name__)
 
+        if self.voyager.recogbot.mail_back():
+            self.voyager.game.back()
+
         # 确认按钮
         if self.voyager.recogbot.confirm():
             self.voyager.matric.heartbeat()
@@ -47,7 +50,8 @@ class PetGear(QThread):
             self.voyager.game.pet_decompose_btn()
 
         # 分解完毕
-        if self.voyager.recogbot.pet_lot_empty() and self.voyager.recogbot.pet_in_decompose():
+        if (
+                self.voyager.recogbot.pet_lot_empty() and self.voyager.recogbot.pet_in_decompose()) or self.voyager.recogbot.pet_empty_gear():
             self.clear = True
 
     def run(self):
