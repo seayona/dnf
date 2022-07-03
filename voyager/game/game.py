@@ -563,7 +563,7 @@ class Game(Concurrency):
     @asyncthrows
     async def union_sign_start(self):
         print('【探索者】5s后打开公会界面')
-        self._active_window()
+        await self._active_window()
         await self._press("F7")
         # await self.union_box()
         self._free()
