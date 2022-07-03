@@ -731,8 +731,10 @@ class Game(Concurrency):
             if 'target_binding' in item:
                 top_left = self._archor(f"preciouses/{item['target_binding']}", img)
                 if top_left:
-                    x, y = top_left
-                    await self._click_xy(640 + x + 15, y + 15, 0.5)
+                    new_x, new_y = top_left
+                    if (60 > new_x - x > -60) and (60 > new_y - y > -60):
+                        continue
+                    await self._click_xy(640 + new_x + 15, new_y + 15, 0.5)
                     item['collect'] = 2 if item['collect'] == 1 else 1
                     click_count += 1
 
