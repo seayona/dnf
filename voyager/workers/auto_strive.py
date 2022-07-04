@@ -34,12 +34,12 @@ class AutoStriveWorker(AutoWorker):
         self.v = ValleyWorker(self.voyager, daily_next=True)
         self.v.trigger.connect(self.finish)
 
-        self.g = GoblinWorker(self.voyager, daily_next=True if datetime.datetime.now().weekday() < 3 or True else False)
+        self.g = GoblinWorker(self.voyager, daily_next=True if datetime.datetime.now().weekday() < 3 else False)
         self.g.trigger.connect(self.finish)
 
-        self.workers = [self.g, self.v, self.w, self.a, self.m]
+        self.workers = [self.g, self.v, self.w, self.m, self.a]
 
-        if datetime.datetime.now().weekday() < 3 or True:
+        if datetime.datetime.now().weekday() < 3:
             self.s = SouthWorker(self.voyager, daily_next=True)
             self.s.trigger.connect(self.finish)
 

@@ -929,7 +929,7 @@ class Game(Concurrency):
     @asyncthrows
     async def ms_check_commodity(self, result, callback):
         for x, y in result:
-            await self._click_xy(x, y, 0.8)
+            await self._click_xy(x, y, 0.5)
         callback()
         self._free()
 

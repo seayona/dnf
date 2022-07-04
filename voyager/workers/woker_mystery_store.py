@@ -72,11 +72,11 @@ class MysteryStore(QThread):
 
     def run(self):
         self.init()
-        print("【清理宠物装备】开始执行")
+        print("【神秘商店】开始执行")
         while self.running:
             self._run()
             self.sleep(1)
 
     def stop(self):
-        print("【清理宠物装备】执行结束")
+        print("【神秘商店】执行结束")
         self.running = False
