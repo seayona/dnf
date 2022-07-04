@@ -739,8 +739,8 @@ class Game(Concurrency):
                     click_count += 1
 
         if click_count > 0:
-            await self._click('move_to_vault')
-            await self._click_if('confirm', 'confirm_kr')
+            await self._click('move_to_vault', max_try=True)
+            await self._click_if('confirm', 'confirm_kr', max_try=True)
 
         callback()
         self._free()

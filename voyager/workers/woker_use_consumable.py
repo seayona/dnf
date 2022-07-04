@@ -113,6 +113,7 @@ class UseConsumable(QThread):
         print("【自动使用消耗品】开始执行")
         while self.running:
             self._run()
+            self.sleep(1)
 
     def stop(self):
         print("【自动使用消耗品】利执行结束")
