@@ -240,7 +240,7 @@ class Game(Concurrency):
         await self._click_diy_precision('close', 0.955, 2)
         # 返回！
         if auto_back:
-            await self._click('back', max_try=True)
+            await self._click('back')
 
         print('【探索者】装备分解完成')
 

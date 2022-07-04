@@ -58,7 +58,7 @@ class DailyWork(QThread):
             self.voyager.game.daily_confirm()
 
         # 修改難度
-        if self.stage and not self.voyager.recogbot.daily_resistance():
+        if self.stage and not self.voyager.recogbot.daily_resistance() and self.voyager.recogbot.daily_confirm():
             self.voyager.game.daily_stage_change(self.stage)
 
         # 死亡
