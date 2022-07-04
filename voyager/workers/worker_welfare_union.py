@@ -33,6 +33,7 @@ class WelfareUnionWorker(QThread):
 
         # 在城镇中，已签到
         if self.voyager.player.welfare['union'] and self.voyager.recogbot.town():
+            self.voyager.matric.heartbeat()
             self.trigger.emit(self.__class__.__name__)
 
         if self.voyager.recogbot.get_one():

@@ -23,6 +23,7 @@ class WelfareRevivalCoinWorker(QThread):
 
         # 已领取
         if self.voyager.recogbot.revival_coin_received():
+            self.voyager.matric.heartbeat()
             self.voyager.player.welfare['revival_coin'] = True
             self.voyager.game.back_town_coin_received()
 
@@ -35,6 +36,7 @@ class WelfareRevivalCoinWorker(QThread):
 
         # 领取后在城镇stop
         if self.voyager.recogbot.town() and self.voyager.player.welfare['revival_coin']:
+            self.voyager.matric.heartbeat()
             self.trigger.emit(self.__class__.__name__)
 
     def run(self):

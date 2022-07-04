@@ -67,6 +67,7 @@ class UseConsumable(QThread):
         not_use = list(filter(lambda item: not item['use'], self.consumable))
 
         if self.voyager.recogbot.confirm() and self.voyager.player.repair:
+            self.voyager.matric.heartbeat()
             self.voyager.game.confirm()
             self._over_current()
             return

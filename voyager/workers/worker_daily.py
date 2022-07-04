@@ -54,6 +54,7 @@ class DailyWork(QThread):
         if self.voyager.recogbot.daily_confirm() and (
                 self.stage and self.voyager.recogbot.daily_resistance() or (
                 isinstance(self.stage, bool) and not self.stage)):
+            self.voyager.matric.heartbeat()
             self.voyager.game.daily_confirm()
 
         # 修改難度
@@ -66,6 +67,7 @@ class DailyWork(QThread):
 
         # 战斗已结束，发现再次挑战
         if self.voyager.recogbot.replay():
+            self.voyager.matric.heartbeat()
             self.voyager.game.daily_replay()
 
         if self.voyager.recogbot.daily_result():
@@ -92,6 +94,7 @@ class DailyWork(QThread):
         if (
                 self.voyager.recogbot.town() or self.daily_next and self.voyager.recogbot.in_daily()) and self.voyager.player.daily_status(
             self.current_work):
+            self.voyager.matric.heartbeat()
             self.trigger.emit(self.__class__.__name__)
 
     def run(self):

@@ -93,6 +93,7 @@ class DuelWork(QThread):
             if not current == -1:
                 # 挑战
                 if self.voyager.recogbot.duel_chance(0) or self.init_chance - current >= 3:
+                    self.voyager.matric.heartbeat()
                     self.voyager.player.over_duel('fight')
                     self.refresh_count = 0
                 else:
@@ -117,6 +118,7 @@ class DuelWork(QThread):
 
             # 全部领取完毕
             if self.reward['day']['signed'] and self.reward['week']['signed']:
+                self.voyager.matric.heartbeat()
                 self.voyager.player.over_duel('reward')
         # 一路按esc返回
         if self.voyager.player.winner() and not self.voyager.recogbot.town():

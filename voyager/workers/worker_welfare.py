@@ -55,6 +55,7 @@ class WelfareWorker(QThread):
             self.working = True
 
         if not self.working and len(self.workers) == 0:
+            self.voyager.matric.heartbeat()
             self.trigger.emit(self.__class__.__name__)
 
     def run(self):

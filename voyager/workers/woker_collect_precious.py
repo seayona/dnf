@@ -63,6 +63,7 @@ class CollectPrecious(QThread):
         cls = self.voyager.recogbot.detect()
         # 入库完毕，在城镇
         if self.voyager.recogbot.town() and self.voyager.player.collected:
+            self.voyager.matric.heartbeat()
             self.trigger.emit(self.__class__.__name__)
             return
 
@@ -84,6 +85,7 @@ class CollectPrecious(QThread):
             if ((
                         self.detect_count > 2 and self.voyager.recogbot.has_empty_cell()) or self.detect_count > 5) and not self.busy:
                 not_collect[0]['clear'] = True
+                self.voyager.matric.heartbeat()
                 self.detect_count = 0
                 return
 
