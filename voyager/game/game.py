@@ -18,28 +18,26 @@ class Game(Concurrency):
         return self._archor(target1, img, debug) or self._archor(target2, img, debug)
 
     def _archor_best(self, target, img=None, debug=False):
-        if img is None:
-            img = capture()
-        # 检测再次挑战的按钮位置
-        max_val, img, top_left, right_bottom = match_best(img, './game/scene/' + target + '.png', debug)
-        print(f'【模板匹配RGB】{target} {max_val} {top_left}')
-        if top_left[0] == 0 and top_left[1] == 0:
-            return False
-        if 1 >= max_val > 0.99:
-            x, y = top_left
-            # 返回按钮位置
-            return x + 10, y + 8
+        return self._archor_diy_precision(target, 0.99, img, debug, rgb=True)
 
     def _archor_low_precision(self, target, img=None):
         return self._archor_diy_precision(target, 0.94, img)
 
-    def _archor_diy_precision(self, target, precision, img=None, debug=False):
+    def _archor_best_low_precision(self, target, img=None):
+        return self._archor_diy_precision(target, 0.94, img, rgb=True)
+
+    def _archor_diy_precision(self, target, precision, img=None, debug=False, rgb=False):
         # 获取屏幕截图
         if img is None:
             img = capture()
-        # 检测目标位置
-        max_val, img, top_left, right_bottom = match(img, f'./game/scene/{target}.png', debug)
-        print(f'【archor模板匹配】{target} {max_val} {top_left}')
+
+        if rgb:
+            max_val, img, top_left, right_bottom = match_best(img, './game/scene/' + target + '.png', debug)
+            print(f'【模板匹配RGB】{target} {max_val} {top_left}')
+        else:
+            # 检测目标位置
+            max_val, img, top_left, right_bottom = match(img, f'./game/scene/{target}.png', debug)
+            print(f'【archor模板匹配】{target} {max_val} {top_left}')
         # 返回按钮位置
         if 1 >= max_val > precision:
             x, y = top_left
@@ -49,41 +47,34 @@ class Game(Concurrency):
         return self._archor_low_precision(target, img) or self._archor_low_precision(target2, img)
 
     async def _click(self, target, sleep=1, img=None, max_try=False):
-        top_left = self._archor(target, img)
+        return await self._click_event(target, sleep, img, max_try, self._archor)
+
+    async def _click_best(self, target, sleep=1, img=None, max_try=False):
+        return await self._click_event(target, sleep, img, max_try, self._archor_best)
+
+    async def _click_event(self, target, sleep, img, max_try, archor_func):
+        top_left = archor_func(target, img)
         max_try = 900 if max_try > 900 or (isinstance(max_try, bool) and max_try) else max_try
         if max_try and not top_left:
             print(f'【任务调度】{target}这个按钮很重要，必须点击，继续尝试')
             max_try -= 1
-            return await self._click(target, sleep, img, max_try)
-        return await self._click_event(top_left, sleep)
+            return await self._click_event(target, sleep, img, max_try, archor_func)
+        return await self._click_action(top_left, sleep)
 
-    async def _click_event(self, top_left, sleep):
+    async def _click_action(self, top_left, sleep):
         if top_left:
             x, y = top_left
             # 移动鼠标到按钮位置,点击按钮
             click(x, y)
+            print('【点击操作】点击坐标', top_left)
             await asyncio.sleep(sleep)
             return True
         return False
 
-    async def _click_diy_precision(self, target, precision, sleep=1, img=None, max_try=False):
-        top_left = self._archor_diy_precision(target, precision, img)
-        max_try = 900 if max_try > 900 or (isinstance(max_try, bool) and max_try) else max_try
-        if max_try and not top_left:
-            print(f'【任务调度】{target}这个按钮很重要，必须点击，继续尝试')
-            max_try -= 1
-            return await self._click(target, sleep, img, max_try)
-
-        return await self._click_event(top_left, sleep)
-
-    async def _click_diy_precision_if(self, target1, target2, precision, sleep=1, img=None, max_try=False):
-        result1 = await self._click_diy_precision(target1, precision, sleep, img, max_try)
-        if not result1:
-            await self._click(target2, precision, sleep, img, max_try)
-
     async def _click_xy(self, x, y, sleep=1):
         # 移动鼠标到按钮位置,点击按钮
         click(x + 10, y + 8)
+        print('【点击操作】点击坐标', x, y)
         await asyncio.sleep(sleep)
 
     async def _click_if(self, target1, target2, sleep=1, img=None, max_try=False):
@@ -91,14 +82,21 @@ class Game(Concurrency):
         if not result1:
             await self._click(target2, sleep, img, max_try)
 
+    async def _click_if_best(self, target1, target2, sleep=1, img=None, max_try=False):
+        result1 = await self._click_best(target1, sleep, img, max_try)
+        if not result1:
+            await self._click_best(target2, sleep, img, max_try)
+
     async def _click_low_precision(self, target, sleep=1, img=None, max_try=False):
-        top_left = self._archor_low_precision(target, img)
-        max_try = 900 if max_try > 900 or (isinstance(max_try, bool) and max_try) else max_try
-        if max_try and not top_left:
-            print(f'【任务调度】{target}这个按钮很重要，必须点击，继续尝试')
-            max_try -= 1
-            return await self._click_low_precision(target, sleep, img, max_try)
-        return await self._click_event(top_left, sleep)
+        return await self._click_event(target, sleep, img, max_try, self._archor_low_precision)
+
+    async def _click_best_low_precision(self, target, sleep=1, img=None, max_try=False):
+        return await self._click_event(target, sleep, img, max_try, self._archor_best_low_precision)
+
+    async def _click_if_best_low_precision(self, target1, target2, sleep=1, img=None, max_try=False):
+        result1 = await self._click_best_low_precision(target1, sleep, img, max_try)
+        if not result1:
+            await self._click_best_low_precision(target2, sleep, img, max_try)
 
     async def _click_if_low_precision(self, target1, target2, sleep=1, img=None, max_try=False):
         result1 = await self._click_low_precision(target1, sleep, img, max_try)
@@ -125,6 +123,7 @@ class Game(Concurrency):
 
     async def _press(self, key, sleep=1.5):
         press(key)
+        print("【按键操作】按下按钮", key)
         await asyncio.sleep(sleep)
 
     async def _print(self, message, sleep=1.5):
@@ -196,18 +195,17 @@ class Game(Concurrency):
     @asyncthrows
     async def repair_and_sale(self, bag=(False, 0, 0), auto_back=True, callback=False):
 
-        # 打开背包，防止识别到城镇中下面的那个背包
         if bag[0]:
             await self._click_xy(bag[1] + 10, bag[2] + 8, 2)
         else:
             await self._click('bag', 2)
 
         # 点击修理按钮
-        await self._click_diy_precision('repair', 0.955, 2)
+        await self._click_best_low_precision('repair', 2)
         # 确认修理
-        await self._click_diy_precision_if('repair_confirm', 'repair_confirm_kr', 0.955, 2)
+        await self._click_if_best_low_precision('repair_confirm', 'repair_confirm_kr', 2)
         # 返回！
-        await self._click_diy_precision('close', 0.955, 2)
+        await self._click_best_low_precision('close', 2)
 
         await self._sale(auto_back)
         # 标记修理状态
@@ -219,25 +217,25 @@ class Game(Concurrency):
     @asyncthrows
     async def _sale(self, auto_back):
         # 点击分解按钮
-        await self._click_diy_precision('sale', 0.955, 2)
+        await self._click_best_low_precision('sale', 2)
         # 确认分解
-        await self._click_diy_precision_if('sale_select', 'sale_select_kr', 0.955, 2)
+        await self._click_if_best_low_precision('sale_select', 'sale_select_kr', 2)
         # 确认分解
-        await self._click_diy_precision('sale_confirm', 0.955, 2)
+        await self._click_best_low_precision('sale_confirm', 2)
         # 确认
-        await self._click_diy_precision_if('confirm', 'confirm_kr', 0.955, 2)
+        await self._click_if_best_low_precision('confirm', 'confirm_kr', 2)
         # 返回！
-        await self._click_diy_precision('close', 0.955, 2)
+        await self._click_best_low_precision('close', 2)
         # 执行售卖
-        await self._click_diy_precision('sell', 0.955, 2)
+        await self._click_best_low_precision('sell', 2)
         # 确认售卖
-        await self._click_diy_precision_if('sell_select', 'sell_select_kr', 0.955, 2)
+        await self._click_if_best_low_precision('sell_select', 'sell_select_kr', 2)
         # 确认分解,按钮与分解一毛一样
-        await self._click_diy_precision('sale_confirm', 0.955, 2)
+        await self._click_best_low_precision('sale_confirm', 2)
         # 确认
-        await self._click_diy_precision_if('confirm', 'confirm_kr', 0.955, 2)
+        await self._click_if_best_low_precision('confirm', 'confirm_kr', 2)
         # 返回！
-        await self._click_diy_precision('close', 0.955, 2)
+        await self._click_best_low_precision('close', 2)
         # 返回！
         if auto_back:
             await self._click('back')
@@ -717,7 +715,7 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def precious_to_vault(self, preciouses, callback):
-        img = capture(640, 0, 640, 800)
+        img = capture(640, 0, 700, 800)
         click_count = 0
         for item in preciouses:
 
@@ -739,8 +737,8 @@ class Game(Concurrency):
                     click_count += 1
 
         if click_count > 0:
-            await self._click('move_to_vault', max_try=True)
-            await self._click_if('confirm', 'confirm_kr', max_try=True)
+            await self._click_if_best_low_precision('move_to_vault', 'move_to_vault_kr')
+            await self._click_if_best_low_precision('confirm', 'confirm_kr')
 
         callback()
         self._free()
@@ -937,4 +935,5 @@ class Game(Concurrency):
     @asyncthrows
     async def purchase(self):
         await self._click_if("mall_purchase", "mall_purchase_kr", 2)
+        await self._click_if("mall_purchase", "mall_purchase2_kr", 2)
         self._free()

@@ -22,6 +22,7 @@ class Recogbot(object):
     def _max_all_best(self, target, img=None):
         img = img if img is not None else capture()
         result = match_all_best(img, f'./game/scene/{target}.png')
+        print(f'【模板匹配所有】 {target} ', result)
         if result is None:
             return None
         res = []
@@ -72,7 +73,7 @@ class Recogbot(object):
             if len(det) < 1:
                 continue
             for *xyxy, conf, cls in reversed(det):
-                x, y = (int(xyxy[0]) * 2, int(xyxy[1]) * 2)
+                x, y = (int(xyxy[0]), int(xyxy[1]))
                 if names[int(cls)] == 'avatar' and float(f'{conf:.2f}') > 0.5:
                     print("【实时检测】检测到小可爱")
                     result['avatar'] = (True, x, y)
@@ -447,7 +448,7 @@ class Recogbot(object):
         return self._recog('ms_refresh')
 
     def purchase(self):
-        return self._recog_if('mall_purchase', 'mall_purchase_kr')
+        return self._recog_if('mall_purchase', 'mall_purchase_kr') or self._recog('mall_purchase2_kr')
 
     def mail_back(self):
         return self._recog_if('back_mail', 'back_mail_kr')

@@ -18,11 +18,11 @@ class MysteryStore(QThread):
         self.running = True
         self.current = None
         self.commodity = [
+            {"name": "HP", "target": "/store/hp", "complete": False},
             {"name": "钥匙碎片", "target": "/store/key_fragment", "complete": False},
             {"name": "钥匙", "target": "/store/key", "complete": False},
             {"name": "调整箱碎片", "target": "/store/transform_fragment", "complete": False},
             {"name": "调整箱", "target": "/store/transform", "complete": False},
-            {"name": "HP", "target": "/store/hp", "complete": False},
             {"name": "徽章箱", "target": "/store/badge", "complete": False},
             {"name": "材料箱", "target": "/store/material", "complete": False},
             {"name": "宝石箱", "target": "/store/stone", "complete": False},

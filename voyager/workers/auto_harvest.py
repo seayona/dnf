@@ -35,8 +35,8 @@ class AutoHarvestWorker(AutoWorker):
         self.ms = MysteryStore(self.voyager)
         self.ms.trigger.connect(self.finish)
 
-        self.workers = [self.c, self.a, self.m, self.ms, self.u]
-        
+        self.workers = [self.c, self.a, self.m, self.ms]
+
     def init(self):
         self.running = True
         self.reset()

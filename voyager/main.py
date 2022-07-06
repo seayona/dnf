@@ -40,6 +40,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.matric_worker = MatricWorker(self)
 
         self.workers = []
+        self.current_work = None
 
         print("【探索者】启动成功")
         print("【探索者】按F8键自动搬砖/F12键停止/Esc键退出程序")
@@ -50,12 +51,15 @@ class Voyager(QMainWindow, VoyagerWindow):
         self.player = Player(q.text())
         conf = ConfigParser()
         conf.read('./conf/auto.ini')
-        conf.set('Strive', 'Player', q.text())
-        conf.set('LevelUp', 'Player', q.text())
-        conf.set('Valley', 'Player', q.text())
-        conf.set('Welfare', 'Player', q.text())
-        conf.set('Harvest', 'Player', q.text())
-        conf.set('Duel', 'Player', q.text())
+        if self.current_work is None:
+            conf.set('Strive', 'Player', q.text())
+            conf.set('LevelUp', 'Player', q.text())
+            conf.set('Valley', 'Player', q.text())
+            conf.set('Welfare', 'Player', q.text())
+            conf.set('Harvest', 'Player', q.text())
+            conf.set('Duel', 'Player', q.text())
+        else:
+            conf.set(self.current_work, 'Player', q.text())
         conf.write(open('./conf/auto.ini', "w"))
         self.show_message(f"角色【{q.text()}】配置已加载")
 
@@ -104,7 +108,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         a = AutoStriveWorker(self)
         a.trigger.connect(self.on_btn_stop_clicked)
         a.start()
-
+        self.current_work = "Strive"
         self.workers = [a]
         self._disable()
 
@@ -114,7 +118,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         a = AutoDailyWorker(self)
         a.trigger.connect(self.on_btn_stop_clicked)
         a.start()
-
+        self.current_work = "Valley"
         self.workers = [a]
         self._disable()
 
@@ -124,6 +128,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         h = AutoHarvestWorker(self)
         h.trigger.connect(self.on_btn_stop_clicked)
         h.start()
+        self.current_work = "Harvest"
         self.workers = [h]
         self._disable()
 
@@ -133,7 +138,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         d = AutoDuelWorker(self)
         d.trigger.connect(self.on_btn_stop_clicked)
         d.start()
-
+        self.current_work = "Duel"
         self.workers = [d]
         self._disable()
 
@@ -153,7 +158,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         l = AutoLevelUpWorker(self)
         l.trigger.connect(self.on_btn_stop_clicked)
         l.start()
-
+        self.current_work = "LevelUp"
         self.workers = [l]
         self._disable()
 
@@ -163,7 +168,7 @@ class Voyager(QMainWindow, VoyagerWindow):
         l = AutoWelfareWorker(self)
         l.trigger.connect(self.on_btn_stop_clicked)
         l.start()
-
+        self.current_work = "Welfare"
         self.workers = [l]
         self._disable()
 

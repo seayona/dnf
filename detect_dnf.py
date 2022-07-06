@@ -24,7 +24,7 @@ from utils.torch_utils import select_device
 
 @torch.no_grad()
 def detect(weights=ROOT / 'weights/best.pt', data=ROOT / 'data/dnf.yaml', view_img=False):
-    imgsz = (1280, 768)
+    imgsz = (1350, 830)
     # Load model
     device = select_device('0' if torch.cuda.is_available() else 'cpu')
     model = DetectMultiBackend(weights, device=device, dnn=False, data=data, fp16=False)
@@ -37,7 +37,7 @@ def detect(weights=ROOT / 'weights/best.pt', data=ROOT / 'data/dnf.yaml', view_i
     # Run inference
     model.warmup(imgsz=(1 if pt else bs, 3, *imgsz))  # warmup
 
-    img0 = pyautogui.screenshot(region=[0, 0, 1280, 768])
+    img0 = pyautogui.screenshot(region=[0, 0, 1350, 830])
     img0 = cv2.cvtColor(np.asarray(img0), cv2.COLOR_RGB2BGR)
     # img0 = cv2.imread('data/images/dnf.png')  # BGR
     # Padded resize
@@ -58,20 +58,19 @@ def detect(weights=ROOT / 'weights/best.pt', data=ROOT / 'data/dnf.yaml', view_i
     # NMS
     pred = non_max_suppression(pred, 0.25, 0.45, None, False, max_det=10)
 
-    if view_img:
-        # Process predictions
-        for i, det in enumerate(pred):  # per image
-            im0 = img0.copy()
-            annotator = Annotator(im0, line_width=3, example=str(names))
-            if len(det):
-                # Rescale boxes from img_size to im0 size
-                det[:, :4] = scale_coords(im.shape[2:], det[:, :4], im0.shape).round()
-                # Write results
-                for *xyxy, conf, cls in reversed(det):
-                    c = int(cls)  # integer class
-                    label = f'{names[c]} {conf:.2f}'
-                    annotator.box_label(xyxy, label, color=colors(c, True))
-            # Stream results
+    # Process predictions
+    for i, det in enumerate(pred):  # per image
+        im0 = img0.copy()
+        annotator = Annotator(im0, line_width=3, example=str(names))
+        if len(det):
+            # 调整预测的坐标
+            det[:, :4] = scale_coords(im.shape[2:], det[:, :4], im0.shape).round()
+            # Write results
+            for *xyxy, conf, cls in reversed(det):
+                c = int(cls)  # integer class
+                label = f'{names[c]} {conf:.2f}'
+                annotator.box_label(xyxy, label, color=colors(c, True))
+        if view_img:
             im0 = annotator.result()
             cv2.imshow('str(p)', im0)
             cv2.waitKey(1)  # 1 millisecond
@@ -81,7 +80,7 @@ def detect(weights=ROOT / 'weights/best.pt', data=ROOT / 'data/dnf.yaml', view_i
 
 if __name__ == "__main__":
     while True:
-        pred, names = detect('weights/best.pt', 'data/dnf.yaml', True)
+        pred, names = detect(view_img=True)
         for i, det in enumerate(pred):
             if len(det) < 1:
                 continue

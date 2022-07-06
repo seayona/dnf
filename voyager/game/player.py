@@ -197,8 +197,11 @@ class Player(Concurrency):
         self._free()
 
     async def _dis_dodge_skill(self):
-        skill = self.skills[random.choice(list(filter(lambda s: self.skills[s].remain == 0, self.skills)))]
-        if 'V' not in skill.key:
-            await skill.cast_async()
-        else:
-            await self._dis_dodge_skill()
+        try:
+            skill = self.skills[random.choice(list(filter(lambda s: self.skills[s].remain == 0, self.skills)))]
+            if 'V' not in skill.key:
+                await skill.cast_async()
+            else:
+                await self._dis_dodge_skill()
+        except e:
+            print(e)
