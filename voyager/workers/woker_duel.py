@@ -92,7 +92,7 @@ class DuelWork(QThread):
             current = self._recog_chance()
             if not current == -1:
                 # 挑战
-                if self.voyager.recogbot.duel_chance(0) or self.init_chance - current >= 30:
+                if self.voyager.recogbot.duel_chance(0) or self.init_chance - current >= 3:
                     self.voyager.matric.heartbeat()
                     self.voyager.player.over_duel('fight')
                     self.refresh_count = 0
