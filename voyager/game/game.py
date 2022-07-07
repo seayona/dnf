@@ -700,8 +700,8 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def goto_vault(self, bag):
-        await self._click_xy(bag[1] + 10, bag[2] + 8)
+    async def goto_vault(self):
+        await self._press('f5')
         await self._click_if('collect_vault', 'collect_vault_kr')
         await self._click_if('collect_gang_vault', 'collect_gang_vault_kr')
         self._free()
@@ -920,7 +920,7 @@ class Game(Concurrency):
     async def goto_ms(self):
         await self._open_menu()
         await asyncio.sleep(1)
-        await self._click('mystery_store')
+        await self._click('mystery_store', sleep=0.2)
         self._free()
 
     @idle
