@@ -39,6 +39,8 @@ class Player(Concurrency):
 
         self.mystery_store = False
 
+        self.inject = None
+
         self._init_skills(name)
 
         self.repair = False
@@ -58,6 +60,8 @@ class Player(Concurrency):
             buffs = eval(conf.get(name, 'Buffs'))
             for b in buffs:
                 self.buff[b[1]] = Skill(str(b[0]), 0)
+        if conf.has_option(name, 'Inject'):
+            self.inject = conf.get(name, 'Inject')
 
     def repaired(self):
         self.repair = True
@@ -68,7 +72,8 @@ class Player(Concurrency):
     def new_game(self):
         self.repair = False
         self.lion_alive = True
-        print("【player】狀態重置")
+        self._reset_cooldown()
+        print("【player】状态重置")
 
     def _attack(self):
         if not self.stand_status:
@@ -87,6 +92,11 @@ class Player(Concurrency):
     def cooldown(self):
         for s in self.skills.values():
             s.remaining()
+
+    def _reset_cooldown(self):
+        print('重置技能CD')
+        for s in self.skills.values():
+            s.reset_cooldown()
 
     @idle
     @asyncthrows
@@ -133,7 +143,7 @@ class Player(Concurrency):
     @asyncthrows
     async def right(self):
         keyDown('right')
-        await asyncio.sleep(2)
+        await asyncio.sleep(3)
         self.stop_right()
         self._free()
 
@@ -171,9 +181,11 @@ class Player(Concurrency):
     def over_collect(self):
         self.collected = True
 
-    # 自动释放buff
-    def release_buff(self, key):
-        self.buff[key].cast()
+    @idle
+    @asyncthrows
+    async def release_buff(self, key):
+        await self.buff[key].cast_async()
+        self._free()
 
     @idle
     @asyncthrows
@@ -203,5 +215,5 @@ class Player(Concurrency):
                 await skill.cast_async()
             else:
                 await self._dis_dodge_skill()
-        except e:
-            print(e)
+        except Exception:
+            print(Exception)

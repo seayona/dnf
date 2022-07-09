@@ -13,12 +13,18 @@ class MysteryStore(QThread):
         self.running = False
         self.commodity = []
         self.current = None
+        self.store = False
+
+    def in_store(self):
+        self.store = True
 
     def init(self):
         self.running = True
         self.current = None
+        self.store = False
         self.commodity = [
             {"name": "HP", "target": "/store/hp", "complete": False},
+            {"name": "复活币", "target": "/store/coin", "complete": False},
             {"name": "钥匙碎片", "target": "/store/key_fragment", "complete": False},
             {"name": "钥匙", "target": "/store/key", "complete": False},
             {"name": "调整箱碎片", "target": "/store/transform_fragment", "complete": False},
@@ -27,13 +33,12 @@ class MysteryStore(QThread):
             {"name": "材料箱", "target": "/store/material", "complete": False},
             {"name": "宝石箱", "target": "/store/stone", "complete": False},
             {"name": "碳", "target": "/store/carbon", "complete": False},
-            {"name": "雷米", "target": "/store/remy", "complete": False},
-            {"name": "复活币", "target": "/store/coin", "complete": False}
+            {"name": "雷米", "target": "/store/remy", "complete": False}
         ]
 
     def _run(self):
         if self.voyager.recogbot.town() and not self.voyager.player.mystery_store:
-            self.voyager.game.goto_ms()
+            self.voyager.game.goto_ms(lambda: self.in_store())
 
         # 任务完成，一路esc
         if self.voyager.player.mystery_store and not self.voyager.recogbot.town():
@@ -58,7 +63,7 @@ class MysteryStore(QThread):
         if len(not_complete) == 0 and self.voyager.recogbot.purchase():
             self.voyager.game.purchase()
 
-        if self.voyager.recogbot.in_mystery_store() and self.current is None and len(not_complete) > 0:
+        if self.voyager.recogbot.in_mystery_store() and self.current is None and len(not_complete) > 0 and self.store:
             result = self.voyager.recogbot.detect_commodity(not_complete[0]['target'])
             if result is None:
                 not_complete[0]['complete'] = True

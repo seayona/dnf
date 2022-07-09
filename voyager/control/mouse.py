@@ -11,6 +11,7 @@ def moveTo(x, y):
 
 def click(x, y):
     pyautogui.click(x, y)
+    print("【mouse】", x, y)
 
 
 if __name__ == '__main__':

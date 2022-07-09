@@ -1,2 +1,2 @@
-from .keyborad import *
+from .keyboard import *
 from .mouse import *

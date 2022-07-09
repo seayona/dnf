@@ -24,7 +24,7 @@ from utils.torch_utils import select_device
 
 @torch.no_grad()
 def detect(weights=ROOT / 'weights/best.pt', data=ROOT / 'data/dnf.yaml', view_img=False):
-    imgsz = (1350, 830)
+    imgsz = (1376, 832)
     # Load model
     device = select_device('0' if torch.cuda.is_available() else 'cpu')
     model = DetectMultiBackend(weights, device=device, dnn=False, data=data, fp16=False)
@@ -37,7 +37,7 @@ def detect(weights=ROOT / 'weights/best.pt', data=ROOT / 'data/dnf.yaml', view_i
     # Run inference
     model.warmup(imgsz=(1 if pt else bs, 3, *imgsz))  # warmup
 
-    img0 = pyautogui.screenshot(region=[0, 0, 1350, 830])
+    img0 = pyautogui.screenshot(region=[0, 0, 1376, 832])
     img0 = cv2.cvtColor(np.asarray(img0), cv2.COLOR_RGB2BGR)
     # img0 = cv2.imread('data/images/dnf.png')  # BGR
     # Padded resize

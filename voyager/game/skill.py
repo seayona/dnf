@@ -31,10 +31,21 @@ class Skill():
                     press(s)
                 if ((idx + 1) % 2) == 0:
                     await asyncio.sleep(float(s))
+
+        if self.key.__contains__('#'):
+            hold_skill = self.key.split('#')
+            keyDown(hold_skill[0])
+            await asyncio.sleep(0.3)
+            keyDown(hold_skill[1])
+            await asyncio.sleep(0.3)
+            keyUp(hold_skill[0])
+            await asyncio.sleep(0.3)
+            keyUp(hold_skill[1])
+
         if self.key.__contains__('*'):
             s = self.key.split('*')
             keyDown(s[0])
-            await  asyncio.sleep(float(s[1]))
+            await asyncio.sleep(float(s[1]))
             keyUp(s[0])
 
         self.remain = self.cd
@@ -44,3 +55,6 @@ class Skill():
             self.remain = self.remain - 1
         else:
             self.remain = 0
+
+    def reset_cooldown(self):
+        self.remain = 0

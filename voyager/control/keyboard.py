@@ -5,14 +5,17 @@ from pyautogui._pyautogui_win import keyboardMapping
 
 def press(key):
     pyautogui.press(key)
+    print("【keyboard】press", key)
 
 
 def keyUp(key):
     pyautogui.keyUp(key)
+    print("【keyboard】keyUp", key)
 
 
 def keyDown(key):
     pyautogui.keyDown(key)
+    print("【keyboard】keyDown", key)
 
 
 def hold(key):
