@@ -1,4 +1,5 @@
 import time
+import datetime
 
 from PyQt5.QtCore import QThread, pyqtSignal
 
@@ -35,7 +36,10 @@ class AutoHarvestWorker(AutoWorker):
         self.ms = MysteryStore(self.voyager)
         self.ms.trigger.connect(self.finish)
 
-        self.workers = [self.c, self.a, self.m, self.ms]
+        if datetime.datetime.now().day % 3 == 0:
+            self.workers = [self.c, self.a, self.m, self.ms]
+        else:
+            self.workers = [self.c, self.m, self.ms]
 
     def init(self):
         self.running = True

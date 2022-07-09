@@ -41,7 +41,11 @@ class DailyWork(QThread):
 
     def _run(self):
         cls = self.voyager.recogbot.detect()
-        # 人在城镇，去打每日
+        if self.voyager.recogbot.back_share():
+            self.voyager.game.back_share()
+            return
+
+            # 人在城镇，去打每日
         if self.voyager.recogbot.town() and not self.voyager.player.daily_status(self.current_work):
             self.voyager.game.daily_start()
 

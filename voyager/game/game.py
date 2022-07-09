@@ -285,9 +285,8 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def snow_mountain_start(self, reset):
+    async def snow_mountain_start(self):
         await asyncio.sleep(2)
-        reset()
         print("【探索者】前往雪山")
         await self._click('active', 2)
         await self._click('adventure_box')
@@ -356,7 +355,8 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def next_agency_confirm(self):
+    async def next_agency_confirm(self, reset):
+        reset()
         await self._click('next_agency_confirm')
         print('【探索者】下个主线任务')
         self._free()
@@ -917,10 +917,11 @@ class Game(Concurrency):
 
     @idle
     @asyncthrows
-    async def goto_ms(self):
+    async def goto_ms(self, callback):
         await self._open_menu()
         await asyncio.sleep(1)
         await self._click('mystery_store', sleep=0.2)
+        callback()
         self._free()
 
     @idle

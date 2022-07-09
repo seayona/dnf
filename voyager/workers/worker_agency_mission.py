@@ -19,7 +19,6 @@ class AgencyMissionWorker(QThread):
         self.s = PlayerSkillCooldownWorker(self.voyager)
         self.a = PlayerAttackWorker(self.voyager)
 
-        self.count = 0
         self.finale = False
         self.workers = []
 
@@ -36,6 +35,12 @@ class AgencyMissionWorker(QThread):
 
         cls = self.voyager.recogbot.detect()
 
+        if cls['result'][0]:
+            if self.voyager.recogbot.overweight() and not self.voyager.player.repair:
+                self.voyager.game.repair_and_sale(cls['bag'], callback=lambda: self.voyager.player.repaired())
+            else:
+                self.voyager.player.repaired()
+
         if self.voyager.recogbot.town() and self.voyager.player.tired() and self.finale:
             self.trigger.emit(self.__class__.__name__)
             return
@@ -46,12 +51,7 @@ class AgencyMissionWorker(QThread):
             return
 
         if self.voyager.recogbot.town() and self.voyager.player.tired() and not self.finale:
-            self.voyager.game.repair_and_sale(cls['bag'], callback=lambda: self.voyager.player.repaired())
-
-        if self.voyager.recogbot.overweight() and not self.voyager.player.repair:
-            self.voyager.game.repair_and_sale(cls['bag'], callback=lambda: self.voyager.player.repaired())
-        else:
-            self.voyager.player.repaired()
+            self.voyager.game.repair_and_sale(cls['bag'], callback=lambda: self.over_finale())
 
         # 出现技能面板，返回
         if self.voyager.recogbot.skill_back():
@@ -62,8 +62,7 @@ class AgencyMissionWorker(QThread):
             self.voyager.game.esc()
 
         # 地下城里面点击下个任务
-        if self.voyager.player.repair and cls['next'][0]:
-            self.count += 1
+        if self.voyager.player.repair and cls['next'][0] and not self.voyager.player.tired():
             self.voyager.game.next(cls['next'], reset=lambda: self.voyager.player.new_game())
 
         # 自动装备
@@ -87,11 +86,13 @@ class AgencyMissionWorker(QThread):
             self.voyager.player.over_fatigued()
             self.voyager.game.agency_mission_finish(reset=lambda: self.voyager.player.new_game())
 
+        # 接任务
         if self.voyager.recogbot.next_agency():
             self.voyager.game.next_agency()
 
+        # 进图按钮
         if self.voyager.recogbot.next_agency_confirm():
-            self.voyager.game.next_agency_confirm()
+            self.voyager.game.next_agency_confirm(reset=lambda: self.voyager.player.new_game())
 
         # 酒馆接受任务
         if self.voyager.recogbot.agency_mission_get():

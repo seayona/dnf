@@ -52,7 +52,7 @@ class GameWorker(QThread):
         # 疲劳值未耗尽，人在城镇中，去搬砖
         if not self.voyager.player.tired() and self.voyager.recogbot.town():
             print("【一键搬砖】5秒后前往雪山")
-            self.voyager.game.snow_mountain_start(reset=lambda: self.voyager.player.new_game())
+            self.voyager.game.snow_mountain_start()
 
         # 疲劳值不足，人在地下城，战斗已结束
         if self.voyager.player.tired() and cls['result'][0]:
@@ -71,6 +71,7 @@ class GameWorker(QThread):
         if self.voyager.recogbot.entry_snow_mountain():
             print("【雪山】发现雪山入口！")
             self.voyager.game.snow_mountain_fight()
+            self.voyager.player.new_game()
 
         # 战斗奖励
         if self.voyager.recogbot.reward():
@@ -102,7 +103,6 @@ class GameWorker(QThread):
             self.voyager.game.back_home(reset=lambda: self.voyager.player.new_game())
 
         if self.voyager.player.repair and self.voyager.recogbot.back_bg():
-            self.voyager.player.new_game()
             self.voyager.game.back()
 
         if self.voyager.recogbot.back_share():

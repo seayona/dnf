@@ -1,7 +1,7 @@
 from detect_dnf import detect
 
 from .capture import capture
-from .match import match, match_all_best
+from .match import match, match_all_best, match_best
 import math
 
 
@@ -10,14 +10,18 @@ class Recogbot(object):
     def __init__(self):
         pass
 
-    def _match_max_val(self, target, img=None):
+    def _match(self, target, precision, img=None, rgb=False):
         # 获取屏幕截图
         img = img if img is not None else capture()
         # 检测目标位置
-        max_val, img, top_left, right_bottom = match(img, f'./game/scene/{target}.png')
+        if rgb:
+            max_val, img, top_left, right_bottom = match_best(img, './game/scene/' + target + '.png')
+            print(f'【模板匹配RGB】{target} {max_val} {top_left}')
+        else:
+            max_val, img, top_left, right_bottom = match(img, f'./game/scene/{target}.png')
+            print(f'【模板匹配】 {target} {max_val} {top_left}')
         max_val = 1 if max_val > 1 and not math.isinf(max_val) else max_val
-        print(f'【模板匹配】 {target} {max_val} {top_left}')
-        return max_val
+        return precision < max_val <= 1
 
     def _max_all_best(self, target, img=None):
         img = img if img is not None else capture()
@@ -35,33 +39,25 @@ class Recogbot(object):
             return None
 
     def _recog(self, target, img=None):
-        return 0.99 < self._match_max_val(target, img) <= 1
+        return self._match(target, 0.99, img)
 
     def _recog_if(self, target1, target2, img=None):
-        max_val = self._match_max_val(target1, img)
-        if 0.99 < max_val <= 1:
-            return True
-        max_val = self._match_max_val(target2, img)
-        return 0.99 < max_val <= 1
+        return self._recog(target1, img) or self._recog(target2, img)
 
     def _recog_low_precision(self, target, img=None):
-        max_val = self._match_max_val(target, img)
-        return 0.94 < max_val <= 1
+        return self._match(target, 0.94, img)
 
-    def _recog_low_precision_if(self, target, target2, img=None):
-        max_val = self._match_max_val(target, img)
-        if 0.94 < max_val <= 1:
-            return True
-        max_val = self._match_max_val(target2, img)
-        return 0.99 < max_val <= 1
+    def _recog_low_precision_if(self, target1, target2, img=None):
+        return self._recog_low_precision(target1, img) or self._recog_low_precision(target2, img)
 
     def _recog_cheap(self, target, img=None):
-        max_val = self._match_max_val(target, img)
-        return 0.9 < max_val <= 1
+        return self._match(target, 0.9, img)
 
-    def _recog_diy_precision(self, target, low, height=1, img=None):
-        max_val = self._match_max_val(target, img)
-        return low <= max_val <= height
+    def _recog_diy_precision(self, target, precision, img=None):
+        return self._match(target, precision, img)
+
+    def _recog_best_low_precision(self, target, img=None):
+        return self._match(target, 0.94, img, True)
 
     def detect(self):
         pred, names = detect()
@@ -452,3 +448,9 @@ class Recogbot(object):
 
     def mail_back(self):
         return self._recog_if('back_mail', 'back_mail_kr')
+
+    def magic_sword_skill(self):
+        return self._recog_best_low_precision('sword1')
+
+    def jump(self):
+        return self._recog_best_low_precision('jump')
