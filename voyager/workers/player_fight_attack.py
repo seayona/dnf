@@ -18,14 +18,14 @@ class PlayerAttackWorker(QThread):
         self.running = True
 
     def _run(self):
-        for key in self.voyager.player.buff.keys():
-            if self.voyager.recogbot.skill(key):
-                self.voyager.player.release_buff(key)
-
         if self.voyager.player.inject is not None:
             fun_name = self.voyager.player.inject
             fun = getattr(self, fun_name)
             fun()
+
+        for key in self.voyager.player.buff.keys():
+            if self.voyager.recogbot.skill(key):
+                self.voyager.player.release_buff(key)
 
         self.voyager.player.attack()
 

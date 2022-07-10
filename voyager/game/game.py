@@ -868,7 +868,7 @@ class Game(Concurrency):
     @idle
     @asyncthrows
     async def csb_use_large(self):
-        await self._click_if('csb_use_large_kr', 'csb_use_large_kr')
+        await self._click_if_best_low_precision('csb_use_large', 'csb_use_large_kr')
         self._free()
 
     @idle

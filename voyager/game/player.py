@@ -143,7 +143,7 @@ class Player(Concurrency):
     @asyncthrows
     async def right(self):
         keyDown('right')
-        await asyncio.sleep(3)
+        await asyncio.sleep(3.8)
         self.stop_right()
         self._free()
 

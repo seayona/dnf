@@ -78,9 +78,13 @@ def detect(weights=ROOT / 'weights/best.pt', data=ROOT / 'data/dnf.yaml', view_i
     return pred, names
 
 
+def detect_lion_entry(weights=ROOT / 'weights/lion.pt', data=ROOT / 'data/dnf_lion.yaml', view_img=False):
+    return detect(weights=weights, data=data, view_img=view_img)
+
+
 if __name__ == "__main__":
     while True:
-        pred, names = detect(view_img=True)
+        pred, names = detect_lion_entry(view_img=True)
         for i, det in enumerate(pred):
             if len(det) < 1:
                 continue
@@ -95,7 +99,7 @@ if __name__ == "__main__":
                 if names[int(cls)] == 'lion' and float(f'{conf:.2f}') > 0.5:
                     print("【目标检测】检测到狮子头")
                 if names[int(cls)] == 'lion_entry' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到游戏教程", (x, y))
+                    print("【目标检测】狮子头入口", (x, y))
                 if names[int(cls)] == 'bag' and float(f'{conf:.2f}') > 0.5:
                     print("【目标检测】检测到背包", (x, y))
                 if names[int(cls)] == 'next' and float(f'{conf:.2f}') > 0.5:

@@ -1,4 +1,4 @@
-from detect_dnf import detect
+from detect_dnf import detect, detect_lion_entry
 
 from .capture import capture
 from .match import match, match_all_best, match_best
@@ -58,6 +58,9 @@ class Recogbot(object):
 
     def _recog_best_low_precision(self, target, img=None):
         return self._match(target, 0.94, img, True)
+
+    def _recog_best_if_low_precision(self, target1, target2, img=None):
+        return self._match(target1, 0.94, img, True) or self._match(target2, 0.94, img, True)
 
     def detect(self):
         pred, names = detect()
@@ -133,6 +136,21 @@ class Recogbot(object):
                 if names[int(cls)] == 'skill' and float(f'{conf:.2f}') > 0.86:
                     print("【实时检测】检测到技能按钮", (x, y))
                     result['skill'] = (True, x, y)
+        return result
+
+    def detect_lion_entry(self):
+        pred, names = detect_lion_entry()
+        result = {}
+        for s in ['lion_entry']:
+            result[s] = (False, 0, 0)
+        for i, det in enumerate(pred):
+            if len(det) < 1:
+                continue
+            for *xyxy, conf, cls in reversed(det):
+                x, y = (int(xyxy[0]), int(xyxy[1]))
+                if names[int(cls)] == 'lion_entry' and float(f'{conf:.2f}') > 0.5:
+                    print("【实时检测】检测到狮子头入口", (x, y))
+                    result['lion_entry'] = (True, x, y)
         return result
 
     def start_game(self):
@@ -384,7 +402,7 @@ class Recogbot(object):
         return self._recog_if('csb_use', 'csb_use_kr')
 
     def csb_use_large(self):
-        return self._recog_if('csb_use_large', 'csb_use_large_kr')
+        return self._recog_best_if_low_precision('csb_use_large', 'csb_use_large_kr')
 
     def back_share(self):
         return self._recog_if('back_share', 'back_share_kr')
