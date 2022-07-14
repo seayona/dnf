@@ -122,21 +122,24 @@ def yolov5x6(pretrained=True, channels=3, classes=80, autoshape=True, _verbose=T
 
 
 if __name__ == '__main__':
-    # model = _create(name='yolov5s', pretrained=True, channels=3, classes=80, autoshape=True, verbose=True)
-    model = dnf(path='weights/dnf.pt')  # custom
+    while True:
+        # model = _create(name='yolov5s', pretrained=True, channels=3, classes=80, autoshape=True, verbose=True)
+        model = dnf(path='weights/dnf.pt')  # custom
 
-    # Verify inference
-    from pathlib import Path
+        # Verify inference
+        from pathlib import Path
 
-    import numpy as np
-    from PIL import Image
+        import numpy as np
+        from PIL import Image
 
-    from utils.general import cv2
+        from utils.general import cv2
 
-    imgs = [
-        'datasets/dnf/images/001.png',
-    ]  # numpy
+        imgs = [
+            'datasets/dnf/images/001.png',
+        ]  # numpy
 
-    results = model(imgs, size=320)  # batched inference
-    results.print()
-    results.save()
+        results = model(imgs, size=320)  # batched inference
+        # results.print()
+        imgs = results.render()
+        cv2.imshow('xx', imgs[0])
+        cv2.waitKey(1)

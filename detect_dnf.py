@@ -78,7 +78,7 @@ def detect(weights=ROOT / 'weights/best.pt', data=ROOT / 'data/dnf.yaml', view_i
     return pred, names
 
 
-def detect_lion_entry(weights=ROOT / 'weights/lion.pt', data=ROOT / 'data/dnf_lion.yaml', view_img=False):
+def detect_lion_entry(weights=ROOT / 'weights/last.pt', data=ROOT / 'data/dnf_close.yaml', view_img=False):
     return detect(weights=weights, data=data, view_img=view_img)
 
 
@@ -90,43 +90,5 @@ if __name__ == "__main__":
                 continue
             for *xyxy, conf, cls in reversed(det):
                 x, y = (int(xyxy[0]), int(xyxy[1]))
-                if names[int(cls)] == 'avatar' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到小可爱")
-                if names[int(cls)] == 'skip' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到动画")
-                if names[int(cls)] == 'boss' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到大Boss")
-                if names[int(cls)] == 'lion' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到狮子头")
-                if names[int(cls)] == 'lion_entry' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】狮子头入口", (x, y))
-                if names[int(cls)] == 'bag' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到背包", (x, y))
-                if names[int(cls)] == 'next' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到下个任务", (x, y))
-                if names[int(cls)] == 'tutorial' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到游戏教程", (x, y))
-                if names[int(cls)] == 'combo' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到连击数", (x, y))
                 if names[int(cls)] == 'close' and float(f'{conf:.2f}') > 0.5:
                     print("【目标检测】检测到菜单关闭按钮", (x, y))
-                if names[int(cls)] == 'switch' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到角色切换按钮", (x, y))
-                if names[int(cls)] == 'menu' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到菜单按钮", (x, y))
-                if names[int(cls)] == 'buff' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到角色Buff", (x, y))
-                if names[int(cls)] == 'jump' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到跳跃按钮", (x, y))
-                if names[int(cls)] == 'setting' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到设置按钮", (x, y))
-                if names[int(cls)] == 'box' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到宝箱", (x, y))
-                if names[int(cls)] == 'demon' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到深渊恶魔", (x, y))
-                if names[int(cls)] == 'passing' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到传送门", (x, y))
-                if names[int(cls)] == 'result' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到战斗结果", (x, y))
-                if names[int(cls)] == 'skill' and float(f'{conf:.2f}') > 0.5:
-                    print("【目标检测】检测到技能按钮", (x, y))
